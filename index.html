@@ -37,9 +37,10 @@ button { cursor: pointer; border: 0; background: none; }
 .app { max-width: 560px; margin: 0 auto; min-height: 100%; padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
 .top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 14px 10px;
-  display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; }
 .brand { font: 800 26px/1 var(--display); letter-spacing: .02em; text-transform: uppercase; }
 .brand b { color: var(--accent); font-weight: 800; }
+.brand span { font-weight: 700; font-size: 18px; letter-spacing: .06em; color: var(--muted); margin-left: 4px; }
 .today { color: var(--muted); font-size: 13px; text-transform: capitalize; }
 main { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 4px 24px; display: grid; gap: 22px; }
 
@@ -247,7 +248,7 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
 @media (prefers-reduced-motion: reduce) { .chart .lineA { animation: none; stroke-dashoffset: 0; } * { transition: none !important; } }
 </style>
 <div class="app">
-  <header class="top"><div class="brand">For<b>ț</b>a</div><div class="today" id="today"></div></header>
+  <header class="top"><div class="brand">For<b>ț</b>a <span>Cristian Demian</span></div><div class="today" id="today"></div></header>
   <main id="view"></main>
 </div>
 <nav class="nav" id="nav" aria-label="Navigare"></nav>
