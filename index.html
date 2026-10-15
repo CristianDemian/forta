@@ -683,8 +683,8 @@ const DEFAULT_SUPPS = [
   { id: 's4', name: 'Magneziu bisglicinat', dose: '300 mg, înainte de somn', time: '22:00', on: false, tip: 'Centrum are doar puțin magneziu. Ajută somnul și crampele.' }
 ];
 
-/* Cristian vrea 3 serii la fiecare exercițiu */
-for (const id in EX) EX[id].sets = 3;
+/* Cristian lucrează 3 serii de 10-12 repetări la fiecare exercițiu */
+for (const id in EX) { EX[id].sets = 3; EX[id].reps = [10, 12]; }
 
 /* ---------- Animații: un singur schelet, două poziții per exercițiu ---------- */
 const Rig = (() => {
