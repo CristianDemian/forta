@@ -352,29 +352,10 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
   #view.enter > *, .enter .week .wd, .workout.slide-in, .workout.slide-in .wex { animation: none !important; }
 }
 
-/* Mini-Cristian */
-.buddy { width: 100%; max-width: 260px; height: auto; overflow: visible; margin-bottom: -6px; }
-.b-shadow { fill: #000; opacity: .45; }
-.b-face, .b-ear { fill: #e9b58f; stroke: #b9805b; stroke-width: 1.5; }
-.b-hair { fill: #3b3734; }
-.b-beard { fill: #4b4642; }
-.b-moust { fill: #4b4642; }
-.b-brow { fill: none; stroke: #2f2b28; stroke-width: 2.6; stroke-linecap: round; }
-.b-pupil { fill: #241a14; }
-.b-glasses { fill: rgba(255,255,255,.12); stroke: #7a4a2a; stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; }
-.b-mouth { fill: none; stroke: #2a1208; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.b-mouth.open { fill: #5a1c10; }
-.b-shirt { fill: #f4f1ea; stroke: #cfc9bd; stroke-width: 1.5; }
-.b-raglan { fill: #1d1f24; }
-.b-collar { fill: none; stroke: #1d1f24; stroke-width: 4; stroke-linecap: round; }
-.b-stripe { stroke: #d6262f; stroke-width: 4; }
-.b-shortsbody { fill: #1d1f24; }
-.b-shorts { stroke: #1d1f24; stroke-width: 11; stroke-linecap: round; }
-.b-sleeve { stroke: #1d1f24; stroke-width: 11; stroke-linecap: round; }
-.b-skinline { fill: none; stroke: #e9b58f; stroke-width: 7; stroke-linecap: round; }
-.b-glove { fill: #e9b58f; stroke: #b9805b; stroke-width: 1.5; }
-.b-thumb { fill: #e9b58f; stroke: #b9805b; stroke-width: 1.2; transition: opacity .2s; }
-.b-shoe { fill: #ece8e0; stroke: #3a414e; stroke-width: 2; }
+/* Mini-Cristian 3D */
+.buddy { position: relative; width: 100%; height: 270px; display: flex; justify-content: center; align-items: flex-end; margin-top: 30px; }
+.b-img { height: 250px; width: auto; max-width: 100%; transform-origin: 50% 70%; will-change: transform; filter: drop-shadow(0 12px 24px rgba(0,0,0,.45)); user-select: none; -webkit-user-select: none; position: relative; z-index: 1; }
+.b-shadow { position: absolute; bottom: -4px; left: 50%; width: 150px; height: 20px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.75), transparent); transform: translateX(-50%); }
 </style>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
@@ -895,116 +876,60 @@ const FX = (() => {
   return { burst, celebrate, countUp, pop };
 })();
 
-/* ---------- Fierică: mascota zilei de odihnă (dansează, se răsucește, face tumbe și flotări) ---------- */
+/* ---------- Mini-Cristian 3D: imaginea lui Cristian, animată în zilele de odihnă ---------- */
 const Buddy = (() => {
-  const svg = `<svg class="buddy" viewBox="0 0 200 170" role="img" aria-label="Mini-Cristian dansează și face flotări">
-    <ellipse class="b-shadow" cx="100" cy="152" rx="34" ry="6"/>
-    <g class="b-root">
-      <g class="b-leg" data-p="-10,26"><path d="M-10 26 L-10 46" class="b-skinline"/><path d="M-10 24 L-10 33" class="b-shorts"/><path d="M-21 50 Q-21 44 -13 44 L-6 44 Q-4 50 -6 52 L-19 52 Z" class="b-shoe"/></g>
-      <g class="b-leg" data-p="10,26"><path d="M10 26 L10 46" class="b-skinline"/><path d="M10 24 L10 33" class="b-shorts"/><path d="M21 50 Q21 44 13 44 L6 44 Q4 50 6 52 L19 52 Z" class="b-shoe"/></g>
-      <g class="b-arm" data-p="25,-8"><path class="b-skinline b-armline" d="M25 -8 L25 14"/><path class="b-sleeve" d="M25 -9 L25 0"/><circle class="b-glove" cx="25" cy="16" r="6"/><rect class="b-thumb" x="-2.6" y="-11" width="5.2" height="10" rx="2.6"/></g>
-      <path class="b-shirt" d="M-24 -14 Q-26 10 -22 28 L22 28 Q26 10 24 -14 Q12 -20 0 -20 Q-12 -20 -24 -14 Z"/>
-      <path class="b-raglan" d="M-24 -14 Q-12 -20 -6 -20 L-13 -4 Q-20 -2 -25 2 Z M24 -14 Q12 -20 6 -20 L13 -4 Q20 -2 25 2 Z"/>
-      <path class="b-shortsbody" d="M-22 22 L22 22 L23 32 L-23 32 Z"/>
-      <path class="b-stripe" d="M-23 12 L23 12"/>
-      <circle class="b-ear" cx="-24" cy="-40" r="5.5"/><circle class="b-ear" cx="24" cy="-40" r="5.5"/>
-      <path class="b-face" d="M-23 -44 Q-24 -68 0 -68 Q24 -68 23 -44 Q23 -24 0 -20 Q-23 -24 -23 -44 Z"/>
-      <path class="b-hair" d="M-23 -46 Q-25 -70 0 -70 Q25 -70 23 -46 Q20 -58 0 -59 Q-20 -58 -23 -46 Z"/>
-      <path class="b-beard" d="M-23 -42 Q-22 -26 -12 -21 Q0 -15 12 -21 Q22 -26 23 -42 Q19 -33 12 -33 Q0 -37 -12 -33 Q-19 -33 -23 -42 Z"/>
-      <path class="b-moust" d="M-9 -33 Q0 -37 9 -33 Q4 -31 0 -32 Q-4 -31 -9 -33 Z"/>
-      <path class="b-brow" d="M-17 -51 L-6 -52 M6 -52 L17 -51"/>
-      <g class="b-eye" data-c="-11,-45"><ellipse cx="-11" cy="-45" rx="2.6" ry="3" class="b-pupil"/></g>
-      <g class="b-eye" data-c="11,-45"><ellipse cx="11" cy="-45" rx="2.6" ry="3" class="b-pupil"/></g>
-      <path class="b-glasses" d="M-20 -49 h15 q1 0 1 1 v6 q0 2 -2 2 h-12 q-2 0 -2 -2 Z M5 -49 h15 v7 q0 2 -2 2 h-12 q-2 0 -2 -2 v-6 q0 -1 1 -1 Z M-4 -47 Q0 -49 4 -47 M-20 -47 L-24 -45 M20 -47 L24 -45"/>
-      <path class="b-mouth" d="M-6 -28 Q0 -24 6 -28"/>
-      <path class="b-collar" d="M-8 -19 Q0 -14 8 -19"/>
-      <g class="b-arm" data-p="-25,-8"><path class="b-skinline b-armline" d="M-25 -8 L-25 14"/><path class="b-sleeve" d="M-25 -9 L-25 0"/><circle class="b-glove" cx="-25" cy="16" r="6"/></g>
-    </g>
-  </svg>`;
-
+  const svg = `<div class="buddy" role="img" aria-label="Mini-Cristian dansează, se răsucește și face tumbe">
+    <div class="b-shadow"></div>
+    <img class="b-img" src="mini-cristian.webp" alt="" draggable="false">
+  </div>`;
   const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
-  const lerp = (a, b, k) => a + (b - a) * k;
   const LOOP = 15000;
-  const S0 = { thumb: 0, x: 0, y: 0, r: 0, sx: 1, sy: 1, aL: 15, aR: -15, lenL: 22, lenR: 22, gL: 0, gR: 0, eyes: 1, wink: 1, mouth: 0 };
 
-  /* ce face Fierică la momentul t (ms în buclă) */
+  /* ce face Mini-Cristian la momentul t (ms în buclă) */
   function pose(t) {
-    const p = { ...S0 };
-    const s = t / 1000;
+    const s = t / 1000, p = { x: 0, y: 0, r: 0, sx: 1, sy: 1 };
     if (s < 4) { // dans
-      const b = s * Math.PI * 2 * 1.5;
-      p.y = -Math.abs(Math.sin(b)) * 12; p.r = Math.sin(b) * 9;
-      p.aL = 140 + Math.sin(b * 2) * 30; p.aR = -140 + Math.cos(b * 2) * 30;
-      p.gL = Math.max(0, Math.sin(b)) * 35; p.gR = -Math.max(0, -Math.sin(b)) * 35;
-      p.sy = 1 - Math.abs(Math.cos(b)) * 0.06; p.sx = 2 - p.sy; p.mouth = 1;
+      const b = s * Math.PI * 3;
+      p.y = -Math.abs(Math.sin(b)) * 16; p.r = Math.sin(b) * 8; p.x = Math.sin(b / 2) * 10;
+      p.sy = 1 - Math.abs(Math.cos(b)) * 0.05; p.sx = 2 - p.sy;
     } else if (s < 6) { // se răsucește
       const k = (s - 4) / 2;
-      p.sx = Math.cos(ease(k) * Math.PI * 4); if (Math.abs(p.sx) < 0.08) p.sx = 0.08 * Math.sign(p.sx || 1);
-      p.y = -Math.sin(k * Math.PI) * 18; p.aL = 100; p.aR = -100; p.mouth = 1;
-    } else if (s < 8.2) { // tumbă pe spate
-      const k = (s - 6) / 2.2;
-      if (k < 0.15) { const q = k / 0.15; p.sy = 1 - q * 0.22; p.sx = 1 + q * 0.12; p.y = q * 6; p.aL = 30; p.aR = -30; }
-      else if (k < 0.8) { const q = (k - 0.15) / 0.65; p.y = -Math.sin(q * Math.PI) * 70; p.r = -360 * ease(q); p.aL = 170; p.aR = -170; p.gL = 40; p.gR = -40; p.mouth = 1; }
-      else { const q = (k - 0.8) / 0.2; p.sy = 0.82 + q * 0.18; p.sx = 1.12 - q * 0.12; p.y = (1 - q) * 6; p.aL = lerp(150, 60, q); p.aR = lerp(-150, -60, q); p.mouth = 1; }
-    } else if (s < 13) { // flotări
-      const k = (s - 8.2) / 4.8;
-      const into = Math.min(1, k / 0.12), out = Math.max(0, (k - 0.9) / 0.1);
-      const lie = ease(into) * (1 - ease(out));
-      const reps = Math.max(0, Math.min(1, (k - 0.12) / 0.78));
-      const down = reps > 0 && reps < 1 ? (1 - Math.cos(reps * Math.PI * 2 * 3)) / 2 : 0;
-      p.r = -90 * lie;
-      p.aL = lerp(15, 90, lie); p.lenL = lerp(22, lerp(24, 10, down), lie);
-      p.aR = lerp(-20, -35, lie);
-      p.gL = lerp(0, 22, lie); p.gR = lerp(0, 34, lie);
-      p.y = lerp(0, lerp(-6, 8, down), lie) + lie * 4;
-      p.x = lie * -6;
-      p.eyes = 1; p.mouth = down > 0.6 ? 2 : 0;
-    } else { // salută și face cu ochiul
-      const k = (s - 13) / 2;
-      p.aR = k < 0.4 ? -150 + Math.sin(k * Math.PI * 6) * 25 : -95; p.lenR = k < 0.4 ? 22 : 14; p.thumb = k >= 0.4 ? 1 : 0; p.aL = 15;
-      p.wink = k > 0.25 && k < 0.75 ? 0.1 : 1; p.mouth = 1;
-      p.r = Math.sin(k * Math.PI) * -6;
+      p.sx = Math.cos(ease(k) * Math.PI * 4); if (Math.abs(p.sx) < 0.06) p.sx = 0.06 * Math.sign(p.sx || 1);
+      p.y = -Math.sin(k * Math.PI) * 24;
+    } else if (s < 8.4) { // tumbă pe spate
+      const k = (s - 6) / 2.4;
+      if (k < 0.15) { const q = k / 0.15; p.sy = 1 - q * 0.16; p.sx = 1 + q * 0.08; }
+      else if (k < 0.8) { const q = (k - 0.15) / 0.65; p.y = -Math.sin(q * Math.PI) * 110; p.r = -360 * ease(q); }
+      else { const q = (k - 0.8) / 0.2; p.sy = 0.86 + q * 0.14; p.sx = 1.08 - q * 0.08; }
+    } else if (s < 12.4) { // genuflexiuni
+      const k = (s - 8.4) / 4, d = (1 - Math.cos(k * Math.PI * 2 * 4)) / 2;
+      p.sy = 1 - d * 0.2; p.sx = 1 + d * 0.1;
+    } else { // țopăie de bucurie
+      const k = (s - 12.4) / 2.6, b = k * Math.PI * 5;
+      p.y = -Math.abs(Math.sin(b)) * 22; p.r = Math.sin(b) * 6;
     }
-    // clipit
-    if (t % 3700 < 140 && s < 13) p.eyes = 0.1;
     return p;
   }
 
   let raf = 0, t0 = 0;
   const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   function apply(el, p) {
-    const root = el.querySelector('.b-root');
-    root.setAttribute('transform', `translate(${100 + p.x} ${100 + p.y}) rotate(${p.r}) scale(${p.sx} ${p.sy})`);
-    const [armR, armL] = el.querySelectorAll('.b-arm');
-    const arm = (g, ang, len) => {
-      const [x, y] = g.dataset.p.split(',').map(Number);
-      g.setAttribute('transform', `rotate(${ang} ${x} ${y})`);
-      g.querySelector('.b-armline').setAttribute('d', `M${x} ${y} L${x} ${y + len}`);
-      const c = g.querySelector('.b-glove'); c.setAttribute('cy', y + len + 2);
-    };
-    arm(armL, p.aL, p.lenL); arm(armR, p.aR, p.lenR);
-    const [legL, legR] = el.querySelectorAll('.b-leg');
-    legL.setAttribute('transform', `rotate(${p.gL} -10 26)`); legR.setAttribute('transform', `rotate(${p.gR} 10 26)`);
-    const [eL, eR] = el.querySelectorAll('.b-eye');
-    eL.setAttribute('transform', `translate(0 -45) scale(1 ${p.eyes}) translate(0 45)`);
-    eR.setAttribute('transform', `translate(0 -45) scale(1 ${Math.min(p.eyes, p.wink)}) translate(0 45)`);
-    el.querySelector('.b-mouth').setAttribute('d', p.mouth === 1 ? 'M-7 -29 Q0 -20 7 -29 Z' : p.mouth === 2 ? 'M-5 -26 Q0 -29 5 -26' : 'M-6 -28 Q0 -24 6 -28');
-    const th = el.querySelector('.b-thumb'), gl = armR.querySelector('.b-glove');
-    th.setAttribute('transform', `translate(${gl.getAttribute('cx')} ${gl.getAttribute('cy')}) rotate(${-p.aR - p.r})`); th.style.opacity = p.thumb ? 1 : 0;
-    el.querySelector('.b-mouth').classList.toggle('open', p.mouth === 1);
-    const lift = Math.max(0, -p.y) / 70;
-    const sh = el.querySelector('.b-shadow'); sh.setAttribute('rx', 34 * (1 - lift * 0.5)); sh.style.opacity = 0.5 - lift * 0.35;
+    const img = el.querySelector('.b-img');
+    img.style.transform = `translate(${p.x}px, ${p.y}px) rotate(${p.r}deg) scale(${p.sx}, ${p.sy})`;
+    const lift = Math.min(1, Math.max(0, -p.y) / 110);
+    el.querySelector('.b-shadow').style.transform = `translateX(-50%) scale(${1 - lift * 0.55})`;
+    el.querySelector('.b-shadow').style.opacity = 0.55 - lift * 0.35;
   }
   function loop(ts) {
-    const el = document.querySelector('svg.buddy');
+    const el = document.querySelector('.buddy');
     if (!el) { raf = 0; return; }
     if (!t0) t0 = ts;
     apply(el, pose((ts - t0) % LOOP));
     raf = requestAnimationFrame(loop);
   }
   function start() {
-    const el = document.querySelector('svg.buddy'); if (!el) return;
-    if (still) { apply(el, pose(14000)); return; }
+    const el = document.querySelector('.buddy'); if (!el) return;
+    if (still) return;
     if (!raf) raf = requestAnimationFrame(loop);
   }
   return { svg, start, pose, apply };
@@ -1223,7 +1148,7 @@ function restHero(doneToday) {
   return `<section class="rest-day">
     ${Buddy.svg}
     <h1 class="rest-title">Odihnă</h1>
-    <p class="rest-msg">${doneToday ? `Antrenamentul de azi e bifat. Bravo, Cristian!` : 'Azi mușchii cresc. Mini-Cristian face flotările în locul tău.'}</p>
+    <p class="rest-msg">${doneToday ? `Antrenamentul de azi e bifat. Bravo, Cristian!` : 'Azi mușchii cresc. Mini-Cristian dansează în locul tău.'}</p>
     <div class="next-up"><small>Următorul antrenament</small><b>${p.label} · ${esc(p.name)}</b><span>${i === 1 ? 'mâine' : `peste ${i} zile`}</span></div>
     ${showOthers ? `<div class="chips">${DAYS.map(d => `<button class="chip" data-start="${d.id}">${d.label}: ${esc(d.name)}</button>`).join('')}</div>`
       : `<button class="link muted" data-others>Vreau totuși să mă antrenez azi</button>`}
