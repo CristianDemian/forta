@@ -381,7 +381,7 @@ const DAYS = [
 const EX = {
   bench: {
     name: 'Împins cu bara la orizontală', muscles: 'Piept, triceps, umăr frontal',
-    sets: 4, reps: [6, 8], rest: 150, step: 2.5,
+    sets: 3, reps: [6, 8], rest: 150, step: 2.5,
     cues: ['Omoplații strânși și coborâți, ușor arcuit, picioarele bine înfipte în podea.',
       'Coboară bara controlat pe linia mameloanelor, coatele la aproximativ 45° față de trunchi.',
       'Împinge exploziv în sus și ușor spre fețe, fără să desprinzi fesele de bancă.'],
@@ -446,7 +446,7 @@ const EX = {
   },
   pulldown: {
     name: 'Tracțiuni la helcometru', muscles: 'Dorsali, biceps',
-    sets: 4, reps: [8, 10], rest: 120, step: 2.5,
+    sets: 3, reps: [8, 10], rest: 120, step: 2.5,
     cues: ['Priză puțin mai lată decât umerii, pieptul sus.',
       'Trage bara spre partea de sus a pieptului, gândindu-te să duci coatele în jos.',
       'Lasă bara să urce lent, până la întinderea completă a dorsalilor.'],
@@ -457,7 +457,7 @@ const EX = {
   },
   row: {
     name: 'Ramat cu bara', muscles: 'Spate mijlociu, dorsali, biceps',
-    sets: 4, reps: [6, 8], rest: 120, step: 2.5,
+    sets: 3, reps: [6, 8], rest: 120, step: 2.5,
     cues: ['Genunchii ușor îndoiți, trunchiul aplecat la aproximativ 45°, spatele drept.',
       'Trage bara spre buric, strângând omoplații.',
       'Coboară controlat fără să-ți rotunjești spatele.'],
@@ -512,7 +512,7 @@ const EX = {
   },
   squat: {
     name: 'Genuflexiuni cu bara', muscles: 'Cvadricepși, fesieri, adductori',
-    sets: 4, reps: [6, 8], rest: 180, step: 2.5,
+    sets: 3, reps: [6, 8], rest: 180, step: 2.5,
     cues: ['Bara pe trapez, picioarele la lățimea umerilor, vârfurile ușor spre exterior.',
       'Coboară cu șoldurile în spate și genunchii pe direcția vârfurilor, până sub paralelă.',
       'Urcă împingând în tot talpa, pieptul rămâne sus.'],
@@ -567,7 +567,7 @@ const EX = {
   },
   lateral: {
     name: 'Ridicări laterale cu gantere', muscles: 'Umăr lateral',
-    sets: 4, reps: [12, 15], rest: 60, step: 1,
+    sets: 3, reps: [12, 15], rest: 60, step: 1,
     cues: ['Coatele ușor îndoiți, trunchiul puțin aplecat în față.',
       'Ridică brațele lateral până la nivelul umerilor, conducând cu coatele.',
       'Coboară în 2-3 secunde. Greutatea mică, execuția perfectă.'],
@@ -589,7 +589,7 @@ const EX = {
 };
 
 
-EX.incline.sets = 4;
+
 Object.assign(EX, {
   chestpress: {
     name: 'Împins la aparatul pentru piept', muscles: 'Piept, triceps, umăr frontal',
@@ -673,7 +673,7 @@ Object.assign(EX, {
     rig: EX.curl.rig
   }
 });
-Object.assign(EX.pulldown, { name: 'Tracțiuni la scripete cu priză largă', sets: 3 });
+Object.assign(EX.pulldown, { name: 'Tracțiuni la scripete cu priză largă' });
 Object.assign(EX.straightarm, { name: 'Tracțiuni la scripete din picioare' });
 
 const DEFAULT_SUPPS = [
@@ -682,6 +682,9 @@ const DEFAULT_SUPPS = [
   { id: 's3', name: 'Omega 3', dose: '2 capsule, la prânz', time: '13:30', on: false, tip: 'Nu e inclus în Centrum. Ajută recuperarea și articulațiile.' },
   { id: 's4', name: 'Magneziu bisglicinat', dose: '300 mg, înainte de somn', time: '22:00', on: false, tip: 'Centrum are doar puțin magneziu. Ajută somnul și crampele.' }
 ];
+
+/* Cristian vrea 3 serii la fiecare exercițiu */
+for (const id in EX) EX[id].sets = 3;
 
 /* ---------- Animații: un singur schelet, două poziții per exercițiu ---------- */
 const Rig = (() => {
