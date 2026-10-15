@@ -394,6 +394,16 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
 .next > *:not(.wm), .rest-day > *:not(.wm) { position: relative; z-index: 1; }
 .wm { position: absolute; right: -30px; bottom: -30px; width: 220px; height: 220px; background: var(--badge) center / contain no-repeat; opacity: .07; pointer-events: none; z-index: 0; transform: rotate(-12deg); }
 .b-vid::-webkit-media-controls, .b-vid::-webkit-media-controls-start-playback-button, .b-vid::-webkit-media-controls-overlay-play-button { display: none !important; -webkit-appearance: none; opacity: 0; }
+
+/* până pornește clipul se vede imaginea, fără buton de play */
+.buddy[data-vid] { position: relative; }
+.buddy[data-vid] .b-vid { opacity: 0; transition: opacity .25s; }
+.buddy[data-vid].playing .b-vid { opacity: 1; }
+.b-poster { position: absolute; left: 50%; top: 0; transform: translateX(-50%); height: min(440px, 62vh); aspect-ratio: 9 / 16; width: auto; max-width: 100%; object-fit: contain; pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 80%, transparent 100%), linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 80%, transparent 100%), linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%); mask-composite: intersect; }
+.buddy.flex .b-poster { height: min(380px, 52vh); }
+.buddy[data-vid].playing .b-poster { opacity: 0; transition: opacity .25s .1s; }
 </style>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
@@ -934,9 +944,12 @@ const Buddy = (() => {
     v.addEventListener('ended', () => { v.currentTime = 0; kick(); });
     v.addEventListener('stalled', () => setTimeout(kick, 500));
     v.addEventListener('canplay', kick);
+    const mark = on => { if (v.parentNode) v.parentNode.classList.toggle('playing', on); };
+    v.addEventListener('playing', () => mark(true));
+    v.addEventListener('pause', () => mark(false));
     cache[name] = v; return v;
   }
-  const slot = (name, label, cls = '') => `<div class="buddy ${cls}" data-vid="${name}" data-label="${label}"></div>`;
+  const slot = (name, label, cls = '') => `<div class="buddy ${cls}" data-vid="${name}" data-label="${label}"><img class="b-poster" src="${name}.jpg" alt=""></div>`;
   const svg = slot('mini-cristian', 'Mini-Cristian dansează, face flotări și o tumbă');
   const flex = slot('mini-cristian-flex', 'Mini-Cristian își arată bicepșii și ridică degetul mare', 'flex');
   function playAll() {
@@ -944,7 +957,7 @@ const Buddy = (() => {
     for (const k in cache) { const v = cache[k]; if (v.isConnected && v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => { }); } }
   }
   function start() {
-    document.querySelectorAll('.buddy[data-vid]').forEach(s => { const v = el(s.dataset.vid, s.dataset.label); if (v.parentNode !== s) s.appendChild(v); });
+    document.querySelectorAll('.buddy[data-vid]').forEach(s => { const v = el(s.dataset.vid, s.dataset.label); if (v.parentNode !== s) s.appendChild(v); s.classList.toggle('playing', !v.paused); });
     playAll();
   }
   /* orice atingere repornește clipul (necesar când iPhone-ul e în modul Economisire baterie) */
