@@ -352,10 +352,11 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
   #view.enter > *, .enter .week .wd, .workout.slide-in, .workout.slide-in .wex { animation: none !important; }
 }
 
-/* Mini-Cristian 3D */
-.buddy { position: relative; width: 100%; height: 270px; display: flex; justify-content: center; align-items: flex-end; margin-top: 30px; }
-.b-img { height: 250px; width: auto; max-width: 100%; transform-origin: 50% 70%; will-change: transform; filter: drop-shadow(0 12px 24px rgba(0,0,0,.45)); user-select: none; -webkit-user-select: none; position: relative; z-index: 1; }
-.b-shadow { position: absolute; bottom: -4px; left: 50%; width: 150px; height: 20px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.75), transparent); transform: translateX(-50%); }
+/* Mini-Cristian video */
+.buddy { width: 100%; display: flex; justify-content: center; margin-top: -14px; }
+.b-vid { height: min(440px, 62vh); aspect-ratio: 9 / 16; width: auto; max-width: 100%; object-fit: contain; display: block; background: transparent;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 80%, transparent 100%), linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 80%, transparent 100%), linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%); mask-composite: intersect; }
 </style>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
@@ -876,63 +877,18 @@ const FX = (() => {
   return { burst, celebrate, countUp, pop };
 })();
 
-/* ---------- Mini-Cristian 3D: imaginea lui Cristian, animată în zilele de odihnă ---------- */
+/* ---------- Mini-Cristian: clipul video din zilele de odihnă (dans, flotări, tumbă, biceps) ---------- */
 const Buddy = (() => {
-  const svg = `<div class="buddy" role="img" aria-label="Mini-Cristian dansează, se răsucește și face tumbe">
-    <div class="b-shadow"></div>
-    <img class="b-img" src="mini-cristian.webp" alt="" draggable="false">
-  </div>`;
-  const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
-  const LOOP = 15000;
-
-  /* ce face Mini-Cristian la momentul t (ms în buclă) */
-  function pose(t) {
-    const s = t / 1000, p = { x: 0, y: 0, r: 0, sx: 1, sy: 1 };
-    if (s < 4) { // dans
-      const b = s * Math.PI * 3;
-      p.y = -Math.abs(Math.sin(b)) * 16; p.r = Math.sin(b) * 8; p.x = Math.sin(b / 2) * 10;
-      p.sy = 1 - Math.abs(Math.cos(b)) * 0.05; p.sx = 2 - p.sy;
-    } else if (s < 6) { // se răsucește
-      const k = (s - 4) / 2;
-      p.sx = Math.cos(ease(k) * Math.PI * 4); if (Math.abs(p.sx) < 0.06) p.sx = 0.06 * Math.sign(p.sx || 1);
-      p.y = -Math.sin(k * Math.PI) * 24;
-    } else if (s < 8.4) { // tumbă pe spate
-      const k = (s - 6) / 2.4;
-      if (k < 0.15) { const q = k / 0.15; p.sy = 1 - q * 0.16; p.sx = 1 + q * 0.08; }
-      else if (k < 0.8) { const q = (k - 0.15) / 0.65; p.y = -Math.sin(q * Math.PI) * 110; p.r = -360 * ease(q); }
-      else { const q = (k - 0.8) / 0.2; p.sy = 0.86 + q * 0.14; p.sx = 1.08 - q * 0.08; }
-    } else if (s < 12.4) { // genuflexiuni
-      const k = (s - 8.4) / 4, d = (1 - Math.cos(k * Math.PI * 2 * 4)) / 2;
-      p.sy = 1 - d * 0.2; p.sx = 1 + d * 0.1;
-    } else { // țopăie de bucurie
-      const k = (s - 12.4) / 2.6, b = k * Math.PI * 5;
-      p.y = -Math.abs(Math.sin(b)) * 22; p.r = Math.sin(b) * 6;
-    }
-    return p;
-  }
-
-  let raf = 0, t0 = 0;
   const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function apply(el, p) {
-    const img = el.querySelector('.b-img');
-    img.style.transform = `translate(${p.x}px, ${p.y}px) rotate(${p.r}deg) scale(${p.sx}, ${p.sy})`;
-    const lift = Math.min(1, Math.max(0, -p.y) / 110);
-    el.querySelector('.b-shadow').style.transform = `translateX(-50%) scale(${1 - lift * 0.55})`;
-    el.querySelector('.b-shadow').style.opacity = 0.55 - lift * 0.35;
-  }
-  function loop(ts) {
-    const el = document.querySelector('.buddy');
-    if (!el) { raf = 0; return; }
-    if (!t0) t0 = ts;
-    apply(el, pose((ts - t0) % LOOP));
-    raf = requestAnimationFrame(loop);
-  }
+  const svg = `<div class="buddy">
+    <video class="b-vid" src="mini-cristian.mp4" poster="mini-cristian.jpg" ${still ? '' : 'autoplay'} muted loop playsinline preload="auto" aria-label="Mini-Cristian dansează, face flotări și o tumbă"></video>
+  </div>`;
   function start() {
-    const el = document.querySelector('.buddy'); if (!el) return;
-    if (still) return;
-    if (!raf) raf = requestAnimationFrame(loop);
+    const v = document.querySelector('.b-vid'); if (!v || still) return;
+    v.muted = true; const p = v.play(); if (p && p.catch) p.catch(() => { });
   }
-  return { svg, start, pose, apply };
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') start(); });
+  return { svg, start };
 })();
 
 /* ---------- Notificări pentru suplimente ----------
@@ -1148,7 +1104,7 @@ function restHero(doneToday) {
   return `<section class="rest-day">
     ${Buddy.svg}
     <h1 class="rest-title">Odihnă</h1>
-    <p class="rest-msg">${doneToday ? `Antrenamentul de azi e bifat. Bravo, Cristian!` : 'Azi mușchii cresc. Mini-Cristian dansează în locul tău.'}</p>
+    <p class="rest-msg">${doneToday ? `Antrenamentul de azi e bifat. Bravo, Cristian!` : 'Azi mușchii cresc. Mini-Cristian se antrenează în locul tău.'}</p>
     <div class="next-up"><small>Următorul antrenament</small><b>${p.label} · ${esc(p.name)}</b><span>${i === 1 ? 'mâine' : `peste ${i} zile`}</span></div>
     ${showOthers ? `<div class="chips">${DAYS.map(d => `<button class="chip" data-start="${d.id}">${d.label}: ${esc(d.name)}</button>`).join('')}</div>`
       : `<button class="link muted" data-others>Vreau totuși să mă antrenez azi</button>`}
