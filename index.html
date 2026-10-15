@@ -266,7 +266,93 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
 .next-up span { color: var(--muted); font-size: 13px; }
 .rest-day .chips { justify-content: center; }
 @media (prefers-reduced-motion: reduce) { .wink-face, .wink-eye { animation: none; } }
+
+/* ---------- Efecte ---------- */
+.ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.ambient i { position: absolute; width: 70vmax; height: 70vmax; border-radius: 50%; filter: blur(60px); opacity: .16; }
+.ambient i:nth-child(1) { background: var(--accent); top: -38vmax; right: -30vmax; animation: drift1 22s ease-in-out infinite alternate; }
+.ambient i:nth-child(2) { background: var(--blue); bottom: -40vmax; left: -34vmax; opacity: .12; animation: drift2 26s ease-in-out infinite alternate; }
+.ambient i:nth-child(3) { background: #ff8a3d; top: 40%; left: 60%; width: 40vmax; height: 40vmax; opacity: .06; animation: drift1 30s ease-in-out infinite alternate-reverse; }
+@keyframes drift1 { to { transform: translate(-12vmax, 14vmax) scale(1.15); } }
+@keyframes drift2 { to { transform: translate(14vmax, -10vmax) scale(1.1); } }
+.app { position: relative; z-index: 1; }
+.fx-canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 60; pointer-events: none; }
+
+/* intrarea pe ecran: secțiunile apar pe rând */
+#view.enter > * { animation: rise .55s cubic-bezier(.2, .8, .2, 1) both; }
+#view.enter > *:nth-child(2) { animation-delay: .07s; }
+#view.enter > *:nth-child(3) { animation-delay: .14s; }
+#view.enter > *:nth-child(4) { animation-delay: .21s; }
+#view.enter > *:nth-child(n+5) { animation-delay: .28s; }
+@keyframes rise { from { opacity: 0; transform: translateY(18px) scale(.98); } }
+.enter .week .wd { animation: rise .45s cubic-bezier(.2, .8, .2, 1) both; }
+.enter .week .wd:nth-child(2) { animation-delay: .2s } .enter .week .wd:nth-child(3) { animation-delay: .24s } .enter .week .wd:nth-child(4) { animation-delay: .28s }
+.enter .week .wd:nth-child(5) { animation-delay: .32s } .enter .week .wd:nth-child(6) { animation-delay: .36s } .enter .week .wd:nth-child(7) { animation-delay: .4s }
+
+/* cardul principal: margine luminoasă care se rotește */
+@property --ang { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+.next, .rest-day { isolation: isolate; border-color: transparent; background:
+  linear-gradient(var(--surface), var(--surface)) padding-box,
+  conic-gradient(from var(--ang), var(--line) 0 60%, var(--accent) 75%, #ff8a3d 82%, var(--line) 92%) border-box;
+  animation: spin 6s linear infinite; }
+@keyframes spin { to { --ang: 360deg; } }
+.next::after { content: ''; position: absolute; inset: auto -20% -60% -20%; height: 120%; background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 16%, transparent), transparent); z-index: -1; pointer-events: none; animation: breathe 5s ease-in-out infinite; }
+@keyframes breathe { 50% { opacity: .45; transform: scale(1.08); } }
+
+/* butonul principal: lumină care trece peste el */
+.btn, .chip, .check, .set .ok, .ex-row, .nav button, .switch { position: relative; overflow: hidden; }
+.btn-main { background: linear-gradient(100deg, var(--accent), #ffd65a 50%, var(--accent)); box-shadow: 0 8px 26px -10px color-mix(in srgb, var(--accent) 80%, transparent); transition: transform .15s, box-shadow .2s; }
+.btn-main::before { content: ''; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent); transform: skewX(-20deg); animation: shine 3.6s ease-in-out infinite; }
+@keyframes shine { 0%, 55% { left: -60%; } 85%, 100% { left: 130%; } }
+.btn:active, .chip:active, .check:active, .set .ok:active { transform: scale(.96); }
+.ripple { position: absolute; border-radius: 50%; background: currentColor; opacity: .22; transform: scale(0); animation: ripple .6s ease-out forwards; pointer-events: none; }
+@keyframes ripple { to { transform: scale(1); opacity: 0; } }
+
+/* titluri */
+.dayname, .rest-title { background: linear-gradient(90deg, var(--fg) 0%, var(--fg) 40%, var(--accent) 50%, var(--fg) 60%, var(--fg) 100%); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: sweep 5s ease-in-out infinite; }
+@keyframes sweep { 0%, 30% { background-position: 100% 0; } 70%, 100% { background-position: 0 0; } }
+.rest-day .wink { filter: drop-shadow(0 10px 24px color-mix(in srgb, var(--accent) 45%, transparent)); animation: float 3.2s ease-in-out infinite; }
+@keyframes float { 50% { transform: translateY(-8px); } }
+.zz { position: relative; height: 0; width: 100%; }
+.zz span { position: absolute; font: 800 20px var(--display); color: var(--muted); opacity: 0; animation: zz 4s ease-in infinite; }
+.zz span:nth-child(1) { left: 64%; top: -150px; } .zz span:nth-child(2) { left: 70%; top: -165px; font-size: 15px; animation-delay: 1.3s; } .zz span:nth-child(3) { left: 75%; top: -178px; font-size: 12px; animation-delay: 2.6s; }
+@keyframes zz { 0% { opacity: 0; transform: translate(0, 10px); } 30% { opacity: .8; } 100% { opacity: 0; transform: translate(14px, -26px); } }
+
+/* bife care sar */
+.pop { animation: pop .42s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes pop { 0% { transform: scale(.6); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+.set.done .ok svg path, .check.taken .tick svg path { stroke-dasharray: 24; stroke-dashoffset: 24; animation: tickdraw .35s .05s ease-out forwards; }
+@keyframes tickdraw { to { stroke-dashoffset: 0; } }
+.wex.complete { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--good) 60%, transparent), 0 0 30px -12px var(--good); transition: box-shadow .4s; }
+.progressbar i { background: linear-gradient(90deg, var(--accent), #ff8a3d, var(--accent)); background-size: 200% 100%; animation: flow 2s linear infinite; box-shadow: 0 0 12px var(--accent); }
+@keyframes flow { to { background-position: -200% 0; } }
+
+/* navigarea */
+.nav button svg { transition: transform .3s cubic-bezier(.3, 1.6, .5, 1); }
+.nav button[aria-current="page"] svg { transform: translateY(-2px) scale(1.12); filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--accent) 60%, transparent)); }
+.nav button[aria-current="page"]::before { content: ''; position: absolute; top: 0; left: 30%; right: 30%; height: 3px; border-radius: 0 0 3px 3px; background: var(--accent); box-shadow: 0 0 12px var(--accent); animation: grow .35s ease-out; }
+@keyframes grow { from { transform: scaleX(0); } }
+
+/* ecranul de antrenament și cronometrul */
+.workout.slide-in { animation: slidein .45s cubic-bezier(.2, .8, .2, 1); }
+@keyframes slidein { from { transform: translateY(40px); opacity: 0; } }
+.workout.slide-in .wex { animation: rise .5s cubic-bezier(.2, .8, .2, 1) both; }
+.workout.slide-in .wex:nth-child(2) { animation-delay: .06s } .workout.slide-in .wex:nth-child(3) { animation-delay: .12s } .workout.slide-in .wex:nth-child(n+4) { animation-delay: .18s }
+.rest-in { animation: slidein .35s cubic-bezier(.2, .8, .2, 1); }
+.ring .fgc { filter: drop-shadow(0 0 6px var(--accent)); }
+.rest.ended .rest-in { animation: pulse .9s ease-in-out infinite; }
+@keyframes pulse { 50% { transform: scale(1.03); box-shadow: 0 0 40px -6px var(--accent); } }
+.toast { animation: toastin .35s cubic-bezier(.2, .8, .2, 1); }
+@keyframes toastin { from { transform: translate(-50%, 20px); opacity: 0; } }
+.ex-detail { animation: rise .35s ease-out; }
+.chart-card, .stat, .check, .supp, .ex-item, .hist-row { transition: transform .2s, background .2s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient i, .next, .rest-day, .next::after, .btn-main::before, .dayname, .rest-title, .rest-day .wink, .zz span, .progressbar i, .rest.ended .rest-in { animation: none !important; }
+  #view.enter > *, .enter .week .wd, .workout.slide-in, .workout.slide-in .wex { animation: none !important; }
+}
 </style>
+<div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
   <header class="top"><div class="brand">For<b>ț</b>a <span>Cristian Demian</span></div><div class="today" id="today"></div></header>
   <main id="view"></main>
@@ -722,6 +808,69 @@ const Rig = (() => {
   return { svg, frame };
 })();
 
+/* ---------- Efecte: confetti, val la atingere, numere care urcă ---------- */
+const FX = (() => {
+  const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let cv, ctx, parts = [], raf = 0;
+  const COLORS = ['#f2c230', '#ece8e0', '#5b93ff', '#4fc38a', '#ff8a3d'];
+  function canvas() {
+    if (cv) return;
+    cv = document.createElement('canvas'); cv.className = 'fx-canvas'; document.body.appendChild(cv);
+    ctx = cv.getContext('2d');
+    const fit = () => { const d = devicePixelRatio || 1; cv.width = innerWidth * d; cv.height = innerHeight * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+    fit(); addEventListener('resize', fit);
+  }
+  function tick() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    parts = parts.filter(p => p.life > 0);
+    for (const p of parts) {
+      p.vy += p.g; p.vx *= 0.985; p.vy *= 0.985; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life -= 1;
+      ctx.save(); ctx.globalAlpha = Math.min(1, p.life / 30); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c;
+      if (p.round) { ctx.beginPath(); ctx.arc(0, 0, p.s / 2, 0, 7); ctx.fill(); } else ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2);
+      ctx.restore();
+    }
+    raf = parts.length ? requestAnimationFrame(tick) : 0;
+  }
+  function spawn(x, y, n, spread, power, g) {
+    if (still) return; canvas();
+    for (let i = 0; i < n; i++) {
+      const a = -Math.PI / 2 + (Math.random() - 0.5) * spread, v = power * (0.5 + Math.random() * 0.7);
+      parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.3, s: 5 + Math.random() * 6, c: COLORS[i % COLORS.length], life: 60 + Math.random() * 40, round: Math.random() < 0.3 });
+    }
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  function burst(el, n = 18) { if (!el) return; const r = el.getBoundingClientRect(); spawn(r.left + r.width / 2, r.top + r.height / 2, n, Math.PI * 2, 6, 0.18); }
+  function celebrate() {
+    spawn(innerWidth * 0.2, innerHeight * 0.9, 70, 1.1, 17, 0.32);
+    setTimeout(() => spawn(innerWidth * 0.8, innerHeight * 0.9, 70, 1.1, 17, 0.32), 180);
+    setTimeout(() => spawn(innerWidth * 0.5, innerHeight * 0.85, 60, 1.4, 19, 0.32), 380);
+  }
+  function countUp(root) {
+    if (still) return;
+    root.querySelectorAll('[data-count]').forEach(el => {
+      const txt = el.textContent, m = txt.match(/[\d.]+(,\d+)?/); if (!m) return;
+      const target = parseFloat(m[0].replace(/\./g, '').replace(',', '.')), dec = m[1] ? m[1].length - 1 : 0, t0 = performance.now();
+      const step = t => {
+        const k = Math.min(1, (t - t0) / 900), e = 1 - Math.pow(1 - k, 3);
+        el.textContent = txt.replace(m[0], (target * e).toLocaleString('ro-RO', { minimumFractionDigits: dec, maximumFractionDigits: dec }));
+        if (k < 1) requestAnimationFrame(step); else el.textContent = txt;
+      };
+      requestAnimationFrame(step);
+    });
+  }
+  /* val la atingere */
+  document.addEventListener('pointerdown', e => {
+    if (still) return;
+    const b = e.target.closest('.btn, .chip, .check, .set .ok, .ex-row, .nav button, .switch');
+    if (!b) return;
+    const r = b.getBoundingClientRect(), s = Math.max(r.width, r.height) * 2.2, w = document.createElement('span');
+    w.className = 'ripple'; w.style.cssText = `width:${s}px;height:${s}px;left:${e.clientX - r.left - s / 2}px;top:${e.clientY - r.top - s / 2}px`;
+    b.appendChild(w); setTimeout(() => w.remove(), 650);
+  }, { passive: true });
+  function pop(el) { if (!el || still) return; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+  return { burst, celebrate, countUp, pop };
+})();
+
 /* ---------- Notificări pentru suplimente ----------
    Telefonul trimite lista criptată în depozitul GitHub; un program GitHub
    verifică la fiecare 10 minute și trimite notificarea la ora fiecărui supliment. */
@@ -902,9 +1051,11 @@ function render() {
   renderNav();
   $('#today').textContent = new Date().toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' });
   const v = { azi: viewAzi, program: viewProgram, progres: viewProgres, supl: viewSupl }[tab]();
-  $('#view').innerHTML = v;
+  const view = $('#view'); view.innerHTML = v;
+  if (lastTab !== tab) { lastTab = tab; view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter'); FX.countUp(view); }
   renderWorkout();
 }
+let lastTab = null;
 
 /* ---------- Ecran: Azi ---------- */
 function suppChecklist() {
@@ -931,6 +1082,7 @@ function restHero(doneToday) {
   const { p, i } = nextPlan();
   return `<section class="rest-day">
     ${WINK}
+    <div class="zz" aria-hidden="true"><span>z</span><span>z</span><span>z</span></div>
     <h1 class="rest-title">Odihnă</h1>
     <p class="rest-msg">${doneToday ? `Antrenamentul de azi e bifat. Bravo, Cristian!` : 'Azi mușchii cresc. Mănâncă proteine și dormi bine.'}</p>
     <div class="next-up"><small>Următorul antrenament</small><b>${p.label} · ${esc(p.name)}</b><span>${i === 1 ? 'mâine' : `peste ${i} zile`}</span></div>
@@ -961,9 +1113,9 @@ function viewAzi() {
   <section class="sec"><h2>Săptămâna aceasta</h2><div class="week">${week.join('')}</div></section>
   <section class="sec"><div class="sec-head"><h2>Suplimente azi</h2><span class="count num">${taken}/${active}</span></div>${suppChecklist()}</section>
   <section class="stats">
-    <div class="stat"><b>${monthCount}</b><small>antrenamente luna aceasta</small></div>
-    <div class="stat"><b>${weekVol ? fmt(weekVol / 1000, 1) + 't' : '–'}</b><small>volum ridicat în 7 zile</small></div>
-    <div class="stat"><b>${bw ? fmt(bw) : '–'}</b><small>kg greutate corporală</small></div>
+    <div class="stat"><b data-count>${monthCount}</b><small>antrenamente luna aceasta</small></div>
+    <div class="stat"><b data-count>${weekVol ? fmt(weekVol / 1000, 1) + 't' : '–'}</b><small>volum ridicat în 7 zile</small></div>
+    <div class="stat"><b data-count>${bw ? fmt(bw) : '–'}</b><small>kg greutate corporală</small></div>
   </section>`;
 }
 
@@ -1086,7 +1238,7 @@ function startWorkout(dayId) {
     }
   }
   render();
-  $('#workout').scrollTop = 0;
+  $('#workout').scrollTop = 0; $('#workout').classList.remove('slide-in'); void $('#workout').offsetWidth; $('#workout').classList.add('slide-in');
   keepAwake();
 }
 async function keepAwake() { try { if (S.active && 'wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => wakeLock = null); } } catch (e) { } }
@@ -1142,7 +1294,7 @@ function finishWorkout() {
   }
   if (Object.keys(ex).length) {
     S.sessions.push({ id: 'w' + Date.now(), day: a.day, date: a.start, dur: Date.now() - a.start, ex });
-    toast(`Salvat. Ai ridicat ${fmt(volume({ ex }), 0)} kg azi.`);
+    toast(`Salvat. Ai ridicat ${fmt(volume({ ex }), 0)} kg azi.`); setTimeout(FX.celebrate, 150);
   } else toast('Nu ai bifat niciun set, așa că nu am salvat nimic.');
   S.active = null; save(); stopRest(); tab = 'azi'; render(); window.scrollTo(0, 0);
   if (wakeLock) { wakeLock.release().catch(() => { }); wakeLock = null; }
@@ -1199,7 +1351,9 @@ document.addEventListener('click', e => {
     const k = dayKey(), arr = S.suppLog[k] = S.suppLog[k] || [];
     const i = arr.indexOf(ds.take); i >= 0 ? arr.splice(i, 1) : arr.push(ds.take);
     for (const key of Object.keys(S.suppLog)) if (key < dayKey(new Date(Date.now() - 60 * DAYMS))) delete S.suppLog[key];
-    save(); render(); return;
+    save(); render();
+    if (i < 0) { const el = document.querySelector(`[data-take="${ds.take}"] .tick`); FX.pop(el); FX.burst(el, 14); }
+    return;
   }
   if (ds.open) { openEx.has(ds.open) ? openEx.delete(ds.open) : openEx.add(ds.open); render(); return; }
   if (ds.pick) { pickEx = ds.pick; render(); return; }
@@ -1216,6 +1370,8 @@ document.addEventListener('click', e => {
       x.done = true; kgI.value = x.kg; rpI.value = x.reps;
       const ex = EX[id], isLastOfAll = Object.values(S.active.sets).flat().every(s => s.done);
       if (!isLastOfAll) startRest(ex.rest, ex.name);
+      FX.pop(t); FX.burst(t, 16);
+      if (S.active.sets[id].every(s => s.done)) setTimeout(() => FX.burst($('#wex-' + id + ' h3'), 30), 120);
     } else x.done = false;
     row.classList.toggle('done', x.done);
     const card = $('#wex-' + id); card.classList.toggle('complete', S.active.sets[id].every(s => s.done));
