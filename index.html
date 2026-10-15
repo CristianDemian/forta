@@ -359,6 +359,7 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
   -webkit-mask-composite: source-in; mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 80%, transparent 100%), linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%); mask-composite: intersect; }
 .buddy.flex { margin-top: -10px; margin-bottom: -6px; }
 .buddy.flex .b-vid { height: min(380px, 52vh); }
+.skip-btn { width: 100%; }
 </style>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
@@ -1015,7 +1016,7 @@ const ICON = {
 
 /* ---------- Date salvate pe telefon ---------- */
 const KEY = 'forta-v1';
-function fresh() { return { sessions: [], body: [], supps: JSON.parse(JSON.stringify(DEFAULT_SUPPS)), suppLog: {}, active: null }; }
+function fresh() { return { sessions: [], body: [], supps: JSON.parse(JSON.stringify(DEFAULT_SUPPS)), suppLog: {}, skips: {}, active: null }; }
 function load() {
   try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(fresh(), JSON.parse(raw)); } catch (e) { }
   return fresh();
@@ -1102,32 +1103,35 @@ function workoutHero(nd, eyebrow) {
     <div class="rigs-row">${nd.ex.slice(0, 3).map((id, i) => Rig.svg(id).replace('data-rig', `data-off="${i * 500}" data-rig`)).join('')}</div>
     <button class="btn btn-main" data-start="${nd.id}">${S.active ? 'Continuă antrenamentul' : 'Începe antrenamentul'}</button>
     ${S.active ? '' : `<div class="chips">${DAYS.filter(d => d.id !== nd.id).map(d => `<button class="chip" data-start="${d.id}">${d.label}: ${esc(d.name)}</button>`).join('')}</div>`}
+    ${!S.active && planFor(new Date()) === nd ? `<button class="btn btn-ghost skip-btn" data-skip>😴 Azi mă odihnesc</button>` : ''}
   </section>`;
 }
-function restHero(doneToday) {
+function restHero(doneToday, skipped) {
   const { p, i } = nextPlan();
   return `<section class="rest-day">
     ${Buddy.svg}
     <h1 class="rest-title">Odihnă</h1>
-    <p class="rest-msg">${doneToday ? `Antrenamentul de azi e bifat. Bravo, Cristian!` : 'Azi mușchii cresc. Mini-Cristian se antrenează în locul tău.'}</p>
+    <p class="rest-msg">${skipped ? `Ai ales odihnă azi în loc de ${esc(skipped.name)}. E în regulă, și pauza face parte din progres.` : doneToday ? `Antrenamentul de azi e bifat. Bravo, Cristian!` : 'Azi mușchii cresc. Mini-Cristian se antrenează în locul tău.'}</p>
     <div class="next-up"><small>Următorul antrenament</small><b>${p.label} · ${esc(p.name)}</b><span>${i === 1 ? 'mâine' : `peste ${i} zile`}</span></div>
     ${showOthers ? `<div class="chips">${DAYS.map(d => `<button class="chip" data-start="${d.id}">${d.label}: ${esc(d.name)}</button>`).join('')}</div>`
-      : `<button class="link muted" data-others>Vreau totuși să mă antrenez azi</button>`}
+      : skipped ? `<button class="link" data-unskip>M-am răzgândit, mă antrenez azi</button>` : `<button class="link muted" data-others>Vreau totuși să mă antrenez azi</button>`}
   </section>`;
 }
 function viewAzi() {
   const now = new Date(), tp = planFor(now);
   const doneToday = S.sessions.some(s => dayKey(new Date(s.date)) === dayKey());
+  const skipped = !!(S.skips && S.skips[dayKey()]);
   const hero = S.active ? workoutHero(byId(S.active.day), 'Antrenament în desfășurare')
-    : tp && !doneToday ? workoutHero(tp, `Azi · ${tp.label}`) : restHero(doneToday);
+    : tp && !doneToday && !skipped ? workoutHero(tp, `Azi · ${tp.label}`) : restHero(doneToday, skipped && tp);
   const today = new Date(dayKey());
   const monday = new Date(today - ((today.getDay() + 6) % 7) * DAYMS);
   const week = [];
   for (let i = 0; i < 7; i++) {
     const d = new Date(monday.getTime() + i * DAYMS), k = dayKey(d), plan = planFor(d);
     const s = S.sessions.find(x => dayKey(new Date(x.date)) === k);
-    const cls = s ? 'done' : plan ? 'plan' : 'off';
-    week.push(`<div class="wd ${cls} ${k === dayKey() ? 'is-today' : ''}"><small>${d.toLocaleDateString('ro-RO', { weekday: 'short' }).slice(0, 2)}</small><span>${s ? ICON.check : d.getDate()}</span><em>${s ? byId(s.day).short : plan ? plan.short : 'pauză'}</em></div>`);
+    const sk = !s && plan && S.skips && S.skips[k];
+    const cls = s ? 'done' : sk ? 'off' : plan ? 'plan' : 'off';
+    week.push(`<div class="wd ${cls} ${k === dayKey() ? 'is-today' : ''}"><small>${d.toLocaleDateString('ro-RO', { weekday: 'short' }).slice(0, 2)}</small><span>${s ? ICON.check : d.getDate()}</span><em>${s ? byId(s.day).short : sk ? 'odihnă' : plan ? plan.short : 'pauză'}</em></div>`);
   }
   const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).getTime();
   const monthCount = S.sessions.filter(s => s.date >= monthStart).length;
@@ -1372,6 +1376,8 @@ document.addEventListener('click', e => {
   if (ds.tab) { tab = ds.tab; try { localStorage.setItem('forta-tab', tab); } catch (er) { } render(); window.scrollTo(0, 0); return; }
   if (ds.start) { showOthers = false; startWorkout(ds.start); return; }
   if ('others' in ds) { showOthers = true; render(); return; }
+  if ('skip' in ds) { S.skips = S.skips || {}; S.skips[dayKey()] = 1; for (const k of Object.keys(S.skips)) if (k < dayKey(new Date(Date.now() - 60 * DAYMS))) delete S.skips[k]; save(); lastTab = null; render(); toast('Odihnă bifată. Ne vedem la următorul antrenament.'); return; }
+  if ('unskip' in ds) { if (S.skips) delete S.skips[dayKey()]; save(); lastTab = null; render(); return; }
   if (ds.take) {
     const k = dayKey(), arr = S.suppLog[k] = S.suppLog[k] || [];
     const i = arr.indexOf(ds.take); i >= 0 ? arr.splice(i, 1) : arr.push(ds.take);
