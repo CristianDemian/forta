@@ -393,6 +393,7 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
 .next, .rest-day { position: relative; }
 .next > *:not(.wm), .rest-day > *:not(.wm) { position: relative; z-index: 1; }
 .wm { position: absolute; right: -30px; bottom: -30px; width: 220px; height: 220px; background: var(--badge) center / contain no-repeat; opacity: .07; pointer-events: none; z-index: 0; transform: rotate(-12deg); }
+.b-vid::-webkit-media-controls, .b-vid::-webkit-media-controls-start-playback-button, .b-vid::-webkit-media-controls-overlay-play-button { display: none !important; -webkit-appearance: none; opacity: 0; }
 </style>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
@@ -916,19 +917,41 @@ const FX = (() => {
   return { burst, celebrate, countUp, pop };
 })();
 
-/* ---------- Mini-Cristian: clipul video din zilele de odihnă (dans, flotări, tumbă, biceps) ---------- */
+/* ---------- Mini-Cristian: clipurile video, care rulează mereu în buclă ---------- */
 const Buddy = (() => {
   const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const vid = (name, label, cls = '') => `<div class="buddy ${cls}">
-    <video class="b-vid" src="${name}.mp4" poster="${name}.jpg" ${still ? '' : 'autoplay'} muted loop playsinline preload="auto" aria-label="${label}"></video>
-  </div>`;
-  const svg = vid('mini-cristian', 'Mini-Cristian dansează, face flotări și o tumbă');
-  const flex = vid('mini-cristian-flex', 'Mini-Cristian își arată bicepșii și ridică degetul mare', 'flex');
-  function start() {
-    if (still) return;
-    document.querySelectorAll('.b-vid').forEach(v => { v.muted = true; const p = v.play(); if (p && p.catch) p.catch(() => { }); });
+  const cache = {};
+  /* un singur element video per clip, refolosit la fiecare redesenare, ca să nu se oprească niciodată */
+  function el(name, label) {
+    if (cache[name]) return cache[name];
+    const v = document.createElement('video');
+    v.className = 'b-vid'; v.src = name + '.mp4'; v.poster = name + '.jpg';
+    v.muted = true; v.defaultMuted = true; v.loop = true; v.autoplay = true; v.playsInline = true; v.preload = 'auto';
+    v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', ''); v.setAttribute('aria-label', label);
+    v.disablePictureInPicture = true; v.controls = false;
+    const kick = () => { if (!still && v.isConnected && v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => { }); } };
+    v.addEventListener('pause', () => setTimeout(kick, 50));
+    v.addEventListener('ended', () => { v.currentTime = 0; kick(); });
+    v.addEventListener('stalled', () => setTimeout(kick, 500));
+    v.addEventListener('canplay', kick);
+    cache[name] = v; return v;
   }
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') start(); });
+  const slot = (name, label, cls = '') => `<div class="buddy ${cls}" data-vid="${name}" data-label="${label}"></div>`;
+  const svg = slot('mini-cristian', 'Mini-Cristian dansează, face flotări și o tumbă');
+  const flex = slot('mini-cristian-flex', 'Mini-Cristian își arată bicepșii și ridică degetul mare', 'flex');
+  function playAll() {
+    if (still) return;
+    for (const k in cache) { const v = cache[k]; if (v.isConnected && v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => { }); } }
+  }
+  function start() {
+    document.querySelectorAll('.buddy[data-vid]').forEach(s => { const v = el(s.dataset.vid, s.dataset.label); if (v.parentNode !== s) s.appendChild(v); });
+    playAll();
+  }
+  /* orice atingere repornește clipul (necesar când iPhone-ul e în modul Economisire baterie) */
+  ['touchstart', 'pointerdown', 'scroll'].forEach(e => document.addEventListener(e, playAll, { passive: true, capture: true }));
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') playAll(); });
+  addEventListener('pageshow', playAll); addEventListener('focus', playAll);
+  setInterval(playAll, 2000);
   return { svg, flex, start };
 })();
 
