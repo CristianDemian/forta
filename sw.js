@@ -1,5 +1,5 @@
-const CACHE = 'forta-v14';
-const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-180.png', 'mini-cristian.jpg', 'mini-cristian-flex.jpg'];
+const CACHE = 'forta-v15';
+const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'forta-cd-192.png', 'forta-cd-180.png', 'mini-cristian.jpg', 'mini-cristian-flex.jpg'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== CACHE).map(x => caches.delete(x)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', e => {
@@ -14,7 +14,7 @@ self.addEventListener('fetch', e => {
 });
 self.addEventListener('push', e => {
   let d = {}; try { d = e.data.json(); } catch (_) { d = { title: 'Forța', body: e.data ? e.data.text() : '' }; }
-  e.waitUntil(self.registration.showNotification(d.title || 'Forța', { body: d.body || '', icon: 'icon-192.png', badge: 'icon-192.png', tag: d.tag || 'forta', data: { url: './#supl' } }));
+  e.waitUntil(self.registration.showNotification(d.title || 'Forța', { body: d.body || '', icon: 'forta-cd-192.png', badge: 'forta-cd-192.png', tag: d.tag || 'forta', data: { url: './#supl' } }));
 });
 self.addEventListener('notificationclick', e => {
   e.notification.close();
