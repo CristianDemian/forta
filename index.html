@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Forța">
-<meta name="theme-color" content="#12151b"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png">
+<meta name="theme-color" content="#120a0c"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png">
 <style>:root{padding-top:0;padding-bottom:0}.top{top:0!important;padding-top:calc(14px + env(safe-area-inset-top,0px))!important}[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
 <title>Forța la Sală</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -10,15 +10,17 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Saira+Condensed:wght@600;700;800&display=swap">
 </head><body><style>/* Layout: o coloană de telefon, antet lipit sus, navigare jos; antrenamentul se deschide peste tot ecranul */
 :root {
-  --bg: #12151b;
-  --surface: #1a1e26;
-  --surface-2: #232935;
-  --line: #2f3644;
-  --fg: #ece8e0;
-  --muted: #8d94a3;
-  --accent: #f2c230;
-  --accent-ink: #1d1700;
-  --blue: #5b93ff;
+  --bg: #120a0c;
+  --surface: #1d1114;
+  --surface-2: #2a181c;
+  --line: #432428;
+  --fg: #fff6f4;
+  --muted: #b39a9c;
+  --accent: #e4202e;
+  --accent-ink: #ffffff;
+  --blue: #ffffff;
+  --red-hi: #ff4b57;
+  --red-deep: #9e0f1a;
   --good: #4fc38a;
   --bad: #ff6b57;
   --display: 'Saira Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
@@ -271,8 +273,8 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
 .ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 .ambient i { position: absolute; width: 70vmax; height: 70vmax; border-radius: 50%; filter: blur(60px); opacity: .16; }
 .ambient i:nth-child(1) { background: var(--accent); top: -38vmax; right: -30vmax; animation: drift1 22s ease-in-out infinite alternate; }
-.ambient i:nth-child(2) { background: var(--blue); bottom: -40vmax; left: -34vmax; opacity: .12; animation: drift2 26s ease-in-out infinite alternate; }
-.ambient i:nth-child(3) { background: #ff8a3d; top: 40%; left: 60%; width: 40vmax; height: 40vmax; opacity: .06; animation: drift1 30s ease-in-out infinite alternate-reverse; }
+.ambient i:nth-child(2) { background: var(--blue); bottom: -40vmax; left: -34vmax; opacity: .06; animation: drift2 26s ease-in-out infinite alternate; }
+.ambient i:nth-child(3) { background: var(--red-hi); top: 40%; left: 60%; width: 40vmax; height: 40vmax; opacity: .06; animation: drift1 30s ease-in-out infinite alternate-reverse; }
 @keyframes drift1 { to { transform: translate(-12vmax, 14vmax) scale(1.15); } }
 @keyframes drift2 { to { transform: translate(14vmax, -10vmax) scale(1.1); } }
 .app { position: relative; z-index: 1; }
@@ -293,7 +295,7 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
 @property --ang { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 .next, .rest-day { isolation: isolate; border-color: transparent; background:
   linear-gradient(var(--surface), var(--surface)) padding-box,
-  conic-gradient(from var(--ang), var(--line) 0 60%, var(--accent) 75%, #ff8a3d 82%, var(--line) 92%) border-box;
+  conic-gradient(from var(--ang), var(--line) 0 60%, var(--accent) 72%, #ffffff 80%, var(--accent) 86%, var(--line) 94%) border-box;
   animation: spin 6s linear infinite; }
 @keyframes spin { to { --ang: 360deg; } }
 .next::after { content: ''; position: absolute; inset: auto -20% -60% -20%; height: 120%; background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 16%, transparent), transparent); z-index: -1; pointer-events: none; animation: breathe 5s ease-in-out infinite; }
@@ -301,7 +303,7 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
 
 /* butonul principal: lumină care trece peste el */
 .btn, .chip, .check, .set .ok, .ex-row, .nav button, .switch { position: relative; overflow: hidden; }
-.btn-main { background: linear-gradient(100deg, var(--accent), #ffd65a 50%, var(--accent)); box-shadow: 0 8px 26px -10px color-mix(in srgb, var(--accent) 80%, transparent); transition: transform .15s, box-shadow .2s; }
+.btn-main { background: linear-gradient(100deg, var(--red-deep), var(--accent) 45%, var(--red-hi) 70%, var(--accent)); box-shadow: 0 8px 26px -10px color-mix(in srgb, var(--accent) 80%, transparent); transition: transform .15s, box-shadow .2s; }
 .btn-main::before { content: ''; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent); transform: skewX(-20deg); animation: shine 3.6s ease-in-out infinite; }
 @keyframes shine { 0%, 55% { left: -60%; } 85%, 100% { left: 130%; } }
 .btn:active, .chip:active, .check:active, .set .ok:active { transform: scale(.96); }
@@ -324,7 +326,7 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
 .set.done .ok svg path, .check.taken .tick svg path { stroke-dasharray: 24; stroke-dashoffset: 24; animation: tickdraw .35s .05s ease-out forwards; }
 @keyframes tickdraw { to { stroke-dashoffset: 0; } }
 .wex.complete { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--good) 60%, transparent), 0 0 30px -12px var(--good); transition: box-shadow .4s; }
-.progressbar i { background: linear-gradient(90deg, var(--accent), #ff8a3d, var(--accent)); background-size: 200% 100%; animation: flow 2s linear infinite; box-shadow: 0 0 12px var(--accent); }
+.progressbar i { background: linear-gradient(90deg, var(--accent), #ffffff, var(--accent)); background-size: 200% 100%; animation: flow 2s linear infinite; box-shadow: 0 0 12px var(--accent); }
 @keyframes flow { to { background-position: -200% 0; } }
 
 /* navigarea */
@@ -360,10 +362,30 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
 .buddy.flex { margin-top: -10px; margin-bottom: -6px; }
 .buddy.flex .b-vid { height: min(380px, 52vh); }
 .skip-btn { width: 100%; }
+
+/* Antet: FORȚA și CRISTIAN DEMIAN pe toată lățimea */
+.top { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; }
+.brand { min-width: 0; overflow: hidden; }
+.brand { display: flex; justify-content: space-between; align-items: baseline; gap: .3em; width: 100%; font: 800 clamp(22px, 8.4vw, 44px)/1 var(--display); letter-spacing: .02em; text-transform: uppercase; white-space: nowrap; }
+.brand .b1, .brand .b2 { font: inherit; letter-spacing: inherit; margin: 0; }
+.brand .b1 { color: var(--accent); text-shadow: 0 0 18px color-mix(in srgb, var(--accent) 55%, transparent); }
+.brand .b2 { color: var(--fg); font: inherit; letter-spacing: inherit; margin: 0; }
+.top .today { text-align: left; }
+.top::after { content: ''; position: absolute; left: 0; right: 0; bottom: -3px; height: 3px; background: repeating-linear-gradient(90deg, var(--accent) 0 26px, #ffffff 26px 52px); background-size: 52px 3px; animation: stripes 2.4s linear infinite; opacity: .9; }
+@keyframes stripes { to { background-position: 52px 0; } }
+/* dungi diagonale roșu-alb în cardul principal */
+.next::before { border: 0 !important; width: 260px !important; height: 260px !important; border-radius: 0 !important; transform: translate(90px, -110px) rotate(35deg) !important;
+  background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--accent) 22%, transparent) 0 18px, color-mix(in srgb, #ffffff 7%, transparent) 18px 36px); }
+.rest-day::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1; background: radial-gradient(120% 70% at 50% 0%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 60%); }
+.rest-day { position: relative; }
+.dayname, .rest-title { background-image: linear-gradient(90deg, var(--fg) 0%, var(--fg) 38%, var(--red-hi) 50%, var(--fg) 62%, var(--fg) 100%) !important; }
+.eyebrow, .next-up small { color: var(--red-hi); }
+.wd.done span { color: #fff; }
+@media (prefers-reduced-motion: reduce) { .top::after { animation: none; } }
 </style>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
-  <header class="top"><div class="brand">For<b>ț</b>a <span>Cristian Demian</span></div><div class="today" id="today"></div></header>
+  <header class="top"><div class="brand"><span class="b1">Forța</span><span class="b2">Cristian Demian</span></div><div class="today" id="today"></div></header>
   <main id="view"></main>
 </div>
 <nav class="nav" id="nav" aria-label="Navigare"></nav>
@@ -824,7 +846,7 @@ const Rig = (() => {
 const FX = (() => {
   const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   let cv, ctx, parts = [], raf = 0;
-  const COLORS = ['#f2c230', '#ece8e0', '#5b93ff', '#4fc38a', '#ff8a3d'];
+  const COLORS = ['#e4202e', '#ffffff', '#ff4b57', '#9e0f1a', '#ffd9dc'];
   function canvas() {
     if (cv) return;
     cv = document.createElement('canvas'); cv.className = 'fx-canvas'; document.body.appendChild(cv);
@@ -1083,8 +1105,19 @@ function render() {
   if (lastTab !== tab) { lastTab = tab; view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter'); FX.countUp(view); }
   renderWorkout();
   Buddy.start();
+  fitBrand();
 }
 let lastTab = null;
+/* potrivește FORȚA + CRISTIAN DEMIAN exact pe lățimea ecranului */
+function fitBrand() {
+  const b = $('.brand'); if (!b) return;
+  const spans = b.querySelectorAll('span'); let size = 60; b.style.fontSize = size + 'px';
+  const gap = () => size * 0.3;
+  const need = () => [...spans].reduce((w, s) => w + s.getBoundingClientRect().width, 0) + gap();
+  size = Math.max(18, Math.floor(size * b.clientWidth / need() * 0.995)); b.style.fontSize = size + 'px';
+}
+addEventListener('resize', fitBrand);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBrand);
 
 /* ---------- Ecran: Azi ---------- */
 function suppChecklist() {
