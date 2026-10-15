@@ -382,10 +382,21 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
 .eyebrow, .next-up small { color: var(--red-hi); }
 .wd.done span { color: #fff; }
 @media (prefers-reduced-motion: reduce) { .top::after { animation: none; } }
+
+/* Emblema aleasă de Cristian */
+.hbadge { height: 1.05em; width: auto; align-self: center; filter: drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 50%, transparent)); }
+.brand { justify-content: flex-start; }
+.brand .b2 { margin-left: auto; }
+.badge-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.badge-prev { width: 56px; height: 56px; object-fit: contain; border-radius: 12px; background: var(--surface-2); padding: 6px; }
+:root { --badge: none; }
+.next, .rest-day { position: relative; }
+.next > *:not(.wm), .rest-day > *:not(.wm) { position: relative; z-index: 1; }
+.wm { position: absolute; right: -30px; bottom: -30px; width: 220px; height: 220px; background: var(--badge) center / contain no-repeat; opacity: .07; pointer-events: none; z-index: 0; transform: rotate(-12deg); }
 </style>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
-  <header class="top"><div class="brand"><span class="b1">Forța</span><span class="b2">Cristian Demian</span></div><div class="today" id="today"></div></header>
+  <header class="top"><div class="brand"><img id="hbadge" class="hbadge" alt="" hidden><span class="b1">Forța</span><span class="b2">Cristian Demian</span></div><div class="today" id="today"></div></header>
   <main id="view"></main>
 </div>
 <nav class="nav" id="nav" aria-label="Navigare"></nav>
@@ -1105,15 +1116,22 @@ function render() {
   if (lastTab !== tab) { lastTab = tab; view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter'); FX.countUp(view); }
   renderWorkout();
   Buddy.start();
+  renderBadge();
   fitBrand();
 }
 let lastTab = null;
+let BADGE = ''; try { BADGE = localStorage.getItem('forta-badge') || ''; } catch (e) { }
+function renderBadge() {
+  const h = $('#hbadge'); if (!h) return;
+  h.hidden = !BADGE; if (BADGE) h.src = BADGE;
+  document.documentElement.style.setProperty('--badge', BADGE ? `url("${BADGE}")` : 'none');
+}
 /* potrivește FORȚA + CRISTIAN DEMIAN exact pe lățimea ecranului */
 function fitBrand() {
   const b = $('.brand'); if (!b) return;
   const spans = b.querySelectorAll('span'); let size = 60; b.style.fontSize = size + 'px';
   const gap = () => size * 0.3;
-  const need = () => [...spans].reduce((w, s) => w + s.getBoundingClientRect().width, 0) + gap();
+  const need = () => [...b.children].filter(x => !x.hidden).reduce((w, s) => w + s.getBoundingClientRect().width, 0) + gap() * ([...b.children].filter(x => !x.hidden).length - 1);
   size = Math.max(18, Math.floor(size * b.clientWidth / need() * 0.995)); b.style.fontSize = size + 'px';
 }
 addEventListener('resize', fitBrand);
@@ -1132,7 +1150,7 @@ function workoutHero(nd, eyebrow) {
   const lastOfDay = sessionsSorted().filter(s => s.day === nd.id).pop();
   const nSets = nd.ex.reduce((a, id) => a + EX[id].sets, 0);
   const mins = Math.round(nd.ex.reduce((a, id) => a + EX[id].sets * (EX[id].rest + 45), 0) / 60 / 5) * 5;
-  return `<section class="next">
+  return `<section class="next"><div class="wm" aria-hidden="true"></div>
     ${S.active ? '' : Buddy.flex}
     <div><div class="eyebrow">${eyebrow}</div><h1 class="dayname">${esc(nd.name)}</h1></div>
     <div class="daymeta">${nd.ex.length} exerciții · ${nSets} seturi · ~${mins} min${lastOfDay ? ` · ultima dată ${relDays(lastOfDay.date)}` : ''}</div>
@@ -1144,7 +1162,7 @@ function workoutHero(nd, eyebrow) {
 }
 function restHero(doneToday, skipped) {
   const { p, i } = nextPlan();
-  return `<section class="rest-day">
+  return `<section class="rest-day"><div class="wm" aria-hidden="true"></div>
     ${Buddy.svg}
     <h1 class="rest-title">Odihnă</h1>
     <p class="rest-msg">${skipped ? `Ai ales odihnă azi în loc de ${esc(skipped.name)}. E în regulă, și pauza face parte din progres.` : doneToday ? `Antrenamentul de azi e bifat. Bravo, Cristian!` : 'Azi mușchii cresc. Mini-Cristian se antrenează în locul tău.'}</p>
@@ -1259,6 +1277,13 @@ function viewProgres() {
       const nsets = Object.values(s.ex).reduce((a, x) => a + x.length, 0);
       return `<div class="hist-row"><span class="badge">${d.label.slice(0, 2)}</span><span><strong>${esc(d.name)}</strong><small>${new Date(s.date).toLocaleDateString('ro-RO', { weekday: 'short', day: 'numeric', month: 'short' })} · ${nsets} seturi · ${fmt(volume(s), 0)} kg · ${Math.round((s.dur || 0) / 60000)} min</small></span><button class="del" data-del-sess="${s.id}">Șterge</button></div>`;
     }).join('')}</div>` : `<p class="empty">Antrenamentele terminate apar aici, cu volum și durată.</p>`}
+  </section>
+  <section class="sec"><h2>Emblema ta</h2>
+    <div class="notice"><p>Alege o imagine din telefon (de exemplu emblema echipei tale). Apare sus lângă FORȚA și în fundalul cardului principal. Rămâne doar pe telefonul tău.</p>
+    <div class="badge-row">${BADGE ? `<img class="badge-prev" src="${BADGE}" alt="Emblema aleasă">` : ''}
+      <label class="btn btn-ghost" for="badge-file">${BADGE ? 'Schimbă imaginea' : 'Alege imaginea'}</label>
+      <input type="file" id="badge-file" accept="image/*" hidden>
+      ${BADGE ? '<button class="del" data-badge-del>Scoate</button>' : ''}</div></div>
   </section>
   <section class="sec"><h2>Copie de siguranță</h2>
     <div class="notice"><p>Datele stau doar pe acest telefon. Copiază-le din când în când și păstrează textul într-o notiță.</p>
@@ -1460,6 +1485,7 @@ document.addEventListener('click', e => {
     catch (er) { toast('Textul nu pare o copie validă. Lipește tot textul copiat.'); }
     return;
   }
+  if ('badgeDel' in ds) { BADGE = ''; try { localStorage.removeItem('forta-badge'); } catch (er) { } render(); return; }
   if (ds.push) { Push.action(ds.push); return; }
 });
 document.addEventListener('input', e => {
@@ -1467,6 +1493,16 @@ document.addEventListener('input', e => {
   if (f) { const row = e.target.closest('.set'); S.active.sets[row.dataset.ex][+row.dataset.i][f] = e.target.value.trim(); save(); }
 });
 document.addEventListener('change', e => {
+  if (e.target.id === 'badge-file' && e.target.files[0]) {
+    const img = new Image(), url = URL.createObjectURL(e.target.files[0]);
+    img.onload = () => {
+      const s = 256, k = Math.min(s / img.width, s / img.height), c = document.createElement('canvas');
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      BADGE = c.toDataURL('image/png'); try { localStorage.setItem('forta-badge', BADGE); } catch (er) { toast('Imaginea e prea mare. Încearcă alta.'); }
+      URL.revokeObjectURL(url); render(); toast('Emblema a fost pusă.');
+    };
+    img.src = url; return;
+  }
   const id = e.target.dataset.time;
   if (id && e.target.value) { S.supps.find(x => x.id === id).time = e.target.value; save(); toast('Ora a fost actualizată.'); }
 });
