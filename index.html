@@ -357,6 +357,8 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
 .b-vid { height: min(440px, 62vh); aspect-ratio: 9 / 16; width: auto; max-width: 100%; object-fit: contain; display: block; background: transparent;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 80%, transparent 100%), linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
   -webkit-mask-composite: source-in; mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 80%, transparent 100%), linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%); mask-composite: intersect; }
+.buddy.flex { margin-top: -10px; margin-bottom: -6px; }
+.buddy.flex .b-vid { height: min(380px, 52vh); }
 </style>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
@@ -880,15 +882,17 @@ const FX = (() => {
 /* ---------- Mini-Cristian: clipul video din zilele de odihnă (dans, flotări, tumbă, biceps) ---------- */
 const Buddy = (() => {
   const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const svg = `<div class="buddy">
-    <video class="b-vid" src="mini-cristian.mp4" poster="mini-cristian.jpg" ${still ? '' : 'autoplay'} muted loop playsinline preload="auto" aria-label="Mini-Cristian dansează, face flotări și o tumbă"></video>
+  const vid = (name, label, cls = '') => `<div class="buddy ${cls}">
+    <video class="b-vid" src="${name}.mp4" poster="${name}.jpg" ${still ? '' : 'autoplay'} muted loop playsinline preload="auto" aria-label="${label}"></video>
   </div>`;
+  const svg = vid('mini-cristian', 'Mini-Cristian dansează, face flotări și o tumbă');
+  const flex = vid('mini-cristian-flex', 'Mini-Cristian își arată bicepșii și ridică degetul mare', 'flex');
   function start() {
-    const v = document.querySelector('.b-vid'); if (!v || still) return;
-    v.muted = true; const p = v.play(); if (p && p.catch) p.catch(() => { });
+    if (still) return;
+    document.querySelectorAll('.b-vid').forEach(v => { v.muted = true; const p = v.play(); if (p && p.catch) p.catch(() => { }); });
   }
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') start(); });
-  return { svg, start };
+  return { svg, flex, start };
 })();
 
 /* ---------- Notificări pentru suplimente ----------
@@ -1092,6 +1096,7 @@ function workoutHero(nd, eyebrow) {
   const nSets = nd.ex.reduce((a, id) => a + EX[id].sets, 0);
   const mins = Math.round(nd.ex.reduce((a, id) => a + EX[id].sets * (EX[id].rest + 45), 0) / 60 / 5) * 5;
   return `<section class="next">
+    ${S.active ? '' : Buddy.flex}
     <div><div class="eyebrow">${eyebrow}</div><h1 class="dayname">${esc(nd.name)}</h1></div>
     <div class="daymeta">${nd.ex.length} exerciții · ${nSets} seturi · ~${mins} min${lastOfDay ? ` · ultima dată ${relDays(lastOfDay.date)}` : ''}</div>
     <div class="rigs-row">${nd.ex.slice(0, 3).map((id, i) => Rig.svg(id).replace('data-rig', `data-off="${i * 500}" data-rig`)).join('')}</div>
