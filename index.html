@@ -481,7 +481,7 @@ button.hist-row:active { transform: scale(.98); }
 </div>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
-  <header class="top"><div class="brand"><img id="hbadge" class="hbadge" alt="" hidden><span class="b1">Forța</span><span class="b2">Cristian Demian</span></div><div class="today" id="today"></div></header>
+  <header class="top"><div class="brand"><img id="hbadge" class="hbadge" alt="" hidden><span class="b1">Forța</span><span class="b2">Cristian Demian</span></div></header>
   <main id="view"></main>
 </div>
 <nav class="nav" id="nav" aria-label="Navigare"></nav>
@@ -1231,7 +1231,6 @@ function renderNav() {
 }
 function render() {
   renderNav();
-  $('#today').textContent = new Date().toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' });
   const v = { azi: viewAzi, program: viewProgram, progres: viewProgres, supl: viewSupl }[tab]();
   const view = $('#view'); view.innerHTML = v;
   if (lastTab !== tab) { lastTab = tab; view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter'); FX.countUp(view); }
