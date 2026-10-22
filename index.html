@@ -1689,6 +1689,82 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .brand { gap: .35em !important; }
 .dd { flex: none !important; } .b-dog { flex: none !important; }
 .brand { justify-content: center !important; } .dd { margin: 0 auto; }
+
+/* ================= scorul de formă ================= */
+.score { position: relative; overflow: hidden; isolation: isolate; display: grid; gap: 10px; padding: 18px; border-radius: var(--r-lg); background: var(--surface);
+  box-shadow: inset 0 1px 0 var(--hl), 0 6px 12px -6px rgba(40,18,22,.10), 0 26px 40px -26px rgba(60,20,26,.35); }
+.score::before { content: ''; position: absolute; z-index: -1; left: 50%; top: 40px; width: 260px; height: 160px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--col) 28%, transparent), transparent); animation: spot 4s ease-in-out infinite; }
+.sc-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.sc-head small { font: 800 20px var(--display); color: var(--ink); }
+.sc-d { font: 700 11.5px var(--sys); padding: 4px 9px; border-radius: 999px; }
+.sc-d.up { background: rgba(34,197,94,.14); color: #15803d; } .sc-d.down { background: rgba(216,16,28,.12); color: var(--accent); }
+.sc-gauge { position: relative; width: 100%; max-width: 300px; margin: 0 auto; }
+.sc-gauge svg { width: 100%; height: auto; overflow: visible; }
+.sg-bg { fill: none; stroke: var(--soft); stroke-width: 14; stroke-linecap: round; }
+.sg-fg { fill: none; stroke: url(#scg); stroke-width: 14; stroke-linecap: round; filter: drop-shadow(0 4px 8px rgba(0,0,0,.12)); }
+#view.intro .sg-fg { animation: sgfill 1.8s .5s cubic-bezier(.2, .9, .2, 1) both; }
+@keyframes sgfill { from { stroke-dashoffset: var(--a); } }
+.sg-tk { stroke: var(--line-2); stroke-width: 2; }
+.sg-needle { transform-origin: 100px 100px; transform: rotate(var(--ang)); transition: transform .8s cubic-bezier(.3, 1.6, .5, 1); }
+.sg-needle line { stroke: var(--ink); stroke-width: 4; stroke-linecap: round; }
+.sg-needle circle { fill: var(--ink); stroke: var(--surface); stroke-width: 3; }
+#view.intro .sg-needle { animation: needle 2s .4s cubic-bezier(.25, 1.5, .45, 1) both; }
+@keyframes needle { 0% { transform: rotate(-90deg); } 60% { transform: rotate(calc(var(--ang) + 8deg)); } 80% { transform: rotate(calc(var(--ang) - 3deg)); } }
+.sc-v { position: absolute; left: 0; right: 0; bottom: 4px; display: grid; justify-items: center; pointer-events: none; }
+.sc-v b { font: 800 58px/.85 var(--display); color: var(--ink); background: var(--surface); padding: 0 8px; border-radius: 12px; transform: translateY(14px); }
+.sc-v span { margin-top: 18px; font: 700 13px var(--sys); color: var(--col); }
+.sc-parts { display: grid; gap: 8px; margin-top: 4px; }
+.sp { display: grid; grid-template-columns: 28px 1fr 90px 46px; gap: 10px; align-items: center; }
+.sp-ic { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; background: var(--soft); color: var(--accent); } .sp-ic svg { width: 15px; height: 15px; }
+.sp-n { font: 600 13px var(--sys); color: var(--ink); }
+.sp i { height: 7px; border-radius: 4px; background: var(--soft); overflow: hidden; } .sp i b { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, #ff4a55, var(--accent)); transform-origin: 0 50%; }
+#view.intro .sp i b, .rv-in .sp i b { animation: growx 1s cubic-bezier(.2, 1, .3, 1) both; animation-delay: calc(.8s + var(--i) * .1s); }
+.sp em { font: 800 17px var(--display) !important; font-style: normal; text-align: right; color: var(--ink); } .sp em small { font: 600 11px var(--sys); color: var(--faint); }
+
+/* ================= vremea ================= */
+.wx { position: relative; overflow: hidden; isolation: isolate; display: grid; grid-template-columns: 96px 1fr; gap: 6px 14px; padding: 18px; border-radius: var(--r-lg); color: #fff;
+  background: linear-gradient(160deg, #3aa0ff, #1f6fe0 55%, #164fa8); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 24px 40px -22px rgba(31,111,224,.8); }
+.wx.wx-rain, .wx.wx-storm { background: linear-gradient(160deg, #5b6b82, #374459 55%, #222b3a); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 24px 40px -22px rgba(30,40,60,.8); }
+.wx.wx-cloud, .wx.wx-fog { background: linear-gradient(160deg, #8fa6c2, #627896 55%, #445773); }
+.wx.wx-snow { background: linear-gradient(160deg, #a9c8ea, #7d9fc8 55%, #5a7aa6); }
+.wx.night { background: linear-gradient(160deg, #26325a, #141b36 60%, #0b1024); }
+.wx::after { content: ''; position: absolute; z-index: -1; right: -60px; top: -60px; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.25), transparent 65%); }
+.wx-ic { position: relative; width: 96px; height: 80px; grid-row: 1 / span 2; }
+.wx-main small { font: 600 12.5px var(--sys); color: rgba(255,255,255,.75); }
+.wx-t { display: flex; align-items: center; gap: 10px; }
+.wx-t b { font: 800 60px/.85 var(--display); text-shadow: 0 4px 12px rgba(0,0,0,.2); }
+.wx-t span { font: 700 14px/1.25 var(--sys); } .wx-t em { font-style: normal; font-weight: 500; font-size: 12px; color: rgba(255,255,255,.75); }
+.wx-tip { grid-column: 2; margin: 0; font: 500 13px/1.35 var(--sys); color: rgba(255,255,255,.9); }
+.wx-hours { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-top: 8px; padding: 10px 6px 8px; border-radius: 16px; background: rgba(255,255,255,.12); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.wx-hours > div { display: grid; justify-items: center; gap: 2px; }
+.wx-hours small { font: 600 11px var(--sys); color: rgba(255,255,255,.7); }
+.wx-hours b { font: 800 16px var(--display); } .wx-hours em { font: 700 10px var(--sys); font-style: normal; color: #bfe0ff; }
+.wx-mini { position: relative; width: 30px; height: 26px; display: block; transform: scale(.34); transform-origin: 0 0; }
+.wx-mini > * { animation-play-state: paused !important; }
+/* icoane animate */
+.wx-sun { position: absolute; left: 10px; top: 4px; width: 56px; height: 56px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #fff6b0, #ffd23d 55%, #ffaa00); box-shadow: 0 0 30px rgba(255,210,61,.9); animation: sunpulse 3s ease-in-out infinite; }
+.wx-sun i { position: absolute; inset: -14px; border-radius: 50%; background: repeating-conic-gradient(from 0deg, rgba(255,214,80,.9) 0 6deg, transparent 6deg 30deg); -webkit-mask: radial-gradient(circle, transparent 34px, #000 35px, #000 44px, transparent 45px); mask: radial-gradient(circle, transparent 34px, #000 35px, #000 44px, transparent 45px); animation: spin 14s linear infinite; }
+@keyframes sunpulse { 50% { box-shadow: 0 0 44px rgba(255,210,61,1); transform: scale(1.04); } }
+.wx-moon { position: absolute; left: 14px; top: 6px; width: 50px; height: 50px; border-radius: 50%; box-shadow: inset -14px -6px 0 0 #f4f1d0; filter: drop-shadow(0 0 14px rgba(244,241,208,.7)); animation: dropbob 5s ease-in-out infinite; }
+.wx-cloud { position: absolute; left: 18px; top: 26px; width: 66px; height: 26px; border-radius: 20px; background: #fff; box-shadow: 0 6px 14px rgba(0,0,0,.15); animation: drift 6s ease-in-out infinite; }
+.wx-cloud::before, .wx-cloud::after { content: ''; position: absolute; background: inherit; border-radius: 50%; }
+.wx-cloud::before { width: 34px; height: 34px; left: 10px; top: -18px; } .wx-cloud::after { width: 26px; height: 26px; left: 32px; top: -12px; }
+.wx-cloud.back { left: 6px; top: 14px; transform: scale(.75); opacity: .7; animation-duration: 9s; animation-direction: reverse; }
+.wx-cloud.dark { background: #e3e8ef; }
+@keyframes drift { 50% { translate: 6px 0; } }
+.wx-rain, .wx-snow { position: absolute; left: 22px; top: 54px; width: 60px; height: 30px; }
+.wx-rain i { position: absolute; top: 0; width: 2px; height: 10px; border-radius: 2px; background: #bfe0ff; animation: rainfall .8s linear infinite; }
+.wx-snow i { position: absolute; top: 0; width: 6px; height: 6px; border-radius: 50%; background: #fff; animation: snowfall 2.4s linear infinite; }
+.wx-rain i:nth-child(1), .wx-snow i:nth-child(1) { left: 4px; animation-delay: 0s; } .wx-rain i:nth-child(2), .wx-snow i:nth-child(2) { left: 14px; animation-delay: .3s; }
+.wx-rain i:nth-child(3), .wx-snow i:nth-child(3) { left: 24px; animation-delay: .15s; } .wx-rain i:nth-child(4), .wx-snow i:nth-child(4) { left: 34px; animation-delay: .45s; }
+.wx-rain i:nth-child(5), .wx-snow i:nth-child(5) { left: 44px; animation-delay: .6s; } .wx-rain i:nth-child(6), .wx-snow i:nth-child(6) { left: 54px; animation-delay: .25s; } .wx-rain i:nth-child(7), .wx-snow i:nth-child(7) { left: 9px; animation-delay: .7s; }
+@keyframes rainfall { from { transform: translate(0, -6px); opacity: 0; } 20% { opacity: 1; } to { transform: translate(-4px, 24px); opacity: 0; } }
+@keyframes snowfall { from { transform: translate(0, -6px); opacity: 0; } 20% { opacity: 1; } 50% { transform: translate(4px, 10px); } to { transform: translate(-2px, 28px); opacity: 0; } }
+.wx-bolt { position: absolute; left: 44px; top: 48px; width: 14px; height: 26px; background: #ffd23d; clip-path: polygon(50% 0, 0 55%, 45% 55%, 25% 100%, 100% 40%, 55% 40%, 80% 0); animation: bolt 2.6s steps(1) infinite; filter: drop-shadow(0 0 8px #ffd23d); }
+@keyframes bolt { 0%, 72%, 80%, 100% { opacity: 0; } 74%, 78% { opacity: 1; } }
+.wx-fog { position: absolute; left: 14px; top: 56px; width: 70px; display: grid; gap: 5px; } .wx-fog i { height: 3px; border-radius: 2px; background: rgba(255,255,255,.7); animation: drift 4s ease-in-out infinite; } .wx-fog i:nth-child(2) { animation-delay: -1.3s; margin-left: 10px; } .wx-fog i:nth-child(3) { animation-delay: -2.6s; }
+@media (prefers-reduced-motion: reduce) { .wx *, .sg-needle, .sg-fg { animation: none !important; } }
+.sc-v { position: static !important; margin-top: -2px; } .sc-v b { transform: none !important; background: none !important; } .sc-v span { margin-top: 4px !important; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -2397,7 +2473,8 @@ const Push = (() => {
   }
   function payload() {
     return { sub: P.sub, tz: 'Europe/Bucharest', supps: S.supps.filter(s => s.on).map(s => ({ id: s.id, name: s.name, dose: s.dose, time: s.time }))
-      .concat(waterTimes().map(t => ({ id: 'apa' + t.replace(':', ''), name: 'Apă', dose: '1 pahar', time: t, water: true }))) };
+      .concat(waterTimes().map(t => ({ id: 'apa' + t.replace(':', ''), name: 'Apă', dose: '1 pahar', time: t, water: true })))
+      .concat(window.workoutReminders ? workoutReminders().items : []), done: window.workoutReminders ? workoutReminders().done : [] };
   }
   async function encrypt(obj) {
     const pub = await crypto.subtle.importKey('spki', Uint8Array.from(atob(CFG.rsa), c => c.charCodeAt(0)), { name: 'RSA-OAEP', hash: 'SHA-256' }, false, ['encrypt']);
@@ -4091,6 +4168,130 @@ new MutationObserver(() => {
   const d = document.querySelector('.done-card [data-pr-close]');
   if (d && !document.querySelector('.done-card [data-guide]')) { const s = S.sessions[S.sessions.length - 1]; d.insertAdjacentHTML('beforebegin', `<button class="btn btn-ghost done-str" data-guide="stretch" data-day="${s ? s.day : 'A'}">${LI.sparkles}<span>Stretching 5 minute</span></button>`); }
 }).observe(document.body, { childList: true, subtree: true });
+
+/* ---------- Scorul de formă, vremea pentru drumul la sală, reamintiri de antrenament ---------- */
+
+/* ================= Scorul de formă (0-100) ================= */
+function formScore(at = Date.now()) {
+  const D = DAYMS, from28 = at - 28 * D;
+  let plan = 0; for (let t = from28 + D; t <= at; t += D) if (planFor(new Date(t))) plan++;
+  const done = S.sessions.filter(s => s.date > from28 && s.date <= at).length;
+  const cons = plan ? Math.min(1, done / plan) : 1;
+  const ids = Object.keys(EX); let sum = 0, n = 0;
+  for (const id of ids) {
+    let recent = 0, before = 0;
+    for (const s of S.sessions) for (const x of (s.ex[id] || [])) { const v = e1rm(x.kg, x.reps); if (s.date > at - 14 * D && s.date <= at) recent = Math.max(recent, v); else if (s.date > at - 42 * D && s.date <= at - 14 * D) before = Math.max(before, v); }
+    if (recent && before) { sum += recent / before - 1; n++; }
+  }
+  const g = n ? sum / n : 0, prog = Math.max(0, Math.min(1, .6 + g * 8));
+  const wGoal = waterTimes().length || 8; let w = 0, sp = 0; const act = S.supps.filter(s => s.on).map(s => s.id);
+  for (let k = 0; k < 7; k++) { const key = dayKey(new Date(at - k * D)); w += Math.min(1, ((S.water && S.water.log[key]) || 0) / wGoal); const tk = (S.suppLog[key] || []).filter(id => act.includes(id)).length; sp += act.length ? tk / act.length : 1; }
+  w /= 7; sp /= 7;
+  const parts = [['Constanță', cons, 35, LI.target], ['Progres la greutăți', prog, 25, LI.zap], ['Apă', w, 20, LI.drop], ['Suplimente', sp, 20, LI.pill]];
+  return { score: Math.round(parts.reduce((a, p) => a + p[1] * p[2], 0)), parts, gain: g };
+}
+function scoreTier(s) { return s >= 85 ? ['De campion', '#16a34a'] : s >= 70 ? ['Foarte bine', '#65a30d'] : s >= 50 ? ['Pe drumul bun', '#f59e0b'] : ['Hai, că poți', '#e11d2a']; }
+function scoreCard() {
+  const now = formScore(), prev = formScore(Date.now() - 7 * DAYMS), d = now.score - prev.score, [tier, col] = scoreTier(now.score);
+  const R = 80, arc = Math.PI * R, ang = -90 + now.score * 1.8;
+  return `<section class="score" style="--col:${col}">
+    <div class="sc-head"><small>Scorul tău de formă</small><span class="sc-d ${d >= 0 ? 'up' : 'down'}">${d >= 0 ? '▲' : '▼'} ${Math.abs(d)} față de săptămâna trecută</span></div>
+    <div class="sc-gauge">
+      <svg viewBox="0 0 200 116" aria-hidden="true"><defs><linearGradient id="scg" x1="0" x2="1"><stop offset="0" stop-color="#e11d2a"/><stop offset=".5" stop-color="#f5a524"/><stop offset="1" stop-color="#22c55e"/></linearGradient></defs>
+        <path d="M20 100 A80 80 0 0 1 180 100" class="sg-bg"/>
+        <path d="M20 100 A80 80 0 0 1 180 100" class="sg-fg" stroke-dasharray="${arc.toFixed(1)}" stroke-dashoffset="${(arc * (1 - now.score / 100)).toFixed(1)}" style="--a:${arc.toFixed(1)}"/>
+        ${[0, 25, 50, 75, 100].map(v => { const a = Math.PI * (1 - v / 100); return `<line x1="${100 + 66 * Math.cos(a)}" y1="${100 - 66 * Math.sin(a)}" x2="${100 + 72 * Math.cos(a)}" y2="${100 - 72 * Math.sin(a)}" class="sg-tk"/>`; }).join('')}
+        <g class="sg-needle" style="--ang:${ang}deg"><line x1="100" y1="100" x2="100" y2="36"/><circle cx="100" cy="100" r="7"/></g>
+      </svg>
+      <div class="sc-v"><b class="num" data-count>${now.score}</b><span>${tier}</span></div>
+    </div>
+    <div class="sc-parts">${now.parts.map(([n, v, wgt, ic], i) => `<div class="sp" style="--i:${i}"><span class="sp-ic">${ic}</span><span class="sp-n">${n}</span><i><b style="width:${Math.round(v * 100)}%"></b></i><em class="num">${Math.round(v * wgt)}<small>/${wgt}</small></em></div>`).join('')}</div>
+  </section>`;
+}
+
+/* ================= Vremea pentru drumul la sală ================= */
+const WKEY = 'forta-weather';
+let WX = null; try { WX = JSON.parse(localStorage.getItem(WKEY) || 'null'); } catch (e) { }
+function wxKind(c) { return c === 0 ? 'sun' : c <= 2 ? 'partly' : c === 3 ? 'cloud' : c <= 48 ? 'fog' : c <= 67 || (c >= 80 && c <= 82) ? 'rain' : c <= 77 || c === 85 || c === 86 ? 'snow' : 'storm'; }
+const WX_TXT = { sun: 'Senin', partly: 'Parțial înnorat', cloud: 'Înnorat', fog: 'Ceață', rain: 'Ploaie', snow: 'Ninsoare', storm: 'Furtună' };
+async function loadWeather() {
+  if (WX && Date.now() - WX.at < 30 * 60000) return;
+  try {
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=44.4268&longitude=26.1025&current=temperature_2m,weather_code,is_day,apparent_temperature,wind_speed_10m&hourly=temperature_2m,precipitation_probability,weather_code&timezone=Europe%2FBucharest&forecast_days=1');
+    if (!r.ok) return; const j = await r.json(); WX = { at: Date.now(), c: j.current, h: j.hourly };
+    try { localStorage.setItem(WKEY, JSON.stringify(WX)); } catch (e) { }
+    if (tab === 'azi' && !S.active) render();
+  } catch (e) { }
+}
+function wxIcon(k, day) {
+  const sun = `<span class="wx-sun"><i></i></span>`, moon = `<span class="wx-moon"></span>`, cl = (c = '') => `<span class="wx-cloud ${c}"></span>`;
+  if (k === 'sun') return day ? sun : moon;
+  if (k === 'partly') return (day ? sun : moon) + cl('front');
+  if (k === 'cloud' || k === 'fog') return cl('back') + cl('front') + (k === 'fog' ? '<span class="wx-fog"><i></i><i></i><i></i></span>' : '');
+  if (k === 'rain') return cl('front dark') + '<span class="wx-rain">' + '<i></i>'.repeat(7) + '</span>';
+  if (k === 'snow') return cl('front') + '<span class="wx-snow">' + '<i></i>'.repeat(7) + '</span>';
+  return cl('front dark') + '<span class="wx-bolt"></span><span class="wx-rain">' + '<i></i>'.repeat(5) + '</span>';
+}
+function weatherCard() {
+  if (!WX || !WX.c) { loadWeather(); return ''; }
+  if (Date.now() - WX.at > 30 * 60000) loadWeather();
+  const c = WX.c, h = WX.h, k = wxKind(c.weather_code), hr = new Date().getHours();
+  const idx = h.time.map((t, i) => [+t.slice(11, 13), i]).filter(([x]) => x >= hr && x <= 23);
+  const rainAt = idx.find(([, i]) => h.precipitation_probability[i] >= 50);
+  const temps = idx.map(([, i]) => h.temperature_2m[i]), lo = Math.round(Math.min(c.temperature_2m, ...temps)), hi = Math.round(Math.max(c.temperature_2m, ...temps));
+  const tip = rainAt ? `Ploaie probabilă pe la ${String(rainAt[0]).padStart(2, '0')}:00. Ia umbrela pentru drumul la sală.` : c.temperature_2m < 8 ? 'E răcoare. Ia o geacă pentru după antrenament, când ești transpirat.' : c.temperature_2m > 28 ? 'E cald. Ia apă în plus și un tricou de schimb.' : 'Vreme bună de mers la sală.';
+  const strip = idx.filter((_, j) => j % 2 === 0).slice(0, 6);
+  return `<section class="wx wx-${k} ${c.is_day ? 'day' : 'night'}">
+    <div class="wx-ic" aria-hidden="true">${wxIcon(k, c.is_day)}</div>
+    <div class="wx-main"><small>Vremea în București</small><div class="wx-t"><b class="num">${Math.round(c.temperature_2m)}°</b><span>${WX_TXT[k]}<br><em>${lo}° / ${hi}°, se simte ${Math.round(c.apparent_temperature)}°</em></span></div></div>
+    <p class="wx-tip">${tip}</p>
+    <div class="wx-hours">${strip.map(([x, i]) => `<div><small>${String(x).padStart(2, '0')}</small><span class="wx-mini">${wxIcon(wxKind(h.weather_code[i]), x >= 7 && x <= 19)}</span><b class="num">${Math.round(h.temperature_2m[i])}°</b>${h.precipitation_probability[i] >= 30 ? `<em>${h.precipitation_probability[i]}%</em>` : ''}</div>`).join('')}</div>
+  </section>`;
+}
+
+/* ================= Așezarea pe ecranul Azi ================= */
+{
+  const _va = viewAzi;
+  viewAzi = function () {
+    let h = _va();
+    const tp = planFor(new Date()), doneToday = S.sessions.some(s => dayKey(new Date(s.date)) === dayKey());
+    const wx = tp && !doneToday ? weatherCard() : '';
+    const sc = S.sessions.length ? scoreCard() : '';
+    const i = h.indexOf('<section class="rings');
+    if (i >= 0) h = h.slice(0, i) + wx + sc + h.slice(i); else h = h + wx + sc;
+    return h;
+  };
+}
+loadWeather();
+
+/* ================= Reamintiri de antrenament (prin notificări) ================= */
+S.wk = S.wk || { on: true, am: '08:30', pm: '20:00' };
+{
+  const _vs = viewSupl;
+  viewSupl = function () {
+    const w = S.wk;
+    return _vs().replace('<section class="sec"><h2>Apă</h2>', `<section class="sec"><h2>Antrenament</h2>
+      <div class="supp ${w.on ? '' : 'off'}"><div class="supp-top"><span class="s-ic" style="--hue:356">${LI.zap}</span><span><strong>Reamintiri de sală</strong><small>Dimineața, în zilele de antrenament, și seara dacă n-ai bifat</small></span>
+        <button class="switch" role="switch" aria-checked="${w.on}" aria-label="Reamintiri de sală" data-wk-toggle></button></div>
+        <div class="supp-ctl"><label class="daymeta" for="wk-am">Dimineața</label><input type="time" id="wk-am" value="${esc(w.am)}" data-wk="am"><label class="daymeta" for="wk-pm">Seara</label><input type="time" id="wk-pm" value="${esc(w.pm)}" data-wk="pm"></div></div>
+    </section><section class="sec"><h2>Apă</h2>`);
+  };
+  document.addEventListener('click', e => { if (e.target.closest && e.target.closest('[data-wk-toggle]')) { S.wk.on = !S.wk.on; save(); render(); } });
+  document.addEventListener('change', e => { const i = e.target.closest && e.target.closest('[data-wk]'); if (i && i.value) { S.wk[i.dataset.wk] = i.value; save(); } });
+}
+/* lista trimisă serverului de notificări primește și antrenamentele */
+window.workoutReminders = function () {
+  if (!S.wk || !S.wk.on) return { items: [], done: [] };
+  const items = [];
+  for (const d of DAYS) {
+    const mins = Math.round(d.ex.reduce((x, id) => x + EX[id].sets * (EX[id].rest + 45), 0) / 60 / 5) * 5;
+    items.push({ id: 'wk-am-' + d.id, time: S.wk.am, wd: d.wd, workout: 'am', name: d.name, dose: `${d.ex.length} exerciții, cam ${mins} min` });
+    items.push({ id: 'wk-pm-' + d.id, time: S.wk.pm, wd: d.wd, workout: 'pm', name: d.name, dose: '' });
+  }
+  const recent = new Set(S.sessions.filter(s => s.date > Date.now() - 4 * DAYMS).map(s => dayKey(new Date(s.date))));
+  Object.keys(S.skips || {}).forEach(k => recent.add(k));
+  return { items, done: [...recent].sort().slice(-8) };
+};
 
 /* ---------- Demo pentru investitori: date de exemplu + prezentarea de la prima pornire ---------- */
 (function () {

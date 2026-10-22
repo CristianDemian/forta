@@ -21,6 +21,9 @@ const state = fs.existsSync(statePath) ? JSON.parse(fs.readFileSync(statePath, '
 
 const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: cfg.tz || 'Europe/Bucharest', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map(p => [p.type, p.value]));
 const today = `${parts.year}-${parts.month}-${parts.day}`, nowMin = +parts.hour * 60 + +parts.minute;
+const wdName = new Intl.DateTimeFormat('en-US', { timeZone: cfg.tz || 'Europe/Bucharest', weekday: 'short' }).format(new Date());
+const todayWd = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 0 }[wdName];
+const doneToday = (cfg.done || []).includes(today);
 
 webpush.setVapidDetails('https://github.com/CristianDemian/forta', keys.vapidPublic, keys.vapidPrivate);
 async function send(title, body, tag) {
@@ -35,10 +38,18 @@ if (test) {
   const due = {};
   for (const s of cfg.supps || []) {
     const [h, m] = s.time.split(':').map(Number), t = h * 60 + m, key = `${s.id}@${s.time}`;
+    if (s.wd != null && s.wd !== todayWd) continue;
+    if (s.workout && doneToday) continue;
     if (t <= nowMin && nowMin - t <= 30 && !sent.includes(key)) (due[s.time] = due[s.time] || []).push({ s, key });
   }
   for (const time of Object.keys(due).sort()) {
-    const list = due[time];
+    const all = due[time];
+    for (const w of all.filter(x => x.s.workout)) {
+      const am = w.s.workout === 'am';
+      const ok = await send(am ? `💪 Azi e zi de sală: ${w.s.name}` : `⏰ Încă n-ai bifat antrenamentul`, am ? `${w.s.dose}. Mini-Cristian te așteaptă.` : `${w.s.name} te așteaptă. Mai ai timp azi, sau bifează odihna.`, 'wk-' + w.s.workout);
+      if (ok) sent.push(w.key);
+    }
+    const list = all.filter(x => !x.s.workout); if (!list.length) continue;
     const supp = list.filter(x => !x.s.water), water = list.some(x => x.s.water);
     let title, body;
     if (!supp.length) { title = '💧 Bea un pahar cu apă'; body = `Paharul de la ${time}. Hidratarea ajută forța și recuperarea.`; }
