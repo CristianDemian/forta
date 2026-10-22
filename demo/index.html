@@ -1728,12 +1728,13 @@ const EX = {
 
 Object.assign(EX, {
   chestpress: {
-    name: 'Împins la aparatul pentru piept', muscles: 'Piept, triceps, umăr frontal',
+    name: 'Împins înclinat la aparat cu discuri', muscles: 'Piept superior, umăr frontal, triceps',
     sets: 3, reps: [8, 12], rest: 120, step: 5,
-    cues: ['Reglează scaunul astfel încât mânerele să fie la nivelul mijlocului pieptului.',
-      'Spatele lipit de spătar, omoplații strânși, împinge până aproape de brațe întinse.',
-      'Revino lent până simți întinderea în piept, fără ca greutățile să se atingă.'],
-    mistake: 'Umerii care se ridică în față la final. Rămân trași înapoi pe tot setul.',
+    cues: ['Reglează scaunul astfel încât mânerele să pornească de la nivelul pieptului de sus, puțin sub clavicule.',
+      'Spatele și capul lipite de spătar, omoplații strânși, picioarele bine sprijinite pe podea.',
+      'Împinge în sus și în față, pe arcul aparatului, până aproape de brațe întinse, apoi coboară lent 2-3 secunde.',
+      'Brațele sunt separate: împinge egal cu amândouă, ca să nu lucreze mai mult partea puternică.'],
+    mistake: 'Scaunul prea jos, iar mânerele pornesc de la umeri. Atunci lucrează umerii, nu pieptul superior.',
     rig: { eq: [{ k: 'pad', a: [84, 150], b: [80, 96] }, { k: 'pad', a: [80, 150], b: [118, 150] }, { k: 'handle', at: 'hand' }],
       A: { hip: [94, 143], t: -6, ua: -35, fa: 92, th: 90, sh: 0 },
       B: { hip: [94, 143], t: -6, ua: 86, fa: 90, th: 90, sh: 0 } }
@@ -2885,7 +2886,7 @@ TABS.push({ id: 'profil', label: 'Profil', icon: LI.user });
 
 /* ---------- Grupe musculare ---------- */
 const MUSCLE = {
-  incline: ['piept', 'umeri', 'triceps'], chestpress: ['piept', 'triceps'], pecdeck: ['piept'], rope: ['triceps'], vbar: ['triceps'],
+  incline: ['piept', 'umeri', 'triceps'], chestpress: ['piept', 'umeri', 'triceps'], pecdeck: ['piept'], rope: ['triceps'], vbar: ['triceps'],
   pulldown: ['spate', 'biceps'], supine: ['spate', 'biceps'], dbrow: ['spate', 'biceps'], cablerow: ['spate'], straightarm: ['spate'],
   zwide: ['biceps'], znarrow: ['biceps'], hammer: ['biceps', 'antebrat'], squat: ['cvadriceps', 'fesieri'], rdl: ['femurali', 'fesieri', 'spate'],
   legpress: ['cvadriceps', 'fesieri'], legcurl: ['femurali'], dbpress: ['umeri', 'triceps'], lateral: ['umeri'], facepull: ['umeri', 'spate'],
@@ -3343,7 +3344,7 @@ function recoveryCard() {
 }
 
 /* ================= Calculator de discuri și încălzire ================= */
-const BAR = { squat: 20, rdl: 20, bench: 20, row: 20, zwide: 10, znarrow: 10, curl: 10 };
+const BAR = { squat: 20, rdl: 20, bench: 20, row: 20, zwide: 10, znarrow: 10, curl: 10, chestpress: 0, legpress: 0 };
 const PLATES = [[25, '#e11d2a', 1], [20, '#1f6fe0', .96], [15, '#f2c12e', .9], [10, '#1f9d55', .82], [5, '#f4f1ee', .64], [2.5, '#2a2226', .54], [1.25, '#b9b4b2', .46]];
 function platesFor(kg, bar) {
   let side = Math.max(0, (kg - bar) / 2); const out = [];
@@ -3363,7 +3364,7 @@ function plateSVG(list, bar) {
   const one = (w, xx, dir) => { const [, c, h] = P[w], H = 104 * h, W = w >= 10 ? 15 : w >= 5 ? 11 : 8; return `<rect x="${dir > 0 ? xx : xx - W}" y="${70 - H / 2}" width="${W}" height="${H}" rx="3" fill="${c}" class="pl"/>`; };
   let xr = 196, xl = 124, pr = '', pl = '';
   list.forEach((w, i) => { const W = w >= 10 ? 15 : w >= 5 ? 11 : 8; pr += one(w, xr, 1).replace('class="pl"', `class="pl" style="--i:${i}"`); xr += W + 2; pl += one(w, xl, -1).replace('class="pl"', `class="pl pl-l" style="--i:${i}"`); xl -= W + 2; });
-  return `<svg viewBox="0 0 320 140" class="barbell"><rect x="6" y="65" width="308" height="10" rx="5" class="bb-bar"/><rect x="118" y="58" width="8" height="24" rx="2" class="bb-col"/><rect x="194" y="58" width="8" height="24" rx="2" class="bb-col"/>${pl}${pr}<text x="160" y="132" text-anchor="middle" class="bb-t">bara ${bar} kg</text></svg>`;
+  return `<svg viewBox="0 0 320 140" class="barbell"><rect x="6" y="65" width="308" height="10" rx="5" class="bb-bar"/><rect x="118" y="58" width="8" height="24" rx="2" class="bb-col"/><rect x="194" y="58" width="8" height="24" rx="2" class="bb-col"/>${pl}${pr}<text x="160" y="132" text-anchor="middle" class="bb-t">${bar ? `bara ${bar} kg` : 'fără bară, discuri pe fiecare braț'}</text></svg>`;
 }
 let plateState = null;
 function openPlates(id) {
@@ -3380,7 +3381,7 @@ function drawPlates() {
   m.innerHTML = `<div class="pl-card" role="dialog" aria-label="Calculator de discuri"><div class="pl-grab"></div>
     <div class="pl-head"><div><small>${esc(EX[id].name)}</small><h3>${has ? 'Discuri și încălzire' : 'Încălzire'}</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>
     <div class="pl-kg"><button data-pl-step="-2.5" aria-label="Scade 2,5 kg">−</button><div><b class="num">${fmt(kg)}</b><span>kg</span></div><button data-pl-step="2.5" aria-label="Adaugă 2,5 kg">+</button></div>
-    ${has ? `${plateSVG(out, bar)}<p class="pl-side">${out.length ? `Pe fiecare parte: <b>${out.map(w => fmt(w)).join(' + ')}</b> kg` : 'Doar bara.'}${rest > .01 ? ` Rămân ${fmt(rest)} kg pe care nu le poți pune cu discuri standard.` : ''}</p>
+    ${has ? `${plateSVG(out, bar)}<p class="pl-side">${out.length ? `Pe fiecare ${bar ? 'parte' : 'braț'}: <b>${out.map(w => fmt(w)).join(' + ')}</b> kg` : 'Doar bara.'}${rest > .01 ? ` Rămân ${fmt(rest)} kg pe care nu le poți pune cu discuri standard.` : ''}</p>
       <div class="pl-bars">${[0, 10, 15, 20].map(b => `<button class="chip" data-pl-bar="${b}" aria-pressed="${b === bar}">${b ? `Bară ${b} kg` : 'Fără bară'}</button>`).join('')}</div>` : ''}
     ${wu.length ? `<h4>Serii de încălzire</h4><div class="pl-wu">${wu.map(([w, r], i) => `<div style="--i:${i}"><b class="num">${fmt(w)}</b><small>kg × ${r}</small></div>`).join('')}<div class="pl-work"><b class="num">${fmt(kg)}</b><small>kg, seria de lucru</small></div></div>` : '<p class="pl-side">Greutatea e mică, nu ai nevoie de serii de încălzire. Fă 10-15 repetări ușoare dacă vrei.</p>'}
   </div>`;
