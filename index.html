@@ -1474,6 +1474,9 @@ svg.scrubbing .sc { opacity: 1; }
   background: var(--soft) !important; color: var(--ink) !important; font: 650 15px var(--sys) !important; }
 .alt-btn svg { width: 18px; height: 18px; color: var(--accent); }
 @media (prefers-color-scheme: dark) { .tip { background: linear-gradient(180deg, color-mix(in srgb, var(--c) 18%, var(--surface)), var(--surface)); } }
+/* animații 3D: imaginea umple caseta, pe fundal alb */
+img.rig.exm { display: block; object-fit: contain; background: #fff !important; padding: 2px; }
+.ex-detail img.rig.exm.big { width: 100%; height: auto; aspect-ratio: 1; border-radius: 20px; box-shadow: inset 0 0 0 1px var(--line); }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -3577,6 +3580,18 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-shar
   document.addEventListener('pointerdown', scrub, { passive: true });
   document.addEventListener('pointermove', e => { if (e.buttons || e.pointerType === 'touch' || e.pointerType === 'mouse') scrub(e); }, { passive: true });
   document.addEventListener('pointerup', () => setTimeout(end, 1400), { passive: true });
+}
+
+/* ================= Animații 3D de exerciții (ExerciseDB) ================= */
+/* id-ul exercițiului din aplicație -> id-ul animației din pachet; se completează când vin toate fișierele */
+const MEDIA = window.FORTA_MEDIA || { bench: '0025' };
+{
+  const _svg = Rig.svg;
+  Rig.svg = function (id, cls) {
+    const m = MEDIA[id]; if (!m) return _svg(id, cls);
+    const big = /big/.test(cls || '');
+    return `<img class="rig exm ${cls || ''}" data-rig-img="${id}" src="${window.ASSET || ''}ex/${m}-${big ? 720 : 360}.gif" alt="Animație ${esc(EX[id].name)}" loading="lazy" decoding="async">`;
+  };
 }
 
 /* ---------- Demo pentru investitori: date de exemplu + prezentarea de la prima pornire ---------- */
