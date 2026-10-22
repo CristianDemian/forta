@@ -1426,6 +1426,54 @@ svg.scrubbing .sc { opacity: 1; }
   .prof-av > .buddy.avatar { background: #f3f1f0; }
   .empty { color: var(--muted); border-color: var(--line-2); }
 }
+
+/* ================= ziua de odihnă: card bogat ================= */
+.rest-card { gap: 18px !important; padding: 18px !important; }
+.rc-mini { display: grid; grid-template-columns: 84px 1fr; gap: 16px; align-items: center; position: relative; }
+.rcm-ring { grid-row: 1; grid-column: 1; width: 84px; height: 84px; transform: rotate(-90deg); }
+.rcm-bg { fill: none; stroke: var(--soft); stroke-width: 9; }
+.rcm-fg { fill: none; stroke-width: 9; stroke-linecap: round; filter: drop-shadow(0 0 4px currentColor); }
+#view.intro .rcm-fg { animation: ringfill 1.6s .7s cubic-bezier(.2, .8, .2, 1) both; }
+.rcm-v { grid-row: 1; grid-column: 1; display: flex; align-items: baseline; justify-content: center; }
+.rcm-v b { font: 800 34px/1 var(--display); color: var(--ink); }
+.rcm-v span { font: 800 16px var(--display); color: var(--muted); }
+.rcm-t { display: grid; gap: 3px; min-width: 0; }
+.rcm-t small { font: 600 12.5px var(--sys); color: var(--muted); }
+.rcm-t strong { font: 800 26px/1 var(--display); color: var(--ink); letter-spacing: .005em; }
+.rcm-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.rcm-chips span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 8px; border-radius: 999px; font: 600 12px var(--sys); color: var(--ink);
+  background: color-mix(in srgb, var(--c) 12%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 30%, transparent); }
+.rcm-chips i { width: 7px; height: 7px; border-radius: 50%; background: var(--c); box-shadow: 0 0 8px var(--c); }
+
+.nx { position: relative; overflow: hidden; isolation: isolate; display: grid; gap: 10px; padding: 16px; border-radius: 22px; color: #fff;
+  background: radial-gradient(120% 120% at 100% 0%, #4a1d24 0%, #1d1517 50%, #120d0f 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 20px 34px -20px rgba(40,8,14,.8); }
+.nx::before { content: ''; position: absolute; z-index: -1; width: 220px; height: 220px; right: -70px; top: -100px; border-radius: 50%; background: radial-gradient(circle, rgba(216,16,28,.55), transparent 65%); animation: spot 5s ease-in-out infinite; }
+.nx-top { display: flex; justify-content: space-between; align-items: center; }
+.nx-top small { font: 600 12.5px var(--sys); color: rgba(255,255,255,.55); }
+.nx-when { font: 700 12.5px var(--sys); padding: 5px 11px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 0 4px rgba(216,16,28,.2), 0 6px 14px -6px rgba(216,16,28,.9); animation: latepulse 2.2s ease-in-out infinite; }
+.nx-name { font: 800 36px/.92 var(--display); letter-spacing: .005em; }
+.nx-name span { display: block; font: 600 13px var(--sys); color: #ff5560; margin-bottom: 4px; letter-spacing: 0; }
+.nx-rigs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.nx-rigs .rig { width: 100%; height: 66px; border-radius: 14px; background: rgba(255,255,255,.92); box-shadow: inset 0 1px 0 #fff, 0 6px 12px -8px rgba(0,0,0,.6); }
+.nx-meta { display: flex; gap: 16px; font: 500 12.5px var(--sys); color: rgba(255,255,255,.6); }
+.nx-meta b { font: 800 20px var(--display); color: #fff; margin-right: 2px; }
+
+.tips-h { font: 800 22px/1 var(--display); color: var(--ink); margin-bottom: -6px; }
+.tips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.tip { display: grid; justify-items: center; gap: 4px; padding: 12px 4px 10px; border-radius: 18px; text-align: center;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 12%, var(--surface)), var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 18%, transparent); }
+.tip-ic { width: 40px; height: 40px; border-radius: 14px; display: grid; place-items: center; color: #fff; margin-bottom: 4px;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c) 70%, #fff), var(--c)); box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 8px 14px -8px var(--c); }
+.tip-ic svg { width: 20px; height: 20px; }
+.tip b { font: 800 16px/1 var(--display); color: var(--ink); }
+.tip small { font: 500 11px/1.2 var(--sys); color: var(--muted); }
+#view.intro .tip, .rv-in .tip { animation: rise3 .6s cubic-bezier(.2, .85, .25, 1) both; animation-delay: calc(.9s + var(--i) * .08s); }
+.tip:nth-child(1) .tip-ic svg { animation: tipz 3s ease-in-out infinite; }
+@keyframes tipz { 50% { transform: rotate(-12deg) scale(1.08); } }
+.alt-btn { width: 100%; min-height: 50px; display: flex !important; align-items: center; justify-content: center; gap: 8px; border-radius: 16px !important; border: 0 !important;
+  background: var(--soft) !important; color: var(--ink) !important; font: 650 15px var(--sys) !important; }
+.alt-btn svg { width: 18px; height: 18px; color: var(--accent); }
+@media (prefers-color-scheme: dark) { .tip { background: linear-gradient(180deg, color-mix(in srgb, var(--c) 18%, var(--surface)), var(--surface)); } }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -2299,15 +2347,40 @@ function workoutHero(nd, eyebrow) {
     ${!S.active && planFor(new Date()) === nd ? `<button class="btn btn-ghost skip-btn" data-skip>${LI.moon}<span>Azi mă odihnesc</span></button>` : ''}
   </section>`;
 }
+const RI = {
+  sleep: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/><path d="M17 4h3l-3 4h3"/></svg>',
+  food: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>',
+  walk: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="m9 20 3-6 3 2v5"/><path d="m6 11 3-3 4 1 3 3"/><path d="m12 14-2-5"/></svg>',
+  stretch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M4 9l8 2 8-2"/><path d="M12 11v4l-3 6"/><path d="m12 15 3 6"/></svg>'
+};
 function restHero(doneToday, skipped) {
   const { p, i } = nextPlan();
+  const rec = typeof recovery === 'function' ? recovery() : null;
+  const groups = rec ? Object.keys(rec) : [];
+  const avg = groups.length ? Math.round(groups.reduce((x, m) => x + rec[m].pct, 0) / groups.length) : 100;
+  const low = groups.filter(m => rec[m].pct < 100).sort((a, b) => rec[a].pct - rec[b].pct).slice(0, 3);
+  const C = 2 * Math.PI * 34, rc = avg >= 90 ? '#22c55e' : avg >= 65 ? '#a3d93a' : avg >= 40 ? '#f5a524' : '#e11d2a';
+  const mins = Math.round(p.ex.reduce((x, id) => x + EX[id].sets * (EX[id].rest + 45), 0) / 60 / 5) * 5;
+  const tips = [[RI.sleep, 'Somn', '7-9 ore', '#7c5cff'], [RI.food, 'Proteine', `${fmt(1.8 * ((S.body.length && S.body[S.body.length - 1].kg) || 80) / 1, 0)} g azi`, '#f59e0b'], [RI.walk, 'Plimbare', '30 de minute', '#22c55e'], [RI.stretch, 'Stretching', '10 minute', '#0ea5e9']];
   return `<section class="stage st-rest">${stageDate()}
     ${Buddy.svg.replace('class="buddy ', 'class="buddy st-av ')}${stageTitle([doneToday ? 'Bifat' : 'Odihnă'])}<canvas class="st-fx" aria-hidden="true"></canvas></section>
-  <section class="st-card">
-    <p class="st-lead">${skipped ? `Ai ales odihnă azi în loc de ${esc(skipped.name)}. E în regulă, și pauza face parte din progres.` : doneToday ? 'Antrenamentul de azi e gata. Bravo, Cristian!' : 'Azi mușchii cresc. Mini-Cristian se antrenează în locul tău.'}</p>
-    <div class="next-up"><small>Următorul antrenament</small><b>${p.label}: ${esc(p.name)}</b><span>${i === 1 ? 'mâine' : `în ${i} zile`}</span></div>
+  <section class="st-card rest-card">
+    <div class="rc-mini">
+      <svg viewBox="0 0 80 80" class="rcm-ring" aria-hidden="true"><circle cx="40" cy="40" r="34" class="rcm-bg"/><circle cx="40" cy="40" r="34" class="rcm-fg" style="stroke:${rc};--c:${C.toFixed(1)}" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - avg / 100)).toFixed(1)}"/></svg>
+      <div class="rcm-v"><b class="num">${avg}</b><span>%</span></div>
+      <div class="rcm-t"><small>${skipped ? 'Ai ales odihna azi' : doneToday ? 'Antrenament bifat' : 'Corpul tău se reface'}</small><strong>${avg >= 90 ? 'Ești gata de treabă' : avg >= 65 ? 'Aproape refăcut' : 'Lasă mușchii să crească'}</strong>
+        <div class="rcm-chips">${low.length ? low.map(m => `<span style="--c:${recColor(rec[m].pct)}"><i></i>${GROUP_LABEL[m]} ${rec[m].pct}%</span>`).join('') : '<span style="--c:#22c55e"><i></i>Toți mușchii refăcuți</span>'}</div></div>
+    </div>
+    <div class="nx">
+      <div class="nx-top"><small>Următorul antrenament</small><span class="nx-when">${i === 1 ? 'Mâine' : `În ${i} zile`}</span></div>
+      <div class="nx-name"><span>${p.label}</span>${esc(p.name)}</div>
+      <div class="nx-rigs">${p.ex.slice(0, 4).map((id, k) => Rig.svg(id).replace('data-rig', `data-off="${k * 400}" data-rig`)).join('')}</div>
+      <div class="nx-meta"><span><b class="num">${p.ex.length}</b> exerciții</span><span><b class="num">${p.ex.reduce((x, id) => x + EX[id].sets, 0)}</b> serii</span><span><b class="num">${mins}</b> min</span></div>
+    </div>
+    <div class="tips-h">Azi, pentru recuperare</div>
+    <div class="tips">${tips.map(([ic, t, d, c], k) => `<div class="tip" style="--c:${c};--i:${k}"><span class="tip-ic">${ic}</span><b>${t}</b><small>${d}</small></div>`).join('')}</div>
     ${showOthers ? `<div class="chips">${DAYS.map(d => `<button class="chip" data-start="${d.id}">${d.label}: ${esc(d.name)}</button>`).join('')}</div>`
-      : skipped ? `<button class="link" data-unskip>M-am răzgândit, mă antrenez azi</button>` : `<button class="link muted" data-others>Vreau totuși să mă antrenez azi</button>`}
+      : skipped ? `<button class="btn btn-ghost alt-btn" data-unskip>${LI.zap || ''}<span>M-am răzgândit, mă antrenez azi</span></button>` : `<button class="btn btn-ghost alt-btn" data-others>${LI.zap || ''}<span>Vreau totuși să mă antrenez azi</span></button>`}
   </section>`;
 }
 function viewAzi() {
