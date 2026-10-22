@@ -513,6 +513,19 @@ button.hist-row:active { transform: scale(.98); }
 
 .rest-day { overflow: hidden; }
 html, body { overflow-x: clip; }
+
+/* ---------- Video pe toată lățimea telefonului ---------- */
+.buddy.full { width: 100vw; max-width: none; margin-left: calc(50% - 50vw); margin-top: 0; margin-bottom: -46px; position: relative; aspect-ratio: 9 / 14.5; max-height: 80vh; display: block; z-index: 0; }
+.buddy.full .b-vid, .buddy.full .b-poster { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; aspect-ratio: auto; transform: none; left: 0; object-fit: cover; object-position: 50% 45%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 72%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 72%, transparent 100%); -webkit-mask-composite: source-over; mask-composite: add; }
+.buddy.full + .next, .buddy.full + .rest-day { position: relative; z-index: 1; }
+.rest-day { padding-top: 22px; }
+
+/* ---------- Ecran fix: nu se mișcă lateral și nu se selectează textul la apăsare lungă ---------- */
+html, body { overflow-x: hidden; overscroll-behavior-x: none; }
+body { touch-action: pan-y; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+input, textarea { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+.ex-pick, .chips { touch-action: pan-x pan-y; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -1162,7 +1175,17 @@ const Push = (() => {
   const fromB64url = s => { s = s.replace(/-/g, '+').replace(/_/g, '/'); const r = atob(s + '='.repeat((4 - s.length % 4) % 4)); return Uint8Array.from(r, c => c.charCodeAt(0)); };
   let busy = false, syncT = null;
 
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
+  /* actualizare automată: când apare o versiune nouă, aplicația se reîncarcă singură */
+  if ('serviceWorker' in navigator) {
+    const had = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      const check = () => reg.update().catch(() => { });
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
+      setInterval(check, 5 * 60 * 1000);
+    }).catch(() => { });
+    let reloading = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (!had || reloading || S.active) return; reloading = true; location.reload(); });
+  }
 
   async function api(path, opt = {}) {
     const r = await fetch('https://api.github.com/repos/' + CFG.repo + path, {
@@ -1422,8 +1445,7 @@ function workoutHero(nd, eyebrow) {
   const lastOfDay = sessionsSorted().filter(s => s.day === nd.id).pop();
   const nSets = nd.ex.reduce((a, id) => a + EX[id].sets, 0);
   const mins = Math.round(nd.ex.reduce((a, id) => a + EX[id].sets * (EX[id].rest + 45), 0) / 60 / 5) * 5;
-  return `<section class="next"><div class="wm" aria-hidden="true"></div>
-    ${S.active ? '' : Buddy.flex}
+  return `${S.active ? '' : Buddy.flex.replace('class="buddy ', 'class="buddy full ')}<section class="next"><div class="wm" aria-hidden="true"></div>
     <div><div class="eyebrow">${eyebrow}</div><h1 class="dayname">${esc(nd.name)}</h1></div>
     <div class="daymeta">${nd.ex.length} exerciții · ${nSets} seturi · ~${mins} min${lastOfDay ? ` · ultima dată ${relDays(lastOfDay.date)}` : ''}</div>
     <div class="rigs-row">${nd.ex.slice(0, 3).map((id, i) => Rig.svg(id).replace('data-rig', `data-off="${i * 500}" data-rig`)).join('')}</div>
@@ -1434,8 +1456,7 @@ function workoutHero(nd, eyebrow) {
 }
 function restHero(doneToday, skipped) {
   const { p, i } = nextPlan();
-  return `<section class="rest-day"><div class="wm" aria-hidden="true"></div>
-    ${Buddy.svg}
+  return `${Buddy.svg.replace('class="buddy ', 'class="buddy full ')}<section class="rest-day"><div class="wm" aria-hidden="true"></div>
     <h1 class="rest-title">Odihnă</h1>
     <p class="rest-msg">${skipped ? `Ai ales odihnă azi în loc de ${esc(skipped.name)}. E în regulă, și pauza face parte din progres.` : doneToday ? `Antrenamentul de azi e bifat. Bravo, Cristian!` : 'Azi mușchii cresc. Mini-Cristian se antrenează în locul tău.'}</p>
     <div class="next-up"><small>Următorul antrenament</small><b>${p.label} · ${esc(p.name)}</b><span>${i === 1 ? 'mâine' : `peste ${i} zile`}</span></div>
