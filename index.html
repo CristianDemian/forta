@@ -1509,7 +1509,7 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 <script>
 /* ---------- Programul: 3 zile, câte două grupe ---------- */
 const DAYS = [
-  { id: 'A', wd: 1, label: 'Luni', short: 'Piept', name: 'Piept + Triceps', ex: ['incline', 'chestpress', 'pecdeck', 'rope', 'vbar'] },
+  { id: 'A', wd: 1, label: 'Luni', short: 'Piept', name: 'Piept + Triceps', ex: ['incline', 'pecdeck', 'chestpress', 'rope', 'vbar'] },
   { id: 'B', wd: 3, label: 'Miercuri', short: 'Spate', name: 'Spate + Biceps', ex: ['pulldown', 'closegrip', 'vpull', 'machrow', 'dbrow', 'cablerow', 'straightarm', 'zwide', 'znarrow', 'hammer'] },
   { id: 'C', wd: 5, label: 'Vineri', short: 'Umeri', name: 'Umeri + Picioare', ex: ['squat', 'rdl', 'legpress', 'legcurl', 'dbpress', 'lateral', 'facepull'] }
 ];
@@ -1527,12 +1527,13 @@ const EX = {
       B: { hip: [122, 130], t: -90, ua: 22, fa: 180, th: 62, sh: 0 } }
   },
   incline: {
-    name: 'Împins cu gantere la înclinat', muscles: 'Piept superior, umăr frontal',
+    name: 'Împins cu gantere pe bancă înclinată la 15°', muscles: 'Piept (mai ales partea de sus), umăr frontal, triceps',
     sets: 3, reps: [8, 10], rest: 120, step: 2,
-    cues: ['Banca la 30°, nu mai mult, ca pieptul să lucreze, nu umerii.',
-      'Coboară ganterele lateral până simți o întindere bună în piept.',
-      'Împinge pe un arc ușor, ganterele se apropie sus fără să se lovească.'],
-    mistake: 'Banca prea ridicată (45° sau peste) transformă exercițiul în împins pentru umeri.',
+    cues: ['Banca la 15°, o înclinare mică: lucrează tot pieptul, cu accent pe partea de sus, fără să încarce umerii.',
+      'Pornește cu ganterele deasupra pieptului, nu deasupra umerilor sau a feței.',
+      'Coboară-le lateral, în dreptul pieptului, coatele la circa 45° față de corp, până simți întinderea.',
+      'Împinge înapoi pe aceeași linie, deasupra pieptului; ganterele se apropie sus fără să se lovească.'],
+    mistake: 'Ganterele împinse spre față sau spre umeri. Rămân pe linia pieptului, sus și jos.',
     rig: { eq: [{ k: 'pad', a: [120, 147], b: [78, 118] }, { k: 'pad', a: [118, 148], b: [148, 148] }, { k: 'db', at: 'hand' }],
       A: { hip: [120, 141], t: -55, ua: 165, fa: 172, th: 80, sh: 4 },
       B: { hip: [120, 141], t: -55, ua: 15, fa: 176, th: 80, sh: 4 } }
