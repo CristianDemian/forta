@@ -1,4 +1,4 @@
-const CACHE = 'forta-v38';
+const CACHE = 'forta-v39';
 const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'forta-cd-192.png', 'forta-cd-180.png', 'mini-cristian.jpg', 'mini-cristian-flex.jpg', 'mini-cristian-cele.jpg'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== CACHE).map(x => caches.delete(x)))).then(() => self.clients.claim())); });
