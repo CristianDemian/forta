@@ -547,6 +547,102 @@ svg.chart { width: 100%; height: auto; display: block; overflow: visible; }
 .buddy.full::after { background: linear-gradient(180deg, transparent 0%, transparent 74%, var(--bg) 100%); }
 .next, .rest-day, .rings, .mmap { background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02)), var(--surface); }
 .stat, .check, .supp, .ex-item, .hist-row, .chart-card, .notice, .wex, .add-form, .week { background-color: var(--surface); }
+
+/* =====================================================================
+   Tema luminoasă: fundal alb-cald, carduri albe, roșu ca accent
+   ===================================================================== */
+:root {
+  --bg: #f3f1f0; --surface: #ffffff; --surface-2: #f4f1f0; --surface-3: #e7e2e0;
+  --line: rgba(40, 20, 25, .08); --line-2: rgba(40, 20, 25, .14);
+  --fg: #1b1517; --muted: #6e6367; --faint: #9c9195;
+  --accent: #e01f2b; --red-hi: #d81e2a; --red-deep: #a10f1b;
+  --good: #16a35e; --bad: #e0343c; --water: #1f8ae0;
+  color-scheme: light;
+}
+body { background: var(--bg); color: var(--fg); }
+.shadow-card, .next, .rest-day, .rings, .mmap, .stat, .check, .supp, .ex-item, .hist-row, .chart-card, .notice, .wex, .add-form, .week, .water, .q-back, .ach-i, .ob-goal, .ob-day {
+  box-shadow: 0 1px 2px rgba(40, 20, 25, .04), 0 8px 24px -14px rgba(40, 20, 25, .18); }
+.next, .rest-day, .rings, .mmap { background: var(--surface); border-color: var(--line); }
+.next::before, .rest-day::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+.stat, .check, .supp, .ex-item, .hist-row, .chart-card, .notice, .wex, .add-form, .week { background: var(--surface); }
+.checklist, .hist { background: var(--line); box-shadow: 0 8px 24px -14px rgba(40, 20, 25, .18); }
+.checklist .check, .hist .hist-row { box-shadow: none; }
+
+/* antet */
+.top { background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.top::after { background: repeating-linear-gradient(90deg, var(--accent) 0 18px, #ffffff 18px 36px); box-shadow: 0 1px 0 var(--line); }
+.brand .b2 { color: var(--fg); }
+
+/* banda video: clipurile au fundalul de aceeași culoare */
+.buddy.full { background: var(--bg); }
+
+/* butoane și elemente mici */
+.btn-ghost, .chip, .pill, .rest-btns button { background: var(--surface-2); border: 1px solid var(--line); color: var(--fg); }
+.chip[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 10%, #fff); border-color: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--accent); }
+.btn-main { color: #fff; background: linear-gradient(180deg, #f2343f, var(--accent) 60%, #c41824); box-shadow: 0 10px 22px -12px var(--accent); }
+.link { color: var(--accent); }
+.water-dots i { background: color-mix(in srgb, var(--water) 14%, var(--surface-2)); }
+.water { background: linear-gradient(135deg, color-mix(in srgb, var(--water) 9%, #fff), #fff); }
+.check.taken strong { text-decoration-color: rgba(40, 20, 25, .3); }
+.tick { border-color: var(--line-2); }
+.set input, .field, .supp-ctl input[type="time"] { background: var(--surface-2); border-color: var(--line); color: var(--fg); }
+.set .ok { background: var(--surface-2); }
+.wd span { color: var(--muted); }
+.wd.is-today span { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--fg); }
+.q-front { box-shadow: 0 14px 28px -16px var(--accent); }
+.q-gift { background: rgba(255, 255, 255, .22); }
+.progressbar, .ring .bgc { background: var(--surface-3); stroke: var(--surface-3); }
+.ring .bgc { background: none; }
+.mistake { background: color-mix(in srgb, var(--bad) 8%, #fff); }
+.rest-info { background: var(--surface-2); }
+.rg-bg { opacity: .14; }
+.streak { background: linear-gradient(90deg, #fff4e6, #fff); border-color: #ffd9a8; }
+.streak b { color: #e07b00; } .streak svg { color: #f08c00; }
+.mm-row i { background: var(--surface-3); }
+.hist-row .badge { background: color-mix(in srgb, var(--accent) 10%, #fff); color: var(--accent); }
+.pr-b { background: #fff4d6 !important; color: #c98a00 !important; }
+.ach-i.ok { background: linear-gradient(180deg, #fff8e6, #fff); border-color: #ffe2a3; }
+.ach-ic { background: var(--surface-2); }
+.sbar span, .sbar b small { color: var(--muted); }
+
+/* meniu plutitor: sticlă albă */
+.nav { background: rgba(255, 255, 255, .78); border-color: rgba(40, 20, 25, .08); box-shadow: 0 12px 30px -12px rgba(40, 20, 25, .28); }
+.nav-pill { background: color-mix(in srgb, var(--accent) 10%, #fff); }
+.nav button { color: var(--faint); }
+.nav button[aria-current="page"] { color: var(--accent); }
+
+/* antrenament și cronometru */
+.workout { background: var(--bg); }
+.w-head { background: color-mix(in srgb, var(--bg) 92%, transparent); }
+.rest-in { background: rgba(255, 255, 255, .9); border-color: var(--line); box-shadow: 0 14px 34px -12px rgba(40, 20, 25, .35); color: var(--fg); }
+.toast { background: #1b1517; color: #fff; }
+.pr { background: rgba(243, 241, 240, .7); }
+.pr-card { background: linear-gradient(180deg, var(--bg) 0 210px, #fff8e6 260px, #fff); border-color: #ffe2a3; box-shadow: 0 30px 60px -24px rgba(40, 20, 25, .35); }
+.pr-v { color: #c98a00; }
+
+/* ecran de pornire și prezentare */
+.splash { background: radial-gradient(circle at 50% 40%, #fff 0%, var(--bg) 70%); }
+.sp-fig { border-color: #fff; box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 18%, transparent), 0 24px 50px -18px rgba(224, 31, 43, .55); }
+.sp-b { color: var(--fg); }
+.onb { background: radial-gradient(120% 70% at 50% 0%, #fff 0%, var(--bg) 60%); }
+.ob-drop { background: color-mix(in srgb, var(--accent) 5%, #fff); }
+.ob-goal, .ob-day { background: #fff; }
+.ob-goal.on, .ob-day.on { background: color-mix(in srgb, var(--accent) 7%, #fff); }
+.gen-ph { background: var(--surface-2); }
+.prof-av { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--accent), 0 16px 36px -14px rgba(224, 31, 43, .5); }
+
+/* figurile animate pe fond deschis */
+.rig .limb { stroke: #2a2226; } .rig .head, .rig .torso { fill: #2a2226; }
+.rig .hub { fill: #fff; }
+.rigs-row .rig, .ex-row .rig, .wex-top .rig, .ex-detail .rig.big { background: var(--surface-2); }
+
+.done-b { background: var(--good) !important; color: #fff !important; }
+.done-b svg { width: 14px; height: 14px; }
+.done-card { background: linear-gradient(180deg, var(--bg) 0 210px, #eefaf3 260px, #fff) !important; border-color: #bfe8cf !important; }
+.done-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin: 4px 0 8px; }
+.done-stats div { display: grid; padding: 10px 4px; border-radius: 14px; background: var(--surface-2); }
+.done-stats b { font: 700 22px var(--sys); letter-spacing: -.02em; }
+.done-stats small { font-size: 11.5px; color: var(--muted); }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -1180,7 +1276,8 @@ const Buddy = (() => {
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') playAll(); });
   addEventListener('pageshow', playAll); addEventListener('focus', playAll);
   setInterval(playAll, 2000);
-  return { svg, flex, start };
+  const cele = slot('mini-cristian-cele', 'Mini-Cristian se întoarce și își arată numele și numărul 27 de pe tricou', 'cele');
+  return { svg, flex, cele, start };
 })();
 
 /* ---------- Notificări: în previzualizare doar explicăm ---------- */
@@ -2065,6 +2162,23 @@ function showPR(id, kg, reps, gain) {
 }
 document.addEventListener('click', e => { if (e.target.closest('[data-pr-close]') || e.target.id === 'pr') { const g = $('#pr'); g.hidden = true; g.innerHTML = ''; const w = $('#workout'), y = w ? w.scrollTop : 0; render(); if (w) w.scrollTop = y; } });
 
+/* ---------- Celebrare la finalul antrenamentului ---------- */
+const _finish = finishWorkout;
+finishWorkout = function () {
+  const a = S.active, n0 = S.sessions.length;
+  _finish();
+  if (S.sessions.length > n0) {
+    const s = S.sessions[S.sessions.length - 1], sets = Object.values(s.ex).reduce((x, y) => x + y.length, 0);
+    const g = $('#pr');
+    g.innerHTML = `<div class="pr-card done-card">${Buddy.cele.replace('class="buddy ', 'class="buddy pr-av ')}
+      <div class="pr-badge done-b">${ICON.check}<span>Antrenament terminat</span></div>
+      <h2 class="pr-t">${esc(byId(s.day).name)}</h2>
+      <div class="done-stats"><div><b class="num">${Math.round(s.dur / 60000)}</b><small>minute</small></div><div><b class="num">${sets}</b><small>serii</small></div><div><b class="num">${fmt(volume(s) / 1000, 1)}t</b><small>ridicate</small></div></div>
+      <button class="btn btn-main" data-pr-close>Super!</button></div>`;
+    g.hidden = false; g.classList.remove('show'); void g.offsetWidth; g.classList.add('show'); Buddy.start();
+  }
+};
+
 /* ---------- Demo pentru investitori: date de exemplu + prezentarea de la prima pornire ---------- */
 (function () {
   if (!window.FORTA_DEMO) return;
@@ -2103,7 +2217,7 @@ document.addEventListener('click', e => { if (e.target.closest('[data-pr-close]'
   const GOALS = [['Masă musculară', 'Mai mult volum, 8-12 repetări'], ['Forță', 'Greutăți mari, 4-6 repetări'], ['Definire', 'Volum și cardio, deficit caloric'], ['Sănătate', '2-3 antrenamente ușoare pe săptămână']];
   function view() {
     if (step === 0) return `<div class="ob-in ob-0">
-      <div class="ob-hero">${Buddy.flex.replace('class="buddy ', 'class="buddy ob-av ')}</div>
+      <div class="ob-hero">${Buddy.cele.replace('class="buddy ', 'class="buddy ob-av ')}</div>
       <div class="ob-brand">Forța</div>
       <h1>Antrenorul tău are fața ta.</h1>
       <p>Transformă o poză într-un avatar 3D care se antrenează cu tine, îți arată progresul și te motivează în fiecare zi.</p>
