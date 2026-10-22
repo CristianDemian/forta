@@ -1765,6 +1765,13 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .wx-fog { position: absolute; left: 14px; top: 56px; width: 70px; display: grid; gap: 5px; } .wx-fog i { height: 3px; border-radius: 2px; background: rgba(255,255,255,.7); animation: drift 4s ease-in-out infinite; } .wx-fog i:nth-child(2) { animation-delay: -1.3s; margin-left: 10px; } .wx-fog i:nth-child(3) { animation-delay: -2.6s; }
 @media (prefers-reduced-motion: reduce) { .wx *, .sg-needle, .sg-fg { animation: none !important; } }
 .sc-v { position: static !important; margin-top: -2px; } .sc-v b { transform: none !important; background: none !important; } .sc-v span { margin-top: 4px !important; }
+.dn-res { display: grid; justify-items: center; gap: 4px; padding: 10px; margin-bottom: 6px; border-radius: 16px; background: rgba(0,0,0,.22); }
+.dn-res small { font: 600 12px var(--sys); color: rgba(255,255,255,.75); }
+.dn-sc { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; width: 100%; }
+.dn-sc span { font: 800 20px/1 var(--display); text-align: center; }
+.dn-sc b { font: 800 44px/1 var(--display); } .dn-sc b i { font-style: normal; opacity: .6; margin: 0 4px; }
+.dn-res em { font: 700 12px var(--sys); font-style: normal; padding: 3px 10px; border-radius: 999px; background: rgba(255,255,255,.18); }
+.dn-w em { background: #16a34a; } .dn-l em { background: rgba(0,0,0,.35); }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -4103,16 +4110,34 @@ const DINAMO = [
   ['2027-02-10', '', 'FC Farul Constanța', 0], ['2027-02-13', '', 'Sepsi OSK', 1], ['2027-02-20', '', 'FC Botoșani', 0], ['2027-02-27', '', 'CFR 1907 Cluj', 1],
   ['2027-03-06', '', 'UTA Arad', 0], ['2027-03-13', '', 'FC Argeș', 1]
 ];
+const MKEY = 'forta-matches';
+let DM = null; try { DM = JSON.parse(localStorage.getItem(MKEY) || 'null'); } catch (e) { }
+async function loadMatches() {
+  if (DM && Date.now() - (DM.at || 0) < 60 * 60000) return;
+  try {
+    const r = await fetch('https://raw.githubusercontent.com/CristianDemian/forta/date/matches.json?t=' + Math.floor(Date.now() / 300000), { cache: 'no-store' });
+    if (!r.ok) return; DM = Object.assign(await r.json(), { at: Date.now() });
+    try { localStorage.setItem(MKEY, JSON.stringify(DM)); } catch (e) { }
+    if (tab === 'azi' && !S.active) render();
+  } catch (e) { }
+}
+loadMatches(); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') loadMatches(); });
 function dinamoCard() {
-  const today = dayKey(), m = DINAMO.find(x => x[0] >= today); if (!m) return '';
-  const [d, time, opp, home] = m, days = Math.round((Date.UTC(...d.split('-').map((v, i) => i === 1 ? v - 1 : +v)) - Date.UTC(...today.split('-').map((v, i) => i === 1 ? v - 1 : +v))) / DAYMS);
-  const prev = [...DINAMO].reverse().find(x => x[0] < today), justPlayed = prev && (Date.parse(today) - Date.parse(prev[0])) / DAYMS <= 1;
-  const when = days === 0 ? `Azi${time ? `, la ${time}` : ''}` : days === 1 ? `Mâine${time ? `, la ${time}` : ''}` : `${new Date(d + 'T12:00').toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' })}${time ? `, ${time}` : ''}`;
-  return `<section class="dinamo ${days === 0 ? 'live' : ''}">
-    <div class="dn-top"><small>${days === 0 ? 'Zi de meci' : 'Următorul meci'}</small><span class="dn-when">${days === 0 ? 'Azi' : days === 1 ? 'Mâine' : `în ${days} zile`}</span></div>
-    <div class="dn-vs"><div class="dn-t ${home ? 'us' : ''}">${home ? 'Dinamo' : esc(opp)}</div><span class="dn-x">vs</span><div class="dn-t ${home ? '' : 'us'}">${home ? esc(opp) : 'Dinamo'}</div></div>
-    <div class="dn-meta">${when}, ${home ? 'acasă' : 'în deplasare'}</div>
-    ${justPlayed ? `<a class="dn-link" href="https://lpf.ro/cluburi/dinamo-bucuresti/14/calendar" target="_blank" rel="noopener">Vezi scorul cu ${esc(prev[2])}</a>` : ''}
+  const today = dayKey();
+  const next = DM && DM.next ? DM.next : DINAMO.map(([date, time, opp, home]) => ({ date, time, opp, home: !!home }));
+  const m = next.find(x => x.date >= today);
+  const last = DM && DM.last && DM.last[0], ago = last ? Math.round((Date.parse(today) - Date.parse(last.date)) / DAYMS) : 99;
+  if (!m && !(last && ago <= 2)) return '';
+  const dd = d => Math.round((Date.parse(d) - Date.parse(today)) / DAYMS);
+  const res = last && ago <= 2 ? (() => { const r = last.us > last.them ? 'w' : last.us < last.them ? 'l' : 'd';
+    return `<div class="dn-res dn-${r}"><small>${ago === 0 ? 'Rezultatul de azi' : ago === 1 ? 'Aseară' : 'Ultimul meci'}</small><div class="dn-sc"><span>${last.home ? 'Dinamo' : esc(last.opp)}</span><b class="num">${last.home ? last.us : last.them}<i>:</i>${last.home ? last.them : last.us}</b><span>${last.home ? esc(last.opp) : 'Dinamo'}</span></div><em>${r === 'w' ? 'Victorie!' : r === 'd' ? 'Egal' : 'Înfrângere'}</em></div>`; })() : '';
+  if (!m) return `<section class="dinamo">${res}</section>`;
+  const days = dd(m.date), t = m.time;
+  const when = days === 0 ? `Azi${t ? `, la ${t}` : ''}` : days === 1 ? `Mâine${t ? `, la ${t}` : ''}` : `${new Date(m.date + 'T12:00').toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' })}${t ? `, ${t}` : ', ora nu e stabilită'}`;
+  return `<section class="dinamo ${days === 0 ? 'live' : ''}">${res}
+    <div class="dn-top"><small>${days === 0 ? 'Zi de meci' : 'Următorul meci'}${m.round ? `, ${esc(m.round.toLowerCase())}` : ''}</small><span class="dn-when">${days === 0 ? 'Azi' : days === 1 ? 'Mâine' : `în ${days} zile`}</span></div>
+    <div class="dn-vs"><div class="dn-t ${m.home ? 'us' : ''}">${m.home ? 'Dinamo' : esc(m.opp)}</div><span class="dn-x">vs</span><div class="dn-t ${m.home ? '' : 'us'}">${m.home ? esc(m.opp) : 'Dinamo'}</div></div>
+    <div class="dn-meta">${when}, ${m.home ? 'acasă' : 'în deplasare'}</div>
   </section>`;
 }
 
