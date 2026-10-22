@@ -1,0 +1,2175 @@
+<!doctype html><html lang="ro"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Forța">
+<meta name="theme-color" content="#0b0a0b"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="../forta-cd-180.png">
+<script>(function(){var P='demo:',G=Storage.prototype.getItem,S2=Storage.prototype.setItem,R=Storage.prototype.removeItem;Storage.prototype.getItem=function(k){return G.call(this,P+k)};Storage.prototype.setItem=function(k,v){return S2.call(this,P+k,v)};Storage.prototype.removeItem=function(k){return R.call(this,P+k)};window.FORTA_DEMO=true;window.ASSET='../';})();</script><style>:root{padding-top:0;padding-bottom:0}.top{top:0!important;padding-top:calc(12px + env(safe-area-inset-top,0px))!important}[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+<title>Forța la Sală</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Saira+Condensed:wght@600;700;800&display=swap">
+</head><body><style>/* Forța v2. Layout: o coloană de telefon cu antet subțire, o bandă video pe toată lățimea,
+   carduri compacte și meniu plutitor; antrenamentul se deschide peste tot ecranul. */
+:root {
+  --bg: #0b0a0b;
+  --surface: #151214;
+  --surface-2: #1e191c;
+  --surface-3: #282125;
+  --line: rgba(255, 255, 255, .07);
+  --line-2: rgba(255, 255, 255, .12);
+  --fg: #f6f2f1;
+  --muted: #9d9396;
+  --faint: #6c6366;
+  --accent: #e5232f;
+  --red-hi: #ff5560;
+  --red-deep: #a10f1b;
+  --accent-ink: #ffffff;
+  --blue: #ffffff;
+  --good: #34c77b;
+  --bad: #ff5a5f;
+  --water: #3aa0ff;
+  --sys: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, system-ui, sans-serif;
+  --display: 'Saira Condensed', 'SF Pro Display', -apple-system, 'Arial Narrow', sans-serif;
+  --body: var(--sys);
+  --r: 16px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { background: var(--bg); min-height: 100%; overflow-x: clip; overscroll-behavior-x: none; -webkit-text-size-adjust: 100%; }
+body { min-height: 100%; margin: 0; background: var(--bg); color: var(--fg); font: 400 15px/1.45 var(--sys); letter-spacing: -.01em;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow-x: clip; touch-action: pan-y;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+input, textarea { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+button, input, select, textarea { font: inherit; color: inherit; letter-spacing: inherit; }
+button { cursor: pointer; border: 0; background: none; padding: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; }
+svg { flex: none; }
+
+.app { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; min-height: 100%; padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
+.ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.ambient i { position: absolute; border-radius: 50%; filter: blur(70px); }
+.ambient i:nth-child(1) { width: 80vmax; height: 80vmax; top: -55vmax; right: -40vmax; background: var(--accent); opacity: .10; }
+.ambient i:nth-child(2), .ambient i:nth-child(3) { display: none; }
+
+/* ---------- Antet ---------- */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 12px 11px;
+  display: grid; grid-template-columns: minmax(0, 1fr); }
+.top::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: repeating-linear-gradient(90deg, var(--accent) 0 18px, rgba(255,255,255,.85) 18px 36px); opacity: .9; }
+.brand { display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; white-space: nowrap; font: 700 19px/1 var(--display); letter-spacing: .14em; text-transform: uppercase; }
+.brand .b1 { color: var(--accent); }
+.brand .b2 { margin-left: auto; color: var(--fg); }
+.hbadge { height: 1.45em; width: auto; }
+.today { display: none; }
+
+main { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 20px; display: grid; gap: 24px; }
+
+/* ---------- Titluri de secțiune ---------- */
+h2 { margin: 0; font: 600 13px/1.2 var(--sys); letter-spacing: .02em; color: var(--muted); text-transform: none; }
+.sec { display: grid; gap: 10px; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.sec-head .count { font: 600 13px var(--sys); color: var(--fg); }
+.eyebrow { font: 600 12px/1 var(--sys); letter-spacing: .06em; text-transform: uppercase; color: var(--red-hi); }
+.daymeta { color: var(--muted); font-size: 13px; }
+
+/* ---------- Banda video ---------- */
+.buddy { display: block; position: relative; }
+.buddy.full { width: 100vw; margin-left: calc(50% - 50vw); height: min(300px, 40vh); margin-bottom: -40px; overflow: hidden;
+  background: radial-gradient(60% 80% at 50% 45%, #2a272b 0%, #161415 55%, var(--bg) 100%); }
+.buddy.full::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, var(--bg) 0%, transparent 14%, transparent 70%, var(--bg) 100%), linear-gradient(90deg, var(--bg) 0%, transparent 22%, transparent 78%, var(--bg) 100%); }
+.buddy .b-vid, .buddy .b-poster { position: absolute; top: 0; left: 50%; transform: translateX(-50%); height: 100%; width: auto; aspect-ratio: 9 / 16; object-fit: cover; }
+.buddy[data-vid] .b-vid { opacity: 0; transition: opacity .3s; }
+.buddy[data-vid].playing .b-vid { opacity: 1; }
+.buddy[data-vid].playing .b-poster { opacity: 0; transition: opacity .3s .1s; }
+.b-vid::-webkit-media-controls, .b-vid::-webkit-media-controls-start-playback-button, .b-vid::-webkit-media-controls-overlay-play-button { display: none !important; -webkit-appearance: none; opacity: 0; }
+
+/* ---------- Cardul zilei ---------- */
+.next, .rest-day { position: relative; z-index: 1; overflow: hidden; border-radius: 22px; padding: 18px; display: grid; gap: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015)), var(--surface); border: 1px solid var(--line);
+  box-shadow: 0 20px 40px -24px rgba(0,0,0,.8); }
+.next::before, .rest-day::before { content: ''; position: absolute; left: 18px; right: 18px; top: 0; height: 2px; border-radius: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+.next > *:not(.wm), .rest-day > *:not(.wm) { position: relative; z-index: 1; }
+.dayname, .rest-title { margin: 6px 0 0; font: 700 26px/1.1 var(--sys); letter-spacing: -.02em; color: var(--fg); text-wrap: balance; }
+.rest-day { justify-items: start; text-align: left; }
+.rest-msg { margin: -6px 0 0; color: var(--muted); font-size: 14px; }
+.next-up { width: 100%; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 12px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); }
+.next-up small { grid-column: 1 / -1; font: 600 11px var(--sys); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.next-up b { font: 600 16px var(--sys); }
+.next-up span { color: var(--red-hi); font-size: 13px; font-weight: 600; }
+.wm { position: absolute; right: -24px; bottom: -24px; width: 150px; height: 150px; background: var(--badge, none) center / contain no-repeat; opacity: .06; pointer-events: none; z-index: 0; transform: rotate(-12deg); }
+.rigs-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.rigs-row .rig { width: 100%; height: 76px; background: var(--surface-2); border-radius: 12px; border: 1px solid var(--line); }
+
+/* ---------- Butoane ---------- */
+.btn { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 18px; border-radius: 14px;
+  font: 600 16px/1 var(--sys); letter-spacing: -.01em; text-transform: none; transition: transform .15s, filter .15s; }
+.btn:active { transform: scale(.97); }
+.btn-main { width: 100%; color: #fff; background: linear-gradient(180deg, var(--red-hi), var(--accent) 60%, #c81a26); box-shadow: 0 10px 24px -12px var(--accent), inset 0 1px 0 rgba(255,255,255,.25); }
+.btn-ghost { min-height: 40px; font-size: 14px; padding: 0 14px; background: rgba(255,255,255,.06); border: 1px solid var(--line); color: var(--fg); }
+.skip-btn { width: 100%; min-height: 44px; } .skip-btn svg { width: 18px; height: 18px; color: var(--muted); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { min-height: 32px; padding: 0 12px; border-radius: 999px; background: rgba(255,255,255,.05); border: 1px solid var(--line); font: 500 13px var(--sys); color: var(--fg); }
+.chip[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 18%, transparent); border-color: color-mix(in srgb, var(--accent) 60%, transparent); color: #fff; }
+.link { color: var(--red-hi); font-weight: 600; font-size: 14px; padding: 6px 2px; }
+.link.muted, .link.danger { color: var(--muted); }
+.del { color: var(--muted); font-size: 13px; padding: 6px 8px; border-radius: 8px; }
+.del.armed { color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, transparent); }
+.ripple { position: absolute; border-radius: 50%; background: currentColor; opacity: .16; transform: scale(0); animation: ripple .55s ease-out forwards; pointer-events: none; }
+@keyframes ripple { to { transform: scale(1); opacity: 0; } }
+
+/* ---------- Săptămâna ---------- */
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 10px 6px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); }
+.wd { display: grid; justify-items: center; gap: 5px; padding: 2px 0; border-radius: 10px; }
+.wd small { color: var(--faint); font-size: 11px; font-weight: 600; text-transform: uppercase; }
+.wd span { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 600 13px var(--sys); color: var(--muted); border: 1.5px solid transparent; }
+.wd.plan span { border-color: color-mix(in srgb, var(--accent) 70%, transparent); color: var(--fg); }
+.wd.done span { background: var(--accent); color: #fff; }
+.wd.done span svg { width: 14px; height: 14px; }
+.wd.is-today small { color: var(--fg); }
+.wd.is-today span { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--fg); }
+.wd em { font-style: normal; font-size: 10px; color: var(--faint); }
+.wd.plan em, .wd.done em { color: var(--red-hi); }
+
+/* ---------- Statistici ---------- */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; display: grid; gap: 2px; min-width: 0; }
+.stat b { font: 700 22px/1.1 var(--sys); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.stat small { color: var(--muted); font-size: 12px; line-height: 1.3; }
+
+/* ---------- Citatul zilei ---------- */
+.quote { perspective: 1000px; }
+.q-inner { position: relative; display: grid; width: 100%; text-align: left; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3, 1.2, .4, 1); overflow: visible !important; }
+.quote.open .q-inner { transform: rotateY(180deg); }
+.q-face { grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: var(--r); padding: 14px 16px; }
+.q-front { display: grid; grid-template-columns: 40px 1fr; grid-template-rows: auto auto; gap: 1px 12px; align-items: center; color: #fff;
+  background: linear-gradient(120deg, var(--accent), var(--red-deep)); box-shadow: 0 12px 26px -16px var(--accent); }
+.q-front b { font: 600 16px var(--sys); align-self: end; }
+.q-front small { grid-column: 2; font-size: 13px; opacity: .85; align-self: start; }
+.q-gift { grid-row: 1 / span 2; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: rgba(255,255,255,.18); }
+.q-gift svg { width: 22px; height: 22px; }
+.q-back { transform: rotateY(180deg); background: var(--surface); border: 1px solid var(--line); display: grid; gap: 8px; }
+.q-mark { font: 700 34px/0.5 Georgia, serif; color: var(--accent); height: 14px; }
+.q-back p { margin: 0; font: 500 16px/1.45 var(--sys); color: var(--fg); text-wrap: pretty; }
+.q-who { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+.q-who b { font: 600 13px var(--sys); color: var(--red-hi); }
+.q-who small { color: var(--muted); font-size: 12px; }
+
+/* ---------- Suplimente și apă ---------- */
+.checklist { display: grid; gap: 1px; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); background: var(--line); }
+.check { display: grid; grid-template-columns: 48px 1fr 26px; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 11px 14px; background: var(--surface); }
+.check time { font: 600 14px var(--sys); color: var(--muted); font-variant-numeric: tabular-nums; }
+.check strong { display: block; font-weight: 500; font-size: 15px; }
+.check em { font-style: normal; color: var(--muted); font-size: 12.5px; }
+.tick { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--line-2); display: grid; place-items: center; transition: background .2s, border-color .2s; }
+.tick svg { width: 14px; height: 14px; opacity: 0; color: #fff; }
+.check.taken .tick { background: var(--good); border-color: var(--good); }
+.check.taken .tick svg { opacity: 1; }
+.check.taken strong { color: var(--muted); text-decoration: line-through; text-decoration-color: rgba(255,255,255,.3); }
+.water { display: grid; gap: 10px; padding: 14px; margin-bottom: 8px; border-radius: var(--r); background: linear-gradient(135deg, color-mix(in srgb, var(--water) 14%, var(--surface)), var(--surface)); border: 1px solid color-mix(in srgb, var(--water) 22%, transparent); }
+.water-top { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: center; }
+.water-top .drop { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: linear-gradient(160deg, #8fd0ff, var(--water)); color: #fff; }
+.water-top .drop svg { width: 18px; height: 18px; }
+.water-top strong { display: block; font-weight: 600; font-size: 15px; }
+.water-top em { font-style: normal; color: var(--muted); font-size: 12.5px; }
+.water-dots { display: grid; grid-template-columns: repeat(auto-fill, minmax(14px, 1fr)); gap: 4px; }
+.water-dots i { height: 6px; border-radius: 3px; background: rgba(255,255,255,.08); }
+.water-dots i.on { background: var(--water); box-shadow: 0 0 8px -2px var(--water); }
+.water-btns { display: grid; grid-template-columns: 44px 1fr; gap: 8px; }
+.water-btns .btn { min-height: 40px; font-size: 14px; }
+.water-btns .btn-main { background: linear-gradient(180deg, #5fb4ff, var(--water) 60%, #2384e8); box-shadow: 0 10px 22px -12px var(--water); }
+.water-btns .btn-ghost { font-size: 20px; padding: 0; }
+.supp { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: grid; gap: 10px; }
+.supp.off { opacity: .55; }
+.supp-top { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+.supp-top strong { font-weight: 600; display: block; font-size: 15px; }
+.supp-top small { color: var(--muted); font-size: 12.5px; }
+.supp-tip { font-size: 12.5px; color: var(--muted); }
+.supp-ctl { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.supp-ctl input[type="time"] { min-height: 36px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); padding: 0 10px; font: 600 15px var(--sys); }
+.ic-row { display: inline-flex !important; align-items: center; gap: 8px; } .ic-row svg { width: 16px; height: 16px; color: var(--water); }
+.switch { position: relative; width: 46px; height: 28px; border-radius: 999px; background: var(--surface-3); flex: none; transition: background .2s; }
+.switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.4); transition: transform .25s cubic-bezier(.3, 1.3, .4, 1); }
+.switch[aria-checked="true"] { background: var(--good); }
+.switch[aria-checked="true"]::after { transform: translateX(18px); }
+.add-form { display: grid; gap: 8px; background: var(--surface); border: 1px solid var(--line); padding: 14px; border-radius: var(--r); }
+.add-form .two { display: grid; grid-template-columns: 1fr 120px; gap: 8px; }
+.notice { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 8px; }
+.notice p { margin: 0; color: var(--muted); font-size: 13.5px; }
+.notice strong { font-weight: 600; }
+.state-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--faint); margin-right: 6px; vertical-align: 1px; }
+.state-dot.on { background: var(--good); box-shadow: 0 0 8px var(--good); }
+.field { width: 100%; min-height: 44px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line); padding: 0 12px; font-size: 15px; }
+.field:focus { border-color: color-mix(in srgb, var(--accent) 60%, transparent); outline: none; }
+textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-size: 12px; }
+.row-input { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.empty { color: var(--muted); font-size: 13.5px; padding: 18px 12px; text-align: center; border: 1px dashed var(--line-2); border-radius: var(--r); margin: 0; }
+.badge-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.badge-prev { width: 48px; height: 48px; object-fit: contain; border-radius: 12px; background: var(--surface-2); padding: 6px; }
+
+/* ---------- Program ---------- */
+.day-block { display: grid; gap: 8px; }
+.day-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.day-title h3 { margin: 0; font: 700 19px/1.15 var(--sys); letter-spacing: -.02em; }
+.day-title h3 span { display: block; font: 600 12px var(--sys); letter-spacing: .06em; text-transform: uppercase; color: var(--red-hi); margin-bottom: 2px; }
+.ex-item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.ex-row { display: grid; grid-template-columns: 48px 1fr 18px; gap: 12px; align-items: center; width: 100%; text-align: left; padding: 8px 12px 8px 8px; }
+.ex-row .rig { width: 48px; height: 48px; background: var(--surface-2); border-radius: 10px; }
+.ex-row strong { display: block; font-weight: 500; font-size: 15px; line-height: 1.25; }
+.ex-row small { color: var(--muted); font-size: 12.5px; }
+.chev { width: 18px; height: 18px; color: var(--faint); transition: transform .2s; }
+.ex-item.open .chev { transform: rotate(180deg); }
+.ex-detail { padding: 2px 14px 14px; display: grid; gap: 10px; animation: rise .3s ease-out; }
+.ex-detail .rig.big { width: 100%; max-width: 220px; aspect-ratio: 1; justify-self: center; background: var(--surface-2); border-radius: 16px; }
+.target { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px; background: rgba(255,255,255,.06); font-size: 12px; color: var(--fg); }
+.pill.up { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); font-weight: 600; }
+.cues { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; counter-reset: c; font-size: 14px; }
+.cues li { display: block; position: relative; padding-left: 26px; counter-increment: c; }
+.cues li::before { content: counter(c); position: absolute; left: 0; top: 1px; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font: 600 11px var(--sys); background: color-mix(in srgb, var(--accent) 22%, transparent); color: var(--red-hi); }
+.mistake { background: color-mix(in srgb, var(--bad) 10%, transparent); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; }
+.mistake b { color: var(--bad); font-weight: 600; }
+.rest-info { font-size: 13px; color: var(--muted); background: var(--surface-2); border-radius: 12px; padding: 10px 12px; }
+
+/* ---------- Grafice ---------- */
+.chart-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 10px; }
+.chart-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.chart-head b { font: 700 24px/1 var(--sys); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.chart-head small { color: var(--muted); font-size: 12.5px; }
+.delta-up { color: var(--good); font-weight: 600; font-size: 12.5px; }
+.delta-down { color: var(--bad); font-weight: 600; font-size: 12.5px; }
+svg.chart { width: 100%; height: auto; display: block; overflow: visible; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .ax { fill: var(--faint); font: 11px var(--sys); }
+.chart .lineA { fill: none; stroke: var(--accent); stroke-width: 2.25; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1s ease-out forwards; }
+.chart .areaA { fill: var(--accent); opacity: .12; }
+.chart .dot { fill: var(--accent); }
+.chart .dot-ring { fill: var(--bg); stroke: var(--accent); stroke-width: 2.25; }
+.chart .endlbl { fill: var(--fg); font: 600 12px var(--sys); }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.ex-pick { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; touch-action: pan-x pan-y; }
+.ex-pick::-webkit-scrollbar { display: none; }
+.ex-pick .chip { flex: none; }
+.last { font-size: 12.5px; color: var(--muted); }
+.last b { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ---------- Istoric ---------- */
+.hist { display: grid; gap: 1px; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); background: var(--line); }
+.hist-row { display: grid; grid-template-columns: 34px 1fr 18px; gap: 12px; align-items: center; width: 100%; text-align: left; padding: 10px 12px; background: var(--surface); }
+.hist-row:active { background: var(--surface-2); }
+.hist-row .badge { width: 34px; height: 34px; border-radius: 10px; background: color-mix(in srgb, var(--accent) 16%, transparent); display: grid; place-items: center; font: 700 12px var(--sys); color: var(--red-hi); text-transform: uppercase; }
+.hist-row strong { font-weight: 500; }
+.hist-row small { color: var(--muted); display: block; font-size: 12px; }
+.sbars { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; align-items: end; height: 120px; }
+.sbar { display: grid; grid-template-rows: 1fr auto auto; justify-items: center; height: 100%; gap: 2px; min-width: 0; }
+.sbar i { align-self: end; width: 100%; max-width: 48px; height: var(--h); border-radius: 8px 8px 3px 3px; background: linear-gradient(180deg, var(--red-hi), var(--accent) 60%, var(--red-deep)); transform-origin: bottom; animation: growup .55s var(--d) cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes growup { from { transform: scaleY(0); } }
+.sbar b { font: 700 15px/1 var(--sys); } .sbar b small { font-size: 10px; color: var(--muted); margin-left: 1px; font-weight: 500; }
+.sbar span { font-size: 12px; color: var(--muted); }
+.hx-chart { border-top: 1px solid var(--line); padding-top: 10px; display: grid; gap: 6px; }
+.hx-h { font: 600 12px var(--sys); color: var(--muted); }
+.hx-h small { font-weight: 400; margin-left: 4px; }
+.hx .wex-top { grid-template-columns: 52px 1fr; }
+.hx .wex-top .rig { width: 52px; height: 52px; }
+
+/* ---------- Meniul plutitor ---------- */
+.nav { position: fixed; z-index: 10; left: max(14px, env(safe-area-inset-left, 0px)); right: max(14px, env(safe-area-inset-right, 0px)); bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  border-radius: 24px; border: 1px solid rgba(255,255,255,.08); background: rgba(28,23,26,.72); backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow: 0 16px 36px -14px rgba(0,0,0,.8); }
+.nav-in { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); padding: 5px; max-width: 560px; margin: 0 auto; }
+.nav-pill { position: absolute; top: 5px; bottom: 5px; left: 5px; width: calc((100% - 10px) / 4); border-radius: 19px; background: rgba(255,255,255,.09);
+  transform: translateX(calc(var(--i, 0) * 100%)); transition: transform .4s cubic-bezier(.3, 1.25, .4, 1); }
+.nav button { position: relative; z-index: 1; display: grid; justify-items: center; gap: 3px; padding: 8px 0 7px; color: var(--faint); font: 500 10.5px var(--sys); letter-spacing: 0; transition: color .2s; }
+.nav button[aria-current="page"] { color: var(--fg); }
+.nav button[aria-current="page"] svg { color: var(--accent); }
+.nav svg { width: 22px; height: 22px; }
+
+/* ---------- Antrenament ---------- */
+.workout { position: fixed; inset: 0; z-index: 20; background: var(--bg); overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); }
+.sheet { z-index: 25; }
+.w-head { position: sticky; top: 0; z-index: 3; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-top: calc(10px + env(safe-area-inset-top, 0px)); padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.w-head-in { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: center; }
+.w-title { font: 700 18px/1.15 var(--sys); letter-spacing: -.02em; min-width: 0; }
+.w-title span { display: block; font: 600 11px var(--sys); letter-spacing: .06em; text-transform: uppercase; color: var(--red-hi); margin-bottom: 2px; }
+.w-sub { color: var(--muted); font-size: 12.5px; grid-column: 1; }
+.w-finish { grid-row: 1 / span 2; grid-column: 2; min-height: 36px; }
+.w-finish.armed { background: var(--good); color: #062014; border-color: transparent; }
+.progressbar { grid-column: 1 / -1; height: 3px; background: rgba(255,255,255,.08); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.progressbar i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--red-hi)); transition: width .3s; }
+.w-body { max-width: 560px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 14px 20px; display: grid; gap: 12px; }
+.wex { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 12px; display: grid; gap: 10px; transition: box-shadow .3s, border-color .3s; }
+.wex.complete { border-color: color-mix(in srgb, var(--good) 45%, transparent); }
+.wex-top { display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: center; }
+.wex-top .rig { width: 56px; height: 56px; background: var(--surface-2); border-radius: 12px; }
+.wex-top h3 { margin: 0 0 2px; font: 600 16px/1.25 var(--sys); letter-spacing: -.01em; text-transform: none; }
+.wex-top small { color: var(--muted); font-size: 12.5px; display: block; }
+.sets { display: grid; gap: 6px; }
+.set-h, .set { display: grid; grid-template-columns: 26px 1fr 1fr 44px; gap: 8px; align-items: center; }
+.set-h { color: var(--faint); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+.set-h span { text-align: center; }
+.set .n { font: 600 14px var(--sys); color: var(--faint); text-align: center; }
+.set input { width: 100%; min-width: 0; height: 42px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); text-align: center; font: 600 17px var(--sys); font-variant-numeric: tabular-nums; }
+.set input:focus { border-color: color-mix(in srgb, var(--accent) 60%, transparent); outline: none; }
+.set input::placeholder { color: var(--faint); font-weight: 500; }
+.set .ok { position: relative; overflow: hidden; height: 42px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); display: grid; place-items: center; color: var(--faint); }
+.set .ok svg { width: 18px; height: 18px; }
+.set.done .ok { background: var(--good); border-color: var(--good); color: #fff; }
+.set.done input { color: var(--muted); }
+.wex-actions { display: flex; gap: 8px; justify-content: space-between; flex-wrap: wrap; align-items: center; }
+.set-ctl { display: inline-flex; gap: 14px; flex-wrap: wrap; }
+.w-foot { display: grid; gap: 8px; padding-top: 6px; }
+
+/* ---------- Cronometrul de pauză ---------- */
+.rest { position: fixed; left: 0; right: 0; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 30; padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); pointer-events: none; }
+.rest-in { pointer-events: auto; max-width: 540px; margin: 0 auto; border-radius: 20px; padding: 10px 12px; display: grid; grid-template-columns: 50px 1fr auto; gap: 12px; align-items: center;
+  background: rgba(32,26,29,.86); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); border: 1px solid var(--line-2); box-shadow: 0 16px 36px -12px rgba(0,0,0,.8); animation: slidein .3s cubic-bezier(.2, .8, .2, 1) 1; }
+.ring { width: 50px; height: 50px; }
+.ring circle { fill: none; stroke-width: 5; }
+.ring .bgc { stroke: rgba(255,255,255,.1); }
+.ring .fgc { stroke: var(--accent); stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset .25s linear; }
+.rest-txt { min-width: 0; }
+.rest-t { font: 700 26px/1 var(--sys); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.rest-txt small { display: block; color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.rest-btns { display: flex; gap: 6px; }
+.rest-btns button { min-width: 40px; height: 36px; border-radius: 10px; background: rgba(255,255,255,.08); font: 600 13px var(--sys); padding: 0 8px; }
+@keyframes slidein { from { transform: translateY(30px); opacity: 0; } }
+
+/* ---------- Treci la treabă ---------- */
+.go { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; text-align: center; overflow: hidden; color: #fff;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: radial-gradient(circle at 50% 42%, var(--red-hi) 0%, var(--accent) 38%, var(--red-deep) 80%, #2a0407 100%); }
+.go-in { position: relative; display: grid; gap: 14px; justify-items: center; }
+.go-ring { position: absolute; top: 50%; left: 50%; width: 110vmin; height: 110vmin; margin: -55vmin 0 0 -55vmin; border-radius: 50%; border: 3px solid rgba(255,255,255,.45); animation: ping 1.3s ease-out infinite; }
+@keyframes ping { from { transform: scale(.2); opacity: 1; } to { transform: scale(1.05); opacity: 0; } }
+.go-small { font: 600 13px var(--sys); letter-spacing: .12em; text-transform: uppercase; opacity: .85; }
+.go-big { font: 800 clamp(48px, 15vw, 84px)/.95 var(--display); text-transform: uppercase; letter-spacing: .01em; }
+.go-next { font: 500 14px var(--sys); display: grid; gap: 2px; background: rgba(0,0,0,.2); padding: 10px 16px; border-radius: 14px; max-width: 32ch; }
+.go-next b { font: 700 17px/1.2 var(--sys); }
+.go-tap { font-size: 12px; opacity: .7; }
+.go.show .go-big { animation: slam .6s cubic-bezier(.2, 1.5, .4, 1) both; }
+.go.show .go-small, .go.show .go-next, .go.show .go-tap { animation: rise .45s .3s both; }
+@keyframes slam { from { transform: scale(2.2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* ---------- Ecran de pornire ---------- */
+.splash { position: fixed; inset: 0; z-index: 100; overflow: hidden; display: grid; place-items: center; align-content: center; gap: 18px;
+  background: radial-gradient(circle at 50% 40%, #2a1115 0%, var(--bg) 70%); transition: opacity .5s ease, transform .5s ease; }
+.splash.out { opacity: 0; transform: scale(1.04); pointer-events: none; }
+.sp-rays { display: none; }
+.sp-fig { position: relative; width: 150px; aspect-ratio: 1; border-radius: 50%; overflow: hidden; border: 2px solid rgba(255,255,255,.12);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 25%, transparent), 0 24px 50px -16px var(--accent); animation: spfig .7s cubic-bezier(.2, 1.3, .4, 1) both; }
+.sp-fig img, .sp-fig video { position: absolute; left: 50%; top: -6%; transform: translateX(-50%); height: 160%; width: auto; aspect-ratio: 9 / 16; object-fit: cover; }
+.sp-fig video { opacity: 0; transition: opacity .3s; }
+.splash.vid .sp-fig video { opacity: 1; }
+@keyframes spfig { from { transform: scale(.6); opacity: 0; } }
+.sp-title { display: grid; justify-items: center; gap: 6px; text-transform: uppercase; }
+.sp-a { font: 700 40px/1 var(--display); letter-spacing: .2em; color: var(--accent); animation: rise .5s .2s both; margin-right: -.2em; }
+.sp-b { font: 600 14px/1 var(--sys); letter-spacing: .3em; color: var(--fg); animation: rise .5s .35s both; margin-right: -.3em; }
+.sp-stripe { width: 120px; height: 3px; border-radius: 2px; background: repeating-linear-gradient(90deg, var(--accent) 0 12px, #fff 12px 24px); animation: growx .5s .5s ease-out both; }
+@keyframes growx { from { transform: scaleX(0); } }
+
+/* ---------- Animații de bază ---------- */
+#view.enter > * { animation: rise .45s cubic-bezier(.2, .8, .2, 1) both; }
+#view.enter > *:nth-child(2) { animation-delay: .05s; }
+#view.enter > *:nth-child(3) { animation-delay: .1s; }
+#view.enter > *:nth-child(4) { animation-delay: .15s; }
+#view.enter > *:nth-child(n+5) { animation-delay: .2s; }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+.workout.slide-in { animation: slidein .35s cubic-bezier(.2, .8, .2, 1); }
+.pop { animation: pop .38s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes pop { 0% { transform: scale(.75); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+.set.done .ok svg path, .check.taken .tick svg path { stroke-dasharray: 24; stroke-dashoffset: 24; animation: tickdraw .3s .05s ease-out forwards; }
+@keyframes tickdraw { to { stroke-dashoffset: 0; } }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(96px + env(safe-area-inset-bottom, 0px)); z-index: 60; background: rgba(246,242,241,.96); color: #141012; padding: 10px 16px; border-radius: 14px; font: 500 14px var(--sys); max-width: calc(100% - 32px); box-shadow: 0 10px 30px rgba(0,0,0,.45); animation: toastin .3s cubic-bezier(.2, .8, .2, 1); }
+@keyframes toastin { from { transform: translate(-50%, 16px); opacity: 0; } }
+.fx-canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 70; pointer-events: none; }
+
+/* ---------- Figurile animate ---------- */
+.rig .limb, .rig .ground, .rig .prop, .rig .eq, .rig .cable { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.rig .limb { stroke: var(--fg); }
+.rig .w14 { stroke-width: 14; } .rig .w9 { stroke-width: 9; } .rig .w8 { stroke-width: 8; } .rig .w6 { stroke-width: 6; } .rig .w5 { stroke-width: 5; } .rig .w4 { stroke-width: 4; }
+.rig .head, .rig .torso { fill: var(--fg); }
+.rig .prop { stroke: var(--surface-3); }
+.rig .ground { stroke: var(--surface-3); stroke-width: 2; }
+.rig .eq { stroke: var(--accent); }
+.rig .eq-fill { fill: var(--accent); }
+.rig .hub { fill: var(--surface-2); }
+.rig .cable { stroke: var(--faint); stroke-width: 1.5; }
+.rig .pulley { fill: var(--faint); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .chart .lineA { stroke-dashoffset: 0; }
+}
+.buddy .b-vid, .buddy .b-poster { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 22%, #000 78%, transparent 100%), linear-gradient(180deg, transparent 0, #000 10%, #000 80%, transparent 100%); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0, #000 22%, #000 78%, transparent 100%), linear-gradient(180deg, transparent 0, #000 10%, #000 80%, transparent 100%); mask-composite: intersect; }
+.buddy.full { background: radial-gradient(42% 70% at 50% 48%, #24222a 0%, #141214 60%, var(--bg) 100%); }
+
+/* clipurile au fundalul scos și înlocuit cu culoarea aplicației, deci banda nu mai are chenar */
+.buddy.full { background: var(--bg); }
+.buddy.full::after { background: linear-gradient(180deg, var(--bg) 0%, transparent 12%, transparent 72%, var(--bg) 100%); }
+.buddy .b-vid, .buddy .b-poster { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 10%, #000 90%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 10%, #000 90%, transparent 100%); -webkit-mask-composite: source-over; mask-composite: add; }
+
+/* ---------- Meniu cu 5 file ---------- */
+.nav-in { grid-template-columns: repeat(5, 1fr); }
+.nav-pill { width: calc((100% - 10px) / 5); }
+.nav button { font-size: 10px; }
+
+/* ---------- Inele de activitate ---------- */
+.rings { display: grid; grid-template-columns: 116px 1fr; gap: 16px; align-items: center; padding: 16px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); }
+.ring3 { width: 116px; height: 116px; transform: rotate(-90deg); }
+.rg-bg { fill: none; stroke-width: 10; opacity: .16; }
+.rg-fg { fill: none; stroke-width: 10; stroke-linecap: round; animation: rgfill 1.2s cubic-bezier(.3, .9, .3, 1) both; }
+@keyframes rgfill { from { stroke-dashoffset: var(--c); } }
+.rg-list { display: grid; gap: 10px; min-width: 0; }
+.rg-item { display: grid; grid-template-columns: 8px 1fr; gap: 10px; align-items: start; }
+.rg-item i { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; }
+.rg-item span { display: grid; grid-template-columns: 1fr auto; gap: 0 8px; align-items: baseline; }
+.rg-item small { font-size: 12px; color: var(--muted); font-weight: 600; }
+.rg-item b { font: 700 16px var(--sys); letter-spacing: -.02em; text-align: right; }
+.rg-item em { grid-column: 1 / -1; font-style: normal; font-size: 11.5px; color: var(--faint); }
+.streak { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: linear-gradient(90deg, color-mix(in srgb, #ff9f43 18%, transparent), transparent); border: 1px solid color-mix(in srgb, #ff9f43 25%, transparent); }
+.streak svg { width: 20px; height: 20px; color: #ff9f43; }
+.streak b { font: 700 18px var(--sys); color: #ffb76b; }
+.streak span { font-size: 13px; color: var(--fg); }
+
+/* ---------- Harta musculară ---------- */
+.mmap { display: grid; gap: 14px; padding: 16px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); }
+.mm-bodies { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mm-bodies figure { margin: 0; display: grid; justify-items: center; gap: 4px; }
+.mm-bodies figcaption { font-size: 11px; color: var(--faint); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+.body { width: 100%; max-width: 130px; height: auto; }
+.mm { transition: fill .6s; }
+.mm-list { display: grid; gap: 7px; }
+.mm-row { display: grid; grid-template-columns: 84px 1fr 26px; gap: 10px; align-items: center; font-size: 13px; }
+.mm-row i { height: 6px; border-radius: 3px; background: var(--surface-3); overflow: hidden; }
+.mm-row i b { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--red-deep), var(--accent), var(--red-hi)); animation: growx .8s ease-out both; transform-origin: left; }
+.mm-row em { font-style: normal; text-align: right; color: var(--muted); font-weight: 600; }
+.mm-note { color: var(--faint); font-size: 11.5px; line-height: 1.4; }
+
+/* ---------- Recorduri ---------- */
+.pr-b { background: color-mix(in srgb, #ffc94d 16%, transparent) !important; color: #ffc94d !important; }
+.pr-b svg { width: 17px; height: 17px; }
+.pr-row { grid-template-columns: 34px 1fr auto; }
+.pr-g { font-style: normal; font-weight: 700; font-size: 13px; color: var(--good); }
+.pr { position: fixed; inset: 0; z-index: 55; display: grid; place-items: center; padding: 20px; background: rgba(5,4,5,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.pr-card { width: min(100%, 360px); display: grid; justify-items: center; gap: 10px; text-align: center; padding: 0 20px 20px; border-radius: 26px; overflow: hidden;
+  background: radial-gradient(120% 60% at 50% 0%, color-mix(in srgb, #ffc94d 22%, var(--surface)), var(--surface) 60%); border: 1px solid color-mix(in srgb, #ffc94d 30%, transparent); box-shadow: 0 30px 60px -20px rgba(0,0,0,.8); }
+.pr.show .pr-card { animation: prin .6s cubic-bezier(.2, 1.4, .4, 1) both; }
+@keyframes prin { from { transform: scale(.7) translateY(30px); opacity: 0; } }
+.buddy.pr-av { width: 100%; height: 220px; margin: 0 -20px; }
+.buddy.pr-av .b-vid, .buddy.pr-av .b-poster { height: 100%; }
+.pr-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; background: #ffc94d; color: #2a1d00; font: 700 12px var(--sys); text-transform: uppercase; letter-spacing: .06em; margin-top: -8px; }
+.pr-badge svg { width: 15px; height: 15px; }
+.pr-t { margin: 4px 0 0; font: 600 16px var(--sys); color: var(--fg); }
+.pr-v { font: 800 36px/1 var(--sys); letter-spacing: -.03em; color: #ffd27a; }
+.pr-card p { margin: 0 0 6px; color: var(--muted); font-size: 13.5px; }
+
+/* ---------- Profil ---------- */
+.prof { display: grid; justify-items: center; text-align: center; gap: 4px; padding-top: 8px; }
+.prof h1 { margin: 6px 0 0; font: 700 22px var(--sys); letter-spacing: -.02em; }
+.prof-av { width: 112px; height: 112px; border-radius: 50%; overflow: hidden; position: relative; background: var(--surface-2);
+  box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--accent), 0 18px 40px -14px var(--accent); }
+.buddy.avatar { position: absolute; inset: 0; }
+.buddy.avatar .b-vid, .buddy.avatar .b-poster { height: 190%; top: -4%; -webkit-mask-image: none; mask-image: none; }
+.pstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.pstats .stat { text-align: center; padding: 12px 6px; }
+.pstats .stat b { font-size: 19px; }
+.ach-head { font-size: 13px; color: var(--muted); } .ach-head b { color: var(--fg); font-size: 15px; }
+.ach { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.ach-i { display: grid; justify-items: center; text-align: center; gap: 4px; padding: 14px 8px 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); opacity: .5; }
+.ach-i.ok { opacity: 1; background: linear-gradient(180deg, color-mix(in srgb, #ffc94d 10%, var(--surface)), var(--surface)); border-color: color-mix(in srgb, #ffc94d 25%, transparent); }
+.ach-ic { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-3); color: var(--faint); }
+.ach-i.ok .ach-ic { background: linear-gradient(160deg, #ffe08a, #f2a51a); color: #3a2600; box-shadow: 0 6px 16px -6px #f2a51a; }
+.ach-ic svg { width: 20px; height: 20px; }
+.ach-i b { font: 600 12.5px/1.2 var(--sys); }
+.ach-i small { font-size: 10.5px; color: var(--muted); line-height: 1.3; }
+
+/* ---------- Prezentarea de la prima pornire ---------- */
+.onb { position: fixed; inset: 0; z-index: 90; background: radial-gradient(120% 70% at 50% 0%, #2a1013 0%, var(--bg) 60%); overflow-y: auto; transition: opacity .45s, transform .45s;
+  padding: calc(20px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); }
+.onb.out { opacity: 0; transform: scale(1.04); pointer-events: none; }
+.ob-in { max-width: 420px; min-height: 100%; margin: 0 auto; display: grid; align-content: center; gap: 14px; text-align: center; justify-items: center; }
+.ob-in.in > * { animation: rise .55s cubic-bezier(.2, .8, .2, 1) both; }
+.ob-in.in > *:nth-child(2) { animation-delay: .06s; } .ob-in.in > *:nth-child(3) { animation-delay: .12s; } .ob-in.in > *:nth-child(4) { animation-delay: .18s; } .ob-in.in > *:nth-child(n+5) { animation-delay: .24s; }
+.ob-in h1 { margin: 0; font: 800 32px/1.08 var(--sys); letter-spacing: -.03em; text-wrap: balance; }
+.ob-in h2 { margin: 0; font: 700 26px/1.15 var(--sys); letter-spacing: -.02em; }
+.ob-in h3 { margin: 8px 0 0; font: 600 15px var(--sys); color: var(--muted); }
+.ob-in p { margin: 0; color: var(--muted); font-size: 15px; max-width: 34ch; }
+.ob-brand { font: 700 15px var(--display); letter-spacing: .4em; text-transform: uppercase; color: var(--accent); margin-right: -.4em; }
+.ob-legal { color: var(--faint); font-size: 12px; }
+.ob-hero { position: relative; width: 210px; height: 260px; }
+.ob-hero.big { width: 100%; height: 330px; }
+.buddy.ob-av { position: absolute; inset: 0; }
+.buddy.ob-av .b-vid, .buddy.ob-av .b-poster { height: 100%; }
+.ob-steps { display: flex; gap: 6px; } .ob-steps i { width: 28px; height: 4px; border-radius: 2px; background: var(--surface-3); } .ob-steps i.on { background: var(--accent); }
+.ob-drop { width: 200px; height: 200px; border-radius: 50%; display: grid; place-items: center; align-content: center; gap: 4px; cursor: pointer; overflow: hidden; margin: 8px 0;
+  border: 2px dashed color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 7%, transparent); }
+.ob-drop img { width: 100%; height: 100%; object-fit: cover; }
+.ob-drop b { font: 600 15px var(--sys); } .ob-drop small { color: var(--muted); font-size: 12px; }
+.ob-cam { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: #fff; margin-bottom: 6px; box-shadow: 0 10px 24px -10px var(--accent); }
+.ob-cam svg { width: 26px; height: 26px; }
+.gen { position: relative; width: 230px; height: 230px; margin: 10px 0; }
+.gen-ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+.g-bg { fill: none; stroke: var(--surface-3); stroke-width: 6; }
+.g-fg { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; filter: drop-shadow(0 0 8px var(--accent)); }
+.gen-ph { position: absolute; inset: 18px; border-radius: 50%; overflow: hidden; background: var(--surface-2); }
+.gen-ph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; filter: grayscale(.4) contrast(1.1); animation: genpulse 1.6s ease-in-out infinite; }
+@keyframes genpulse { 50% { filter: grayscale(0) contrast(1.2) brightness(1.15); } }
+.gen-scan { position: absolute; inset: 18px; border-radius: 50%; overflow: hidden; pointer-events: none; }
+.gen-scan::after { content: ''; position: absolute; left: 0; right: 0; height: 30%; background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent) 55%, transparent), transparent); animation: scan 1.4s linear infinite; }
+@keyframes scan { from { top: -30%; } to { top: 100%; } }
+.gen-pct { font: 800 40px var(--sys); letter-spacing: -.03em; }
+.gen-txt { color: var(--muted); font-size: 14px; min-height: 20px; }
+.ob-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--red-hi); font: 600 13px var(--sys); }
+.ob-badge svg { width: 16px; height: 16px; }
+.ob-goals { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ob-goal { display: grid; gap: 3px; text-align: left; padding: 14px; border-radius: 16px; background: var(--surface); border: 1.5px solid var(--line); }
+.ob-goal b { font: 600 15px var(--sys); } .ob-goal small { font-size: 12px; color: var(--muted); }
+.ob-goal.on, .ob-day.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+.ob-days { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.ob-day { display: grid; padding: 12px 0; border-radius: 14px; background: var(--surface); border: 1.5px solid var(--line); }
+.ob-day b { font: 700 22px var(--sys); } .ob-day small { font-size: 11px; color: var(--muted); }
+.ob-check { width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; background: var(--good); color: #fff; box-shadow: 0 16px 40px -14px var(--good); animation: pop .6s cubic-bezier(.3, 1.6, .5, 1) both; }
+.ob-check svg { width: 40px; height: 40px; }
+.ob-in .btn-main { margin-top: 6px; max-width: 360px; }
+/* card record: partea de sus are culoarea clipului */
+.pr-card { background: linear-gradient(180deg, var(--bg) 0 210px, color-mix(in srgb, #ffc94d 10%, var(--surface)) 260px, var(--surface)); }
+.buddy.ob-av .b-vid, .buddy.ob-av .b-poster, .buddy.pr-av .b-vid, .buddy.pr-av .b-poster {
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); }
+</style>
+<div class="splash" id="splash" aria-hidden="true">
+  <div class="sp-rays"></div>
+  <div class="sp-fig"><img src="../mini-cristian-flex.jpg" alt=""><video src="../mini-cristian-flex.mp4" muted autoplay playsinline webkit-playsinline preload="auto"></video></div>
+  <div class="sp-title"><span class="sp-a">Forța</span><span class="sp-b">Cristian Demian</span></div>
+  <div class="sp-stripe"></div>
+</div>
+<div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="app">
+  <header class="top"><div class="brand"><img id="hbadge" class="hbadge" alt="" hidden><span class="b1">Forța</span><span class="b2">Cristian Demian</span></div></header>
+  <main id="view"></main>
+</div>
+<nav class="nav" id="nav" aria-label="Navigare"></nav>
+<section class="workout" id="workout" hidden aria-label="Antrenament"></section>
+<div class="rest" id="rest" hidden></div>
+<section class="workout sheet" id="sheet" hidden aria-label="Detaliu antrenament"></section>
+<div class="go" id="go" hidden role="alert"></div>
+<div class="pr" id="pr" hidden role="dialog" aria-label="Record personal"></div>
+<div class="toast" id="toast" hidden role="status"></div>
+<script>
+/* ---------- Programul: 3 zile, câte două grupe ---------- */
+const DAYS = [
+  { id: 'A', wd: 1, label: 'Luni', short: 'Piept', name: 'Piept + Triceps', ex: ['incline', 'chestpress', 'pecdeck', 'rope', 'vbar'] },
+  { id: 'B', wd: 3, label: 'Miercuri', short: 'Spate', name: 'Spate + Biceps', ex: ['pulldown', 'supine', 'dbrow', 'cablerow', 'straightarm', 'zwide', 'znarrow', 'hammer'] },
+  { id: 'C', wd: 5, label: 'Vineri', short: 'Umeri', name: 'Umeri + Picioare', ex: ['squat', 'rdl', 'legpress', 'legcurl', 'dbpress', 'lateral', 'facepull'] }
+];
+
+const EX = {
+  bench: {
+    name: 'Împins cu bara la orizontală', muscles: 'Piept, triceps, umăr frontal',
+    sets: 3, reps: [6, 8], rest: 150, step: 2.5,
+    cues: ['Omoplații strânși și coborâți, ușor arcuit, picioarele bine înfipte în podea.',
+      'Coboară bara controlat pe linia mameloanelor, coatele la aproximativ 45° față de trunchi.',
+      'Împinge exploziv în sus și ușor spre fețe, fără să desprinzi fesele de bancă.'],
+    mistake: 'Coatele deschise la 90° încarcă umerii. Ține-le mai aproape de corp.',
+    rig: { eq: [{ k: 'bench', a: [48, 137], b: [132, 137] }, { k: 'plate', at: 'hand' }],
+      A: { hip: [122, 130], t: -90, ua: 176, fa: 180, th: 62, sh: 0 },
+      B: { hip: [122, 130], t: -90, ua: 22, fa: 180, th: 62, sh: 0 } }
+  },
+  incline: {
+    name: 'Împins cu gantere la înclinat', muscles: 'Piept superior, umăr frontal',
+    sets: 3, reps: [8, 10], rest: 120, step: 2,
+    cues: ['Banca la 30°, nu mai mult, ca pieptul să lucreze, nu umerii.',
+      'Coboară ganterele lateral până simți o întindere bună în piept.',
+      'Împinge pe un arc ușor, ganterele se apropie sus fără să se lovească.'],
+    mistake: 'Banca prea ridicată (45° sau peste) transformă exercițiul în împins pentru umeri.',
+    rig: { eq: [{ k: 'pad', a: [120, 147], b: [78, 118] }, { k: 'pad', a: [118, 148], b: [148, 148] }, { k: 'db', at: 'hand' }],
+      A: { hip: [120, 141], t: -55, ua: 165, fa: 172, th: 80, sh: 4 },
+      B: { hip: [120, 141], t: -55, ua: 15, fa: 176, th: 80, sh: 4 } }
+  },
+  cross: {
+    name: 'Fluturări la cablu (crossover)', muscles: 'Piept, umăr frontal',
+    sets: 3, reps: [12, 15], rest: 75, step: 2.5,
+    cues: ['Un pas în față, trunchiul ușor aplecat, coatele ușor îndoite și fixe.',
+      'Adu mâinile în față și în jos, ca și cum ai îmbrățișa un copac mare.',
+      'Strânge pieptul o secundă jos, apoi revino lent până la întindere.'],
+    mistake: 'Dacă îndoi și întinzi coatele, faci împins, nu fluturări. Unghiul cotului rămâne fix.',
+    rig: { front: true, eq: [{ k: 'cableF', to: [24, 14] }],
+      A: { ua: 118, fa: 128 }, B: { ua: 28, fa: -6 } }
+  },
+  dips: {
+    name: 'Flotări la paralele', muscles: 'Piept inferior, triceps',
+    sets: 3, reps: [8, 12], rest: 90, step: 2.5,
+    cues: ['Aplecă-te ușor în față ca să lucreze pieptul mai mult.',
+      'Coboară până când umărul ajunge la nivelul cotului, nu mai jos.',
+      'Împinge până la brațele aproape întinse. Adaugă greutate la centură când treci de 12 repetări.'],
+    mistake: 'Coborârea prea adâncă forțează articulația umărului.',
+    rig: { eq: [{ k: 'bars', y: 93 }],
+      A: { hand: [104, 92], t: 14, ua: 2, fa: 0, th: 12, sh: -70 },
+      B: { hand: [104, 92], t: 30, ua: -95, fa: 40, th: 30, sh: -55 } }
+  },
+  pushdown: {
+    name: 'Extensii triceps la scripete', muscles: 'Triceps',
+    sets: 3, reps: [10, 12], rest: 60, step: 2.5,
+    cues: ['Coatele lipite de corp, nu se mișcă în timpul execuției.',
+      'Întinde complet brațele jos și strânge tricepsul o secundă.',
+      'Urcă controlat până când antebrațul trece puțin de orizontală.'],
+    mistake: 'Aplecarea peste cablu mută efortul pe umeri și spate.',
+    rig: { eq: [{ k: 'cable', at: 'hand', to: [124, 14] }, { k: 'handle', at: 'hand' }],
+      A: { hip: [96, 114], t: 4, ua: 4, fa: 135, th: 0, sh: 0 },
+      B: { hip: [96, 114], t: 4, ua: 4, fa: 2, th: 0, sh: 0 } }
+  },
+  ohext: {
+    name: 'Extensii triceps deasupra capului', muscles: 'Triceps (capul lung)',
+    sets: 3, reps: [10, 12], rest: 60, step: 2,
+    cues: ['Ține gantera cu ambele mâini, brațele lângă urechi.',
+      'Coboară gantera în spatele capului cât de jos poți controla.',
+      'Întinde brațele fără să depărtezi coatele.'],
+    mistake: 'Coatele care se deschid lateral reduc lucrul pe triceps.',
+    rig: { eq: [{ k: 'db', at: 'hand' }],
+      A: { hip: [96, 114], t: 0, ua: 172, fa: 178, th: 0, sh: 0 },
+      B: { hip: [96, 114], t: 0, ua: 170, fa: 330, th: 0, sh: 0 } }
+  },
+  pulldown: {
+    name: 'Tracțiuni la helcometru', muscles: 'Dorsali, biceps',
+    sets: 3, reps: [8, 10], rest: 120, step: 2.5,
+    cues: ['Priză puțin mai lată decât umerii, pieptul sus.',
+      'Trage bara spre partea de sus a pieptului, gândindu-te să duci coatele în jos.',
+      'Lasă bara să urce lent, până la întinderea completă a dorsalilor.'],
+    mistake: 'Balansul cu tot corpul pe spate. Înclinarea rămâne mică și constantă.',
+    rig: { eq: [{ k: 'cable', at: 'hand', to: 'up' }, { k: 'handle', at: 'hand' }, { k: 'pad', a: [80, 148], b: [118, 148] }],
+      A: { hip: [92, 141], t: -10, ua: 172, fa: 176, th: 90, sh: 0 },
+      B: { hip: [92, 141], t: -14, ua: -28, fa: 165, th: 90, sh: 0 } }
+  },
+  row: {
+    name: 'Ramat cu bara', muscles: 'Spate mijlociu, dorsali, biceps',
+    sets: 3, reps: [6, 8], rest: 120, step: 2.5,
+    cues: ['Genunchii ușor îndoiți, trunchiul aplecat la aproximativ 45°, spatele drept.',
+      'Trage bara spre buric, strângând omoplații.',
+      'Coboară controlat fără să-ți rotunjești spatele.'],
+    mistake: 'Ridicarea trunchiului la fiecare repetare transformă ramatul în balans.',
+    rig: { eq: [{ k: 'plate', at: 'hand' }],
+      A: { foot: [100, 178], t: 68, ua: 2, fa: 0, th: 24, sh: -12 },
+      B: { foot: [100, 178], t: 68, ua: -60, fa: -2, th: 24, sh: -12 } }
+  },
+  cablerow: {
+    name: 'Ramat la cablu din șezut', muscles: 'Spate mijlociu, romboizi',
+    sets: 3, reps: [10, 12], rest: 90, step: 2.5,
+    cues: ['Picioarele pe platformă, genunchii ușor îndoiți, pieptul sus.',
+      'Trage mânerul spre abdomen, ducând coatele pe lângă corp.',
+      'Lasă omoplații să se depărteze în față, fără să te prăbușești din spate.'],
+    mistake: 'Balansul mare din șolduri fură lucrul spatelui.',
+    rig: { eq: [{ k: 'cable', at: 'hand', to: 'right' }, { k: 'handle', at: 'hand' }, { k: 'pad', a: [52, 158], b: [96, 158] }],
+      A: { hip: [76, 151], t: 14, ua: 88, fa: 90, th: 88, sh: 80 },
+      B: { hip: [76, 151], t: -8, ua: -55, fa: 88, th: 88, sh: 80 } }
+  },
+  straightarm: {
+    name: 'Pullover la cablu cu brațele întinse', muscles: 'Dorsali',
+    sets: 3, reps: [12, 15], rest: 60, step: 2.5,
+    cues: ['Aplecă-te puțin în față, brațele aproape întinse.',
+      'Împinge bara în jos în arc până la coapse, simțind dorsalii.',
+      'Revino lent până la nivelul capului.'],
+    mistake: 'Îndoirea coatelor transformă mișcarea în extensii de triceps.',
+    rig: { eq: [{ k: 'cable', at: 'hand', to: [150, 14] }, { k: 'handle', at: 'hand' }],
+      A: { hip: [92, 114], t: 22, ua: 150, fa: 154, th: 0, sh: 0 },
+      B: { hip: [92, 114], t: 22, ua: 10, fa: 10, th: 0, sh: 0 } }
+  },
+  curl: {
+    name: 'Flexii biceps cu bara', muscles: 'Biceps',
+    sets: 3, reps: [8, 10], rest: 75, step: 2.5,
+    cues: ['Coatele fixe pe lângă corp, încheieturile drepte.',
+      'Ridică bara până la contracția completă a bicepsului.',
+      'Coboară în 2-3 secunde, până la brațele întinse.'],
+    mistake: 'Balansul din spate. Dacă trebuie să te arunci, greutatea e prea mare.',
+    rig: { eq: [{ k: 'plate', at: 'hand' }],
+      A: { hip: [96, 114], t: 0, ua: 4, fa: 4, th: 0, sh: 0 },
+      B: { hip: [96, 114], t: -2, ua: 8, fa: 152, th: 0, sh: 0 } }
+  },
+  hammer: {
+    name: 'Flexii ciocan cu gantere', muscles: 'Brahial, antebraț, biceps',
+    sets: 3, reps: [10, 12], rest: 60, step: 2,
+    cues: ['Palmele față în față pe toată mișcarea.',
+      'Ridică gantera fără să miști cotul în față.',
+      'Alternează brațele sau lucrează-le simultan, controlat.'],
+    mistake: 'Rotirea încheieturii schimbă exercițiul. Priza rămâne neutră.',
+    rig: { eq: [{ k: 'db', at: 'hand' }],
+      A: { hip: [96, 114], t: 0, ua: 4, fa: 4, th: 0, sh: 0 },
+      B: { hip: [96, 114], t: 0, ua: 6, fa: 146, th: 0, sh: 0 } }
+  },
+  squat: {
+    name: 'Genuflexiuni cu bara', muscles: 'Cvadricepși, fesieri, adductori',
+    sets: 3, reps: [6, 8], rest: 180, step: 2.5,
+    cues: ['Bara pe trapez, picioarele la lățimea umerilor, vârfurile ușor spre exterior.',
+      'Coboară cu șoldurile în spate și genunchii pe direcția vârfurilor, până sub paralelă.',
+      'Urcă împingând în tot talpa, pieptul rămâne sus.'],
+    mistake: 'Genunchii care cad spre interior la urcare. Împinge-i activ spre exterior.',
+    rig: { eq: [{ k: 'plate', at: 'hand' }],
+      A: { foot: [104, 178], t: 8, ua: -50, fa: 168, th: 2, sh: 0 },
+      B: { foot: [104, 178], t: 44, ua: -10, fa: 205, th: 95, sh: -28 } }
+  },
+  rdl: {
+    name: 'Îndreptări românești', muscles: 'Femurali, fesieri, lombari',
+    sets: 3, reps: [8, 10], rest: 120, step: 2.5,
+    cues: ['Genunchii ușor îndoiți și ficși, bara lipită de picioare.',
+      'Împinge șoldurile în spate până simți întinderea femuralilor.',
+      'Revino strângând fesierii, fără să te lași pe spate sus.'],
+    mistake: 'Spatele rotunjit jos. Coboară doar cât îți permite spatele drept.',
+    rig: { eq: [{ k: 'plate', at: 'hand' }],
+      A: { foot: [100, 178], t: 2, ua: 0, fa: 0, th: 4, sh: 0 },
+      B: { foot: [100, 178], t: 78, ua: 0, fa: 0, th: 16, sh: -4 } }
+  },
+  legpress: {
+    name: 'Presă pentru picioare', muscles: 'Cvadricepși, fesieri',
+    sets: 3, reps: [10, 12], rest: 120, step: 5,
+    cues: ['Spatele și fesele lipite de spătar pe toată mișcarea.',
+      'Coboară platforma până la un unghi de 90° la genunchi sau puțin sub.',
+      'Împinge prin călcâie, fără să blochezi complet genunchii sus.'],
+    mistake: 'Fesele care se ridică de pe scaun jos. Oprește coborârea înainte de asta.',
+    rig: { eq: [{ k: 'pad', a: [100, 150], b: [66, 102] }, { k: 'platform', at: 'foot', ang: 128 }],
+      A: { hip: [94, 140], t: -58, ua: 40, fa: 80, th: 162, sh: 98 },
+      B: { hip: [94, 140], t: -58, ua: 40, fa: 80, th: 128, sh: 128 } }
+  },
+  legcurl: {
+    name: 'Flexii femurali la aparat', muscles: 'Femurali',
+    sets: 3, reps: [10, 12], rest: 75, step: 2.5,
+    cues: ['Șoldurile lipite de bancă pe toată execuția.',
+      'Adu călcâiele spre fese și ține o secundă sus.',
+      'Coboară lent, fără să lași greutatea să cadă.'],
+    mistake: 'Ridicarea șoldurilor de pe bancă ca să termini repetarea.',
+    rig: { eq: [{ k: 'bench', a: [42, 136], b: [150, 136] }, { k: 'handle', at: 'foot' }],
+      A: { hip: [112, 129], t: -90, ua: 22, fa: 40, th: 90, sh: 92, fd: 180 },
+      B: { hip: [112, 129], t: -90, ua: 22, fa: 40, th: 90, sh: 196, fd: 270 } }
+  },
+  dbpress: {
+    name: 'Împins cu gantere deasupra capului', muscles: 'Umeri, triceps',
+    sets: 3, reps: [8, 10], rest: 120, step: 2,
+    cues: ['Șezut pe bancă cu spătar vertical, abdomenul strâns.',
+      'Ganterele pornesc la nivelul urechilor, coatele ușor în față.',
+      'Împinge drept în sus până aproape de brațe întinse.'],
+    mistake: 'Arcuirea puternică a spatelui. Dacă apare, scade greutatea.',
+    rig: { eq: [{ k: 'pad', a: [86, 150], b: [86, 96] }, { k: 'pad', a: [80, 150], b: [118, 150] }, { k: 'db', at: 'hand' }],
+      A: { hip: [96, 143], t: 0, ua: 14, fa: 178, th: 90, sh: 0 },
+      B: { hip: [96, 143], t: 0, ua: 176, fa: 178, th: 90, sh: 0 } }
+  },
+  lateral: {
+    name: 'Ridicări laterale cu gantere', muscles: 'Umăr lateral',
+    sets: 3, reps: [12, 15], rest: 60, step: 1,
+    cues: ['Coatele ușor îndoiți, trunchiul puțin aplecat în față.',
+      'Ridică brațele lateral până la nivelul umerilor, conducând cu coatele.',
+      'Coboară în 2-3 secunde. Greutatea mică, execuția perfectă.'],
+    mistake: 'Ridicarea umerilor spre urechi trimite efortul în trapez.',
+    rig: { front: true, eq: [{ k: 'dbF' }],
+      A: { ua: 12, fa: 14 }, B: { ua: 86, fa: 90 } }
+  },
+  facepull: {
+    name: 'Face pull la cablu', muscles: 'Umăr posterior, spate superior',
+    sets: 3, reps: [12, 15], rest: 60, step: 2.5,
+    cues: ['Scripetele la nivelul feței, frânghie prinsă cu palmele spre podea.',
+      'Trage spre frunte, depărtând mâinile și ducând coatele sus și în spate.',
+      'Ține o secundă, apoi revino controlat.'],
+    mistake: 'Greutate prea mare, care te face să tragi din spate.',
+    rig: { eq: [{ k: 'cable', at: 'hand', to: [192, 62] }, { k: 'handle', at: 'hand' }],
+      A: { hip: [92, 114], t: -4, ua: 86, fa: 88, th: 0, sh: 0 },
+      B: { hip: [92, 114], t: -6, ua: -95, fa: 150, th: 0, sh: 0 } }
+  }
+};
+
+
+
+Object.assign(EX, {
+  chestpress: {
+    name: 'Împins la aparatul pentru piept', muscles: 'Piept, triceps, umăr frontal',
+    sets: 3, reps: [8, 12], rest: 120, step: 5,
+    cues: ['Reglează scaunul astfel încât mânerele să fie la nivelul mijlocului pieptului.',
+      'Spatele lipit de spătar, omoplații strânși, împinge până aproape de brațe întinse.',
+      'Revino lent până simți întinderea în piept, fără ca greutățile să se atingă.'],
+    mistake: 'Umerii care se ridică în față la final. Rămân trași înapoi pe tot setul.',
+    rig: { eq: [{ k: 'pad', a: [84, 150], b: [80, 96] }, { k: 'pad', a: [80, 150], b: [118, 150] }, { k: 'handle', at: 'hand' }],
+      A: { hip: [94, 143], t: -6, ua: -35, fa: 92, th: 90, sh: 0 },
+      B: { hip: [94, 143], t: -6, ua: 86, fa: 90, th: 90, sh: 0 } }
+  },
+  pecdeck: {
+    name: 'Pec-deck', muscles: 'Piept, umăr frontal',
+    sets: 3, reps: [12, 15], rest: 75, step: 5,
+    cues: ['Mânerele sau pernițele la nivelul pieptului, spatele lipit de spătar.',
+      'Adu brațele în față până se întâlnesc, strângând pieptul o secundă.',
+      'Deschide lent până la o întindere confortabilă, fără să treci de linia umerilor.'],
+    mistake: 'Deschiderea prea largă la final, care forțează umărul.',
+    rig: { front: true, eq: [{ k: 'padsF' }],
+      A: { ua: 92, fa: 180, ul: 1 }, B: { ua: 92, fa: 180, ul: 0.3 } }
+  },
+  rope: {
+    name: 'Extensii triceps la cablu cu frânghie', muscles: 'Triceps',
+    sets: 3, reps: [10, 12], rest: 60, step: 2.5,
+    cues: ['Coatele lipite de corp și fixe pe toată mișcarea.',
+      'Împinge frânghia în jos și depărtează capetele jos, lângă coapse.',
+      'Urcă controlat până când antebrațul trece puțin de orizontală.'],
+    mistake: 'Coatele care pleacă în față ca să ajute la împins.',
+    rig: EX.pushdown.rig
+  },
+  vbar: {
+    name: 'Extensii triceps la cablu cu bară în V', muscles: 'Triceps',
+    sets: 3, reps: [8, 12], rest: 60, step: 2.5,
+    cues: ['Priză pe bara în V, încheieturile drepte.',
+      'Întinde brațele complet jos, cu umerii trași înapoi.',
+      'Poți lucra mai greu decât la frânghie, dar coatele rămân fixe.'],
+    mistake: 'Aplecarea peste bară ca să împingi cu greutatea corpului.',
+    rig: { eq: [{ k: 'cable', at: 'hand', to: [124, 14] }, { k: 'handle', at: 'hand' }],
+      A: { hip: [96, 114], t: 8, ua: 6, fa: 128, th: 0, sh: 0 },
+      B: { hip: [96, 114], t: 8, ua: 6, fa: 4, th: 0, sh: 0 } }
+  },
+  supine: {
+    name: 'Tracțiuni la scripete cu priză supinată', muscles: 'Dorsali, biceps',
+    sets: 3, reps: [8, 12], rest: 90, step: 2.5,
+    cues: ['Palmele spre tine, la lățimea umerilor.',
+      'Trage bara spre partea de sus a pieptului, coatele merg în jos pe lângă corp.',
+      'Întinde complet brațele sus la fiecare repetare.'],
+    mistake: 'Tragerea doar din brațe. Gândește-te să duci coatele spre buzunare.',
+    rig: { eq: [{ k: 'cable', at: 'hand', to: 'up' }, { k: 'handle', at: 'hand' }, { k: 'pad', a: [80, 148], b: [118, 148] }],
+      A: { hip: [92, 141], t: -8, ua: 174, fa: 177, th: 90, sh: 0 },
+      B: { hip: [92, 141], t: -12, ua: -12, fa: 160, th: 90, sh: 0 } }
+  },
+  dbrow: {
+    name: 'Ramat cu gantera cu o singură mână', muscles: 'Dorsali, spate mijlociu, biceps',
+    sets: 3, reps: [8, 10], rest: 90, step: 2,
+    cues: ['Un genunchi și o mână pe bancă, spatele paralel cu podeaua.',
+      'Trage gantera spre șold, nu spre umăr, cu cotul pe lângă corp.',
+      'Coboară până la brațul întins și lasă umărul să se întindă puțin.'],
+    mistake: 'Rotirea trunchiului ca să urci gantera. Pieptul rămâne spre bancă.',
+    rig: { eq: [{ k: 'bench', a: [118, 150], b: [178, 150] }, { k: 'db', at: 'hand' }],
+      A: { foot: [96, 178], t: 84, ua: 2, fa: 0, th: 10, sh: -4 },
+      B: { foot: [96, 178], t: 84, ua: -62, fa: -4, th: 10, sh: -4 } }
+  },
+  zwide: {
+    name: 'Flexii cu bara Z, priză largă', muscles: 'Biceps (capul scurt)',
+    sets: 3, reps: [8, 10], rest: 75, step: 2.5,
+    cues: ['Prinde bara pe zona largă, coatele fixe lângă corp.',
+      'Ridică până la contracția completă, fără să duci coatele în față.',
+      'Coboară în 2-3 secunde până la brațele întinse.'],
+    mistake: 'Balansul din spate. Dacă trebuie să te arunci, greutatea e prea mare.',
+    rig: EX.curl.rig
+  },
+  znarrow: {
+    name: 'Flexii cu bara Z, priză îngustă', muscles: 'Biceps (capul lung), brahial',
+    sets: 3, reps: [10, 12], rest: 60, step: 2.5,
+    cues: ['Prinde bara pe zona îngustă, încheieturile drepte.',
+      'Ridică controlat, coatele rămân pe loc.',
+      'Strânge sus o secundă, apoi coboară lent.'],
+    mistake: 'Coborârea doar pe jumătate. Mergi până la brațele întinse.',
+    rig: EX.curl.rig
+  }
+});
+Object.assign(EX.pulldown, { name: 'Tracțiuni la scripete cu priză largă' });
+Object.assign(EX.straightarm, { name: 'Tracțiuni la scripete din picioare' });
+
+const DEFAULT_SUPPS = [
+  { id: 'cr1', name: 'Creatină (1 din 5)', dose: '1 tabletă, cu apă', time: '08:00', on: true },
+  { id: 'cr2', name: 'Creatină (2 din 5)', dose: '1 tabletă, cu apă', time: '11:00', on: true },
+  { id: 'cr3', name: 'Creatină (3 din 5)', dose: '1 tabletă, cu apă', time: '14:00', on: true },
+  { id: 'cr4', name: 'Creatină (4 din 5)', dose: '1 tabletă, cu apă', time: '17:00', on: true },
+  { id: 'cr5', name: 'Creatină (5 din 5)', dose: '1 tabletă, cu apă', time: '20:00', on: true },
+  { id: 's2', name: 'Centrum Men', dose: '1 tabletă, la micul dejun', time: '09:00', on: true },
+  { id: 's3', name: 'Omega 3', dose: '2 capsule, la prânz', time: '13:30', on: false, tip: 'Nu e inclus în Centrum. Ajută recuperarea și articulațiile.' },
+  { id: 's4', name: 'Magneziu bisglicinat', dose: '300 mg, înainte de somn', time: '22:00', on: false, tip: 'Centrum are doar puțin magneziu. Ajută somnul și crampele.' }
+];
+
+/* Cristian lucrează 3 serii de 10-12 repetări la fiecare exercițiu */
+for (const id in EX) { EX[id].sets = 3; EX[id].reps = [10, 12]; }
+
+/* Pauze după studiile despre masă musculară (Singer și colab. 2024; Schoenfeld și colab. 2016):
+   compuse partea de sus 2:00, compuse picioare 2:30, izolare 1:15 (picioare 1:30).
+   Între aparate: pauza exercițiului următor + 30 s pentru mutare și reglaj. */
+const REST = { compUp: 120, compLow: 150, iso: 75, isoLow: 90 };
+const KIND = { incline: 'compUp', chestpress: 'compUp', pulldown: 'compUp', supine: 'compUp', dbrow: 'compUp', cablerow: 'compUp', dbpress: 'compUp',
+  squat: 'compLow', rdl: 'compLow', legpress: 'compLow', legcurl: 'isoLow' };
+const KIND_LABEL = { compUp: 'exercițiu compus', compLow: 'exercițiu compus pentru picioare', iso: 'exercițiu de izolare', isoLow: 'izolare pentru picioare' };
+for (const id in EX) { EX[id].kind = KIND[id] || 'iso'; EX[id].rest = REST[EX[id].kind]; EX[id].switchRest = EX[id].rest + 30; }
+
+/* ---------- Citatul zilei: unul surpriză în fiecare zi ---------- */
+const QUOTES = [
+  ['Nu contează cât de tare lovești. Contează cât de tare poți fi lovit și să mergi mai departe.', 'Rocky Balboa', 'filmul Rocky Balboa'],
+  ['Fă sau nu face. Nu există „încerc”.', 'Yoda', 'filmul Imperiul contraatacă'],
+  ['Ce facem în viață are ecou în eternitate.', 'Maximus', 'filmul Gladiatorul'],
+  ['De ce cădem? Ca să învățăm să ne ridicăm.', 'Thomas Wayne', 'filmul Batman Begins'],
+  ['Ocupă-te de trăit sau ocupă-te de murit.', 'Andy Dufresne', 'filmul Închisoarea îngerilor'],
+  ['Ieri e istorie, mâine e un mister, dar azi e un dar. De aceea se numește prezent.', 'Maestrul Oogway', 'filmul Kung Fu Panda'],
+  ['Tot ce avem de hotărât este ce facem cu timpul care ne-a fost dat.', 'Gandalf', 'Stăpânul inelelor'],
+  ['Un pas odată, o lovitură odată, o rundă odată.', 'Rocky Balboa', 'filmul Creed'],
+  ['Viața e un joc de centimetri.', 'Tony D\'Amato', 'filmul Any Given Sunday'],
+  ['Carpe diem. Trăiți clipa, băieți.', 'John Keating', 'filmul Cercul poeților dispăruți'],
+  ['Există o diferență între a cunoaște drumul și a merge pe el.', 'Morpheus', 'filmul Matrix'],
+  ['Dacă eu pot să mă schimb, și voi puteți. Toată lumea poate.', 'Rocky Balboa', 'filmul Rocky IV'],
+  ['Speranța e un lucru bun, poate cel mai bun dintre toate.', 'Andy Dufresne', 'filmul Închisoarea îngerilor'],
+  ['Nu lăsa pe nimeni să-ți spună că nu poți face ceva.', 'Chris Gardner', 'filmul În căutarea fericirii'],
+  ['Alegerile noastre arată cine suntem cu adevărat, mult mai mult decât abilitățile noastre.', 'Albus Dumbledore', 'Harry Potter și Camera Secretelor'],
+  ['Nu trebuie să mă tem. Frica ucide mintea.', 'Frank Herbert', 'cartea Dune'],
+  ['Omul poate fi distrus, dar nu învins.', 'Ernest Hemingway', 'cartea Bătrânul și marea'],
+  ['Ce nu mă omoară mă face mai puternic.', 'Friedrich Nietzsche', 'cartea Amurgul idolilor'],
+  ['Cine are un „de ce” pentru care să trăiască poate îndura aproape orice „cum”.', 'Friedrich Nietzsche', 'citat de Viktor Frankl'],
+  ['Ceea ce stă în calea acțiunii devine acțiunea. Obstacolul devine drumul.', 'Marcus Aurelius', 'Meditații'],
+  ['Nu pentru că lucrurile sunt grele nu îndrăznim. Pentru că nu îndrăznim, sunt grele.', 'Seneca', 'Scrisori către Luciliu'],
+  ['Suntem ceea ce facem în mod repetat. Excelența nu e o faptă, ci un obicei.', 'Will Durant', 'despre Aristotel'],
+  ['O călătorie de o mie de mile începe cu un singur pas.', 'Lao Tzu', 'Tao Te Ching'],
+  ['Când vrei ceva, tot universul conspiră ca să-ți împlinești dorința.', 'Paulo Coelho', 'cartea Alchimistul'],
+  ['Nu contează cât de încet mergi, atâta timp cât nu te oprești.', 'Confucius', 'filozof chinez'],
+  ['Am urât fiecare minut de antrenament, dar mi-am zis: nu renunța. Suferă acum și trăiește restul vieții ca un campion.', 'Muhammad Ali', 'campion mondial la box'],
+  ['Forța nu vine din victorii. Luptele tale îți construiesc forța.', 'Arnold Schwarzenegger', 'culturist și actor'],
+  ['Ultimele trei-patru repetări sunt cele care fac mușchiul să crească.', 'Arnold Schwarzenegger', 'documentarul Pumping Iron'],
+  ['Toată lumea vrea să fie culturist, dar nimeni nu vrea să ridice greutăți grele.', 'Ronnie Coleman', 'de 8 ori Mr. Olympia'],
+  ['Nu mă tem de cel care a exersat 10.000 de lovituri o dată. Mă tem de cel care a exersat o lovitură de 10.000 de ori.', 'Bruce Lee', 'maestru de arte marțiale'],
+  ['Am ratat de nenumărate ori. Am eșuat iar și iar. De aceea reușesc.', 'Michael Jordan', 'legendă a baschetului'],
+  ['Toată lumea are un plan până primește un pumn în gură.', 'Mike Tyson', 'campion mondial la box'],
+  ['Fă ce poți, cu ce ai, acolo unde ești.', 'Theodore Roosevelt', 'președinte al SUA'],
+  ['Fie că crezi că poți, fie că crezi că nu poți, ai dreptate.', 'Henry Ford', 'industriaș american'],
+  ['Disciplina e puntea dintre obiective și realizări.', 'Jim Rohn', 'autor și motivator'],
+  ['Mama zicea mereu: viața e ca o cutie de bomboane. Nu știi niciodată ce primești.', 'Forrest Gump', 'filmul Forrest Gump'],
+  ['Nu te opri când ești obosit. Oprește-te când ai terminat.', 'David Goggins', 'ultramaratonist'],
+  ['Corpul obține ce mintea crede.', 'Napoleon Hill', 'cartea De la idee la bani'],
+  ['Nu număra zilele. Fă zilele să conteze.', 'Muhammad Ali', 'campion mondial la box'],
+  ['Campionii continuă să joace până o fac cum trebuie.', 'Billie Jean King', 'campioană de tenis']
+];
+function quoteOfDay(date = new Date()) {
+  const day = Math.round((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(2026, 0, 1)) / 86400000);
+  // ordine amestecată, dar aceeași pentru o zi dată: nu se repetă până nu trec toate
+  const n = QUOTES.length, k = ((day % n) + n) % n, step = 17;
+  return QUOTES[(k * step + 5) % n];
+}
+
+/* ---------- Animații: un singur schelet, două poziții per exercițiu ---------- */
+const Rig = (() => {
+  const R = Math.PI / 180, L = { T: 48, UA: 28, FA: 26, TH: 34, SH: 32 };
+  const d = (a, l) => [Math.sin(a * R) * l, Math.cos(a * R) * l];
+  const add = (p, q) => [p[0] + q[0], p[1] + q[1]];
+  const sub = (p, q) => [p[0] - q[0], p[1] - q[1]];
+  const f = n => n.toFixed(1);
+  const ln = (p, q, c) => `<line class="${c}" x1="${f(p[0])}" y1="${f(p[1])}" x2="${f(q[0])}" y2="${f(q[1])}"/>`;
+  const poly = (pts, c) => `<polyline class="${c}" points="${pts.map(p => f(p[0]) + ',' + f(p[1])).join(' ')}"/>`;
+
+  function lerp(A, B, k) {
+    const o = {};
+    for (const key in A) {
+      const a = A[key], b = B[key];
+      o[key] = Array.isArray(a) ? [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k] : a + (b - a) * k;
+    }
+    return o;
+  }
+
+  function side(P, eq) {
+    const td = [Math.sin(P.t * R), -Math.cos(P.t * R)];
+    const tv = [td[0] * L.T, td[1] * L.T];
+    let hip, sh, el, hand, knee, foot;
+    if (P.foot) {
+      foot = P.foot; knee = sub(foot, d(P.sh, L.SH)); hip = sub(knee, d(P.th, L.TH));
+      sh = add(hip, tv); el = add(sh, d(P.ua, L.UA)); hand = add(el, d(P.fa, L.FA));
+    } else if (P.hand) {
+      hand = P.hand; el = sub(hand, d(P.fa, L.FA)); sh = sub(el, d(P.ua, L.UA)); hip = sub(sh, tv);
+      knee = add(hip, d(P.th, L.TH)); foot = add(knee, d(P.sh, L.SH));
+    } else {
+      hip = P.hip; sh = add(hip, tv); el = add(sh, d(P.ua, L.UA)); hand = add(el, d(P.fa, L.FA));
+      knee = add(hip, d(P.th, L.TH)); foot = add(knee, d(P.sh, L.SH));
+    }
+    const head = add(sh, [td[0] * 15, td[1] * 15]);
+    const toe = add(foot, d(P.fd == null ? 90 : P.fd, 10));
+    const pts = { hand, foot, sh };
+    let back = '', front = '';
+    for (const e of eq) {
+      if (e.k === 'bench') {
+        back += ln(e.a, e.b, 'prop w8');
+        back += ln([e.a[0] + 8, e.a[1]], [e.a[0] + 8, 180], 'prop w4') + ln([e.b[0] - 8, e.b[1]], [e.b[0] - 8, 180], 'prop w4');
+      } else if (e.k === 'pad') {
+        back += ln(e.a, e.b, 'prop w8');
+      } else if (e.k === 'bars') {
+        back += ln([76, e.y], [132, e.y], 'prop w5') + ln([128, e.y], [128, 180], 'prop w4');
+      } else if (e.k === 'plate') {
+        const p = pts[e.at];
+        front += `<circle class="eq-fill" cx="${f(p[0])}" cy="${f(p[1])}" r="12"/><circle class="hub" cx="${f(p[0])}" cy="${f(p[1])}" r="3"/>`;
+      } else if (e.k === 'db') {
+        const p = pts[e.at];
+        front += `<rect class="eq-fill" x="${f(p[0] - 9)}" y="${f(p[1] - 4)}" width="18" height="8" rx="2"/>`;
+      } else if (e.k === 'handle') {
+        const p = pts[e.at];
+        front += `<circle class="eq-fill" cx="${f(p[0])}" cy="${f(p[1])}" r="4.5"/>`;
+      } else if (e.k === 'cable') {
+        const p = pts[e.at];
+        const to = e.to === 'up' ? [p[0], 12] : e.to === 'right' ? [190, p[1]] : e.to;
+        back += ln(p, to, 'cable') + `<circle class="pulley" cx="${f(to[0])}" cy="${f(to[1])}" r="5"/>`;
+      } else if (e.k === 'platform') {
+        const p = pts[e.at], a = e.ang * R, n = [Math.cos(a), -Math.sin(a)];
+        front += ln([p[0] + n[0] * 18 + Math.sin(a) * 4, p[1] + n[1] * 18 + Math.cos(a) * 4], [p[0] - n[0] * 18 + Math.sin(a) * 4, p[1] - n[1] * 18 + Math.cos(a) * 4], 'eq w6');
+      }
+    }
+    return back +
+      poly([hip, knee, foot, toe], 'limb w9') +
+      ln(hip, sh, 'limb w14') +
+      `<circle class="head" cx="${f(head[0])}" cy="${f(head[1])}" r="9.5"/>` +
+      poly([sh, el, hand], 'limb w8') + front;
+  }
+
+  function frontView(P, eq) {
+    const S = { r: [117, 68], l: [83, 68] };
+    let out = '';
+    const arm = (s, sign) => {
+      const ul = P.ul == null ? 1 : P.ul, e = [s[0] + sign * Math.sin(P.ua * R) * 27 * ul, s[1] + Math.cos(P.ua * R) * 27];
+      const h = [e[0] + sign * Math.sin(P.fa * R) * 25, e[1] + Math.cos(P.fa * R) * 25];
+      return { e, h };
+    };
+    const ar = arm(S.r, 1), al = arm(S.l, -1);
+    for (const x of eq) {
+      if (x.k === 'cableF') {
+        const tr = [200 - x.to[0], x.to[1]];
+        out += ln(ar.h, tr, 'cable') + ln(al.h, x.to, 'cable') +
+          `<circle class="pulley" cx="${tr[0]}" cy="${tr[1]}" r="5"/><circle class="pulley" cx="${x.to[0]}" cy="${x.to[1]}" r="5"/>`;
+      }
+    }
+    out += poly([[93, 112], [91, 146], [90, 178]], 'limb w9') + poly([[107, 112], [109, 146], [110, 178]], 'limb w9');
+    out += `<path class="torso" d="M84 66 L116 66 L110 112 L90 112 Z"/>`;
+    out += `<circle class="head" cx="100" cy="50" r="10"/>`;
+    out += poly([S.r, ar.e, ar.h], 'limb w8') + poly([S.l, al.e, al.h], 'limb w8');
+    for (const x of eq) {
+      if (x.k === 'dbF') {
+        for (const h of [ar.h, al.h]) out += `<rect class="eq-fill" x="${f(h[0] - 4)}" y="${f(h[1] - 9)}" width="8" height="18" rx="2"/>`;
+      } else if (x.k === 'padsF') {
+        for (const h of [ar.h, al.h]) out += `<rect class="eq-fill" x="${f(h[0] - 5)}" y="${f(h[1] - 4)}" width="10" height="26" rx="4"/>`;
+      } else if (x.k === 'cableF') {
+        for (const h of [ar.h, al.h]) out += `<circle class="eq-fill" cx="${f(h[0])}" cy="${f(h[1])}" r="4.5"/>`;
+      }
+    }
+    return out;
+  }
+
+  function frame(rig, k) {
+    const P = lerp(rig.A, rig.B, k);
+    return `<line class="ground" x1="14" y1="181" x2="186" y2="181"/>` + (rig.front ? frontView(P, rig.eq) : side(P, rig.eq));
+  }
+
+  /* 0 → A, 1 → B, cu pauze la capete */
+  function phase(t) {
+    const c = (t % 3200) / 3200;
+    const e = x => 0.5 - 0.5 * Math.cos(Math.PI * x);
+    if (c < 0.14) return 0;
+    if (c < 0.5) return e((c - 0.14) / 0.36);
+    if (c < 0.64) return 1;
+    return 1 - e((c - 0.64) / 0.36);
+  }
+
+  function svg(id, cls) {
+    return `<svg class="rig ${cls || ''}" data-rig="${id}" viewBox="0 0 200 200" role="img" aria-label="Animație ${EX[id].name}"><g>${frame(EX[id].rig, 0.5)}</g></svg>`;
+  }
+
+  const still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function loop(ts) {
+    document.querySelectorAll('svg[data-rig]').forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      el.firstChild.innerHTML = frame(EX[el.dataset.rig].rig, phase(ts + (el.dataset.off | 0)));
+    });
+    requestAnimationFrame(loop);
+  }
+  if (!still) requestAnimationFrame(loop);
+  return { svg, frame };
+})();
+
+/* ---------- Efecte: confetti, val la atingere, numere care urcă ---------- */
+const FX = (() => {
+  const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let cv, ctx, parts = [], raf = 0;
+  const COLORS = ['#e4202e', '#ffffff', '#ff4b57', '#9e0f1a', '#ffd9dc'];
+  function canvas() {
+    if (cv) return;
+    cv = document.createElement('canvas'); cv.className = 'fx-canvas'; document.body.appendChild(cv);
+    ctx = cv.getContext('2d');
+    const fit = () => { const d = devicePixelRatio || 1; cv.width = innerWidth * d; cv.height = innerHeight * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+    fit(); addEventListener('resize', fit);
+  }
+  function tick() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    parts = parts.filter(p => p.life > 0);
+    for (const p of parts) {
+      p.vy += p.g; p.vx *= 0.985; p.vy *= 0.985; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life -= 1;
+      ctx.save(); ctx.globalAlpha = Math.min(1, p.life / 30); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c;
+      if (p.round) { ctx.beginPath(); ctx.arc(0, 0, p.s / 2, 0, 7); ctx.fill(); } else ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2);
+      ctx.restore();
+    }
+    raf = parts.length ? requestAnimationFrame(tick) : 0;
+  }
+  function spawn(x, y, n, spread, power, g) {
+    if (still) return; canvas();
+    for (let i = 0; i < n; i++) {
+      const a = -Math.PI / 2 + (Math.random() - 0.5) * spread, v = power * (0.5 + Math.random() * 0.7);
+      parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.3, s: 5 + Math.random() * 6, c: COLORS[i % COLORS.length], life: 60 + Math.random() * 40, round: Math.random() < 0.3 });
+    }
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  function burst(el, n = 18) { if (!el) return; const r = el.getBoundingClientRect(); spawn(r.left + r.width / 2, r.top + r.height / 2, n, Math.PI * 2, 6, 0.18); }
+  function celebrate() {
+    spawn(innerWidth * 0.2, innerHeight * 0.9, 70, 1.1, 17, 0.32);
+    setTimeout(() => spawn(innerWidth * 0.8, innerHeight * 0.9, 70, 1.1, 17, 0.32), 180);
+    setTimeout(() => spawn(innerWidth * 0.5, innerHeight * 0.85, 60, 1.4, 19, 0.32), 380);
+  }
+  function countUp(root) {
+    if (still) return;
+    root.querySelectorAll('[data-count]').forEach(el => {
+      const txt = el.textContent, m = txt.match(/[\d.]+(,\d+)?/); if (!m) return;
+      const target = parseFloat(m[0].replace(/\./g, '').replace(',', '.')), dec = m[1] ? m[1].length - 1 : 0, t0 = performance.now();
+      const step = t => {
+        const k = Math.min(1, (t - t0) / 900), e = 1 - Math.pow(1 - k, 3);
+        el.textContent = txt.replace(m[0], (target * e).toLocaleString('ro-RO', { minimumFractionDigits: dec, maximumFractionDigits: dec }));
+        if (k < 1) requestAnimationFrame(step); else el.textContent = txt;
+      };
+      requestAnimationFrame(step);
+    });
+  }
+  /* val la atingere */
+  document.addEventListener('pointerdown', e => {
+    if (still) return;
+    const b = e.target.closest('.btn, .chip, .check, .set .ok, .ex-row, .nav button, .switch');
+    if (!b) return;
+    const r = b.getBoundingClientRect(), s = Math.max(r.width, r.height) * 2.2, w = document.createElement('span');
+    w.className = 'ripple'; w.style.cssText = `width:${s}px;height:${s}px;left:${e.clientX - r.left - s / 2}px;top:${e.clientY - r.top - s / 2}px`;
+    b.appendChild(w); setTimeout(() => w.remove(), 650);
+  }, { passive: true });
+  function pop(el) { if (!el || still) return; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+  return { burst, celebrate, countUp, pop };
+})();
+
+/* ---------- Mini-Cristian: clipurile video, care rulează mereu în buclă ---------- */
+const Buddy = (() => {
+  const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cache = {};
+  /* un singur element video per clip, refolosit la fiecare redesenare, ca să nu se oprească niciodată */
+  function el(name, label) {
+    if (cache[name]) return cache[name];
+    const v = document.createElement('video');
+    const A = window.ASSET || ''; v.className = 'b-vid'; v.src = A + name + '.mp4'; v.poster = A + name + '.jpg';
+    v.muted = true; v.defaultMuted = true; v.loop = true; v.autoplay = true; v.playsInline = true; v.preload = 'auto';
+    v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', ''); v.setAttribute('aria-label', label);
+    v.disablePictureInPicture = true; v.controls = false;
+    const kick = () => { if (!still && v.isConnected && v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => { }); } };
+    v.addEventListener('pause', () => setTimeout(kick, 50));
+    v.addEventListener('ended', () => { v.currentTime = 0; kick(); });
+    v.addEventListener('stalled', () => setTimeout(kick, 500));
+    v.addEventListener('canplay', kick);
+    const mark = on => { if (v.parentNode) v.parentNode.classList.toggle('playing', on); };
+    v.addEventListener('playing', () => mark(true));
+    v.addEventListener('pause', () => mark(false));
+    cache[name] = v; return v;
+  }
+  const slot = (name, label, cls = '') => `<div class="buddy ${cls}" data-vid="${name}" data-label="${label}"><img class="b-poster" src="${window.ASSET || ''}${name}.jpg" alt=""></div>`;
+  const svg = slot('mini-cristian', 'Mini-Cristian dansează, face flotări și o tumbă');
+  const flex = slot('mini-cristian-flex', 'Mini-Cristian își arată bicepșii și ridică degetul mare', 'flex');
+  function playAll() {
+    if (still) return;
+    for (const k in cache) { const v = cache[k]; if (v.isConnected && v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => { }); } }
+  }
+  function start() {
+    document.querySelectorAll('.buddy[data-vid]').forEach(s => { const v = el(s.dataset.vid, s.dataset.label); if (v.parentNode !== s) s.appendChild(v); s.classList.toggle('playing', !v.paused); });
+    playAll();
+  }
+  /* orice atingere repornește clipul (necesar când iPhone-ul e în modul Economisire baterie) */
+  ['touchstart', 'pointerdown', 'scroll'].forEach(e => document.addEventListener(e, playAll, { passive: true, capture: true }));
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') playAll(); });
+  addEventListener('pageshow', playAll); addEventListener('focus', playAll);
+  setInterval(playAll, 2000);
+  return { svg, flex, start };
+})();
+
+/* ---------- Notificări: în previzualizare doar explicăm ---------- */
+const Push = {
+  card() {
+    return `<div class="notice"><strong><span class="state-dot"></span>Mementouri pe telefon</strong>
+      <p>Aplicația trimite notificări la ora fiecărui supliment și în fiecare oră pentru apă, chiar și cu telefonul blocat.</p></div>`;
+  },
+  action() { }
+};
+
+/* ---------- Utilitare ---------- */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = n => String(n).padStart(2, '0');
+const dayKey = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parseNum = v => { const n = parseFloat(String(v).replace(',', '.')); return isFinite(n) ? n : null; };
+const fmt = (n, dec = 1) => n == null ? '–' : (Math.round(n * 10 ** dec) / 10 ** dec).toLocaleString('ro-RO');
+const fmtTime = s => `${Math.floor(s / 60)}:${pad(Math.max(0, Math.floor(s % 60)))}`;
+const DAYMS = 86400000;
+const ICON = {
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg>',
+  chev: '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'
+};
+
+/* ---------- Date salvate pe telefon ---------- */
+const KEY = 'forta-v1';
+function fresh() { return { sessions: [], body: [], supps: JSON.parse(JSON.stringify(DEFAULT_SUPPS)), suppLog: {}, skips: {}, water: { on: true, from: '08:00', to: '22:00', log: {} }, active: null }; }
+function load() {
+  try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(fresh(), JSON.parse(raw)); } catch (e) { }
+  return Object.assign(fresh(), { mig: 2 });
+}
+let S = load();
+/* o singură dată: creatina împărțită în 5 tablete și mementoul pentru apă */
+if ((S.mig || 0) < 2) {
+  const had = S.supps.filter(s => /creatin/i.test(s.name));
+  S.supps = S.supps.filter(s => !/creatin/i.test(s.name));
+  ['08:00', '11:00', '14:00', '17:00', '20:00'].forEach((t, i) => S.supps.push({ id: 'cr' + (i + 1), name: `Creatină (${i + 1} din 5)`, dose: '1 tabletă, cu apă', time: t, on: true }));
+  S.water = S.water || { on: true, from: '08:00', to: '22:00', log: {} };
+  S.mig = 2; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { }
+}
+S.water = S.water || { on: true, from: '08:00', to: '22:00', log: {} };
+function waterTimes() {
+  const w = S.water; if (!w || !w.on) return [];
+  const [fh] = w.from.split(':').map(Number), [th] = w.to.split(':').map(Number), out = [];
+  for (let h = fh; h <= th; h++) out.push(`${pad(h)}:00`);
+  return out;
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { } if (window.onSaved) window.onSaved(); }
+
+/* ---------- Logică antrenament ---------- */
+const sessionsSorted = () => S.sessions.slice().sort((a, b) => a.date - b.date);
+const byId = id => DAYS.find(d => d.id === id);
+const planFor = date => DAYS.find(d => d.wd === date.getDay());
+function nextPlan() {
+  for (let i = 1; i <= 7; i++) { const d = new Date(Date.now() + i * DAYMS); const p = planFor(d); if (p) return { p, i }; }
+  return { p: DAYS[0], i: 1 };
+}
+const WINK = `<svg class="wink" viewBox="0 0 120 120" role="img" aria-label="Smiley care face cu ochiul">
+  <g class="wink-face"><circle cx="60" cy="60" r="52" fill="var(--accent)"/>
+  <ellipse cx="42" cy="50" rx="6.5" ry="9" fill="var(--accent-ink)"/>
+  <path class="wink-eye" d="M70 52 q9 -9 18 0" fill="none" stroke="var(--accent-ink)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M34 72 q26 26 52 0" fill="none" stroke="var(--accent-ink)" stroke-width="6.5" stroke-linecap="round"/>
+  <path d="M86 68 q6 2 8 -4" fill="none" stroke="var(--accent-ink)" stroke-width="4" stroke-linecap="round" opacity=".5"/></g></svg>`;
+function lastSets(exId) {
+  const s = sessionsSorted();
+  for (let i = s.length - 1; i >= 0; i--) if (s[i].ex[exId] && s[i].ex[exId].length) return { sets: s[i].ex[exId], date: s[i].date };
+  return null;
+}
+function suggestion(exId) {
+  const ex = EX[exId], last = lastSets(exId);
+  if (!last) return null;
+  const top = Math.max(...last.sets.map(x => x.kg));
+  const topSets = last.sets.filter(x => x.kg === top);
+  if (topSets.length >= ex.sets && topSets.every(x => x.reps >= ex.reps[1])) return { up: true, text: `Crește la ${fmt(top + ex.step)} kg` };
+  return { up: false, text: `Țintă: ${ex.reps[1]} repetări la ${fmt(top)} kg` };
+}
+const e1rm = (kg, reps) => kg * (1 + reps / 30);
+function volume(sess) { let v = 0; for (const id in sess.ex) for (const x of sess.ex[id]) v += x.kg * x.reps; return v; }
+const relDays = t => { const d = Math.round((new Date(dayKey()) - new Date(dayKey(new Date(t)))) / DAYMS); return d === 0 ? 'azi' : d === 1 ? 'ieri' : `acum ${d} zile`; };
+const fmtDate = t => new Date(t).toLocaleDateString('ro-RO', { day: 'numeric', month: 'short' });
+
+/* ---------- Navigare ---------- */
+const LI = {
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  dumbbell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg>',
+  chart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>',
+  pill: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>',
+  moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>',
+  drop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>',
+  gift: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>'
+};
+const TABS = [
+  { id: 'azi', label: 'Azi', icon: LI.home },
+  { id: 'program', label: 'Program', icon: LI.dumbbell },
+  { id: 'progres', label: 'Progres', icon: LI.chart },
+  { id: 'supl', label: 'Suplimente', icon: LI.pill }
+];
+let tab = 'azi';
+try { tab = localStorage.getItem('forta-tab') || 'azi'; } catch (e) { }
+if (/^#(azi|program|progres|supl|profil)$/.test(location.hash)) tab = location.hash.slice(1);
+const openEx = new Set();
+let pickEx = null;
+
+let navPrev = null;
+function renderNav() {
+  const idx = TABS.findIndex(t => t.id === tab), from = navPrev == null ? idx : navPrev;
+  $('#nav').innerHTML = `<div class="nav-in" style="--i:${from}"><i class="nav-pill" aria-hidden="true"></i>${TABS.map(t => `<button data-tab="${t.id}" ${t.id === tab ? 'aria-current="page"' : ''}>${t.icon}<span>${t.label}</span></button>`).join('')}</div>`;
+  if (from !== idx) requestAnimationFrame(() => requestAnimationFrame(() => { const n = $('.nav-in'); if (n) n.style.setProperty('--i', idx); }));
+  navPrev = idx;
+}
+function render() {
+  renderNav();
+  const v = (VIEWS[tab] || VIEWS.azi)();
+  const view = $('#view'); view.innerHTML = v;
+  if (lastTab !== tab) { lastTab = tab; view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter'); FX.countUp(view); }
+  renderWorkout();
+  Buddy.start();
+  renderBadge();
+  fitBrand();
+}
+let lastTab = null;
+const VIEWS = { get azi() { return viewAzi; }, get program() { return viewProgram; }, get progres() { return viewProgres; }, get supl() { return viewSupl; } };
+let BADGE = ''; try { BADGE = localStorage.getItem('forta-badge') || ''; } catch (e) { }
+/* scoate fundalul: pornește din margini și face transparent tot ce seamănă cu culoarea fundalului */
+function cutBackground(img, size = 256) {
+  const k = Math.min(size / img.width, size / img.height), w = Math.max(1, Math.round(img.width * k)), h = Math.max(1, Math.round(img.height * k));
+  const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d'); g.drawImage(img, 0, 0, w, h);
+  const id = g.getImageData(0, 0, w, h), d = id.data, seen = new Uint8Array(w * h), st = [];
+  const corners = [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1]].map(([x, y]) => { const i = (y * w + x) * 4; return [d[i], d[i + 1], d[i + 2], d[i + 3]]; });
+  const near = i => { if (d[i + 3] < 20) return true; for (const c0 of corners) { if (c0[3] < 20) continue; const dr = d[i] - c0[0], dg = d[i + 1] - c0[1], db = d[i + 2] - c0[2]; if (dr * dr + dg * dg + db * db < 2400) return true; } return false; };
+  for (let x = 0; x < w; x++) { st.push(x, (h - 1) * w + x); } for (let y = 0; y < h; y++) { st.push(y * w, y * w + w - 1); }
+  while (st.length) { const p = st.pop(); if (seen[p]) continue; seen[p] = 1; const i = p * 4; if (!near(i)) continue; d[i + 3] = 0;
+    const x = p % w, y = (p / w) | 0; if (x > 0) st.push(p - 1); if (x < w - 1) st.push(p + 1); if (y > 0) st.push(p - w); if (y < h - 1) st.push(p + w); }
+  /* margini mai fine: pixelii lipiți de fundalul scos devin semitransparenți */
+  for (let p = 0; p < w * h; p++) { const i = p * 4; if (d[i + 3] === 0) continue; const x = p % w, y = (p / w) | 0; let n = 0;
+    if (x > 0 && d[i - 1] === 0) n++; if (x < w - 1 && d[i + 7] === 0) n++; if (y > 0 && d[i - w * 4 + 3] === 0) n++; if (y < h - 1 && d[i + w * 4 + 3] === 0) n++; if (n) d[i + 3] = Math.round(d[i + 3] * (1 - n * 0.2)); }
+  g.putImageData(id, 0, 0);
+  /* decupează la conținut */
+  let x0 = w, y0 = h, x1 = 0, y1 = 0; for (let p = 0; p < w * h; p++) if (d[p * 4 + 3] > 30) { const x = p % w, y = (p / w) | 0; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  if (x1 <= x0 || y1 <= y0) return c.toDataURL('image/png');
+  const o = document.createElement('canvas'); o.width = x1 - x0 + 1; o.height = y1 - y0 + 1; o.getContext('2d').drawImage(c, x0, y0, o.width, o.height, 0, 0, o.width, o.height);
+  return o.toDataURL('image/png');
+}
+/* emblemele încărcate înainte de această versiune primesc și ele fundalul scos, o singură dată */
+try { if (BADGE && !localStorage.getItem('forta-badge-cut')) { const im = new Image(); im.onload = () => { BADGE = cutBackground(im); try { localStorage.setItem('forta-badge', BADGE); localStorage.setItem('forta-badge-cut', '1'); } catch (e) { } renderBadge(); fitBrand(); if (tab === 'progres') render(); }; im.src = BADGE; } } catch (e) { }
+function renderBadge() {
+  const h = $('#hbadge'); if (!h) return;
+  if (!h.dataset.fit) { h.dataset.fit = 1; h.addEventListener('load', fitBrand); }
+  h.hidden = !BADGE; if (BADGE && h.getAttribute('src') !== BADGE) h.src = BADGE;
+  document.documentElement.style.setProperty('--badge', BADGE ? `url("${BADGE}")` : 'none');
+}
+/* potrivește FORȚA + CRISTIAN DEMIAN exact pe lățimea ecranului */
+function fitBrand() {
+  const b = $('.brand'); if (!b) return;
+  let size = 19; b.style.fontSize = size + 'px';
+  while (b.scrollWidth > b.clientWidth + 1 && size > 12) { size -= 0.5; b.style.fontSize = size + 'px'; }
+}
+addEventListener('resize', fitBrand);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBrand);
+
+/* ---------- Ecran: Azi ---------- */
+function waterCard() {
+  const w = S.water; if (!w || !w.on) return '';
+  const goal = waterTimes().length, n = w.log[dayKey()] || 0;
+  return `<div class="water"><div class="water-top"><span class="drop">${LI.drop}</span><span><strong>Apă: ${n} din ${goal} pahare</strong><em>Un pahar în fiecare oră, ${esc(w.from)}-${esc(w.to)}</em></span></div>
+    <div class="water-dots">${Array.from({ length: goal }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</div>
+    <div class="water-btns"><button class="btn btn-ghost" data-water="-1" aria-label="Scade un pahar">−</button><button class="btn btn-main" data-water="1">+ Am băut un pahar</button></div></div>`;
+}
+function suppChecklist() {
+  const list = S.supps.filter(s => s.on).sort((a, b) => a.time.localeCompare(b.time));
+  if (!list.length) return waterCard() + `<p class="empty">Nu ai suplimente active. Le adaugi din fila Suplimente.</p>`;
+  const taken = S.suppLog[dayKey()] || [];
+  return waterCard() + `<div class="checklist">${list.map(s => `<button class="check ${taken.includes(s.id) ? 'taken' : ''}" data-take="${s.id}" aria-pressed="${taken.includes(s.id)}">
+    <time>${esc(s.time)}</time><span><strong>${esc(s.name)}</strong><em>${esc(s.dose)}</em></span><span class="tick">${ICON.check}</span></button>`).join('')}</div>`;
+}
+let showOthers = false;
+function quoteCard() {
+  const [txt, who, src] = quoteOfDay();
+  let open = false; try { open = localStorage.getItem('forta-quote') === dayKey(); } catch (e) { }
+  return `<section class="quote ${open ? 'open' : ''}"><button class="q-inner" data-quote aria-label="${open ? 'Citatul zilei' : 'Descoperă citatul zilei'}">
+    <div class="q-face q-front"><span class="q-gift">${LI.gift}</span><b>Citatul zilei</b><small>Atinge ca să descoperi surpriza de azi</small></div>
+    <div class="q-face q-back"><span class="q-mark">“</span><p>${esc(txt)}</p><div class="q-who"><b>${esc(who)}</b><small>${esc(src)}</small></div></div>
+  </button></section>`;
+}
+function workoutHero(nd, eyebrow) {
+  const lastOfDay = sessionsSorted().filter(s => s.day === nd.id).pop();
+  const nSets = nd.ex.reduce((a, id) => a + EX[id].sets, 0);
+  const mins = Math.round(nd.ex.reduce((a, id) => a + EX[id].sets * (EX[id].rest + 45), 0) / 60 / 5) * 5;
+  return `${S.active ? '' : Buddy.flex.replace('class="buddy ', 'class="buddy full ')}<section class="next"><div class="wm" aria-hidden="true"></div>
+    <div><div class="eyebrow">${eyebrow}</div><h1 class="dayname">${esc(nd.name)}</h1></div>
+    <div class="daymeta">${nd.ex.length} exerciții · ${nSets} seturi · ~${mins} min${lastOfDay ? ` · ultima dată ${relDays(lastOfDay.date)}` : ''}</div>
+    <div class="rigs-row">${nd.ex.slice(0, 3).map((id, i) => Rig.svg(id).replace('data-rig', `data-off="${i * 500}" data-rig`)).join('')}</div>
+    <button class="btn btn-main" data-start="${nd.id}">${S.active ? 'Continuă antrenamentul' : 'Începe antrenamentul'}</button>
+    ${S.active ? '' : `<div class="chips">${DAYS.filter(d => d.id !== nd.id).map(d => `<button class="chip" data-start="${d.id}">${d.label}: ${esc(d.name)}</button>`).join('')}</div>`}
+    ${!S.active && planFor(new Date()) === nd ? `<button class="btn btn-ghost skip-btn" data-skip>${LI.moon}<span>Azi mă odihnesc</span></button>` : ''}
+  </section>`;
+}
+function restHero(doneToday, skipped) {
+  const { p, i } = nextPlan();
+  return `${Buddy.svg.replace('class="buddy ', 'class="buddy full ')}<section class="rest-day"><div class="wm" aria-hidden="true"></div>
+    <div class="eyebrow">Azi · ${new Date().toLocaleDateString('ro-RO', { weekday: 'long' })}</div>
+    <h1 class="rest-title">Zi de odihnă</h1>
+    <p class="rest-msg">${skipped ? `Ai ales odihnă azi în loc de ${esc(skipped.name)}. E în regulă, și pauza face parte din progres.` : doneToday ? `Antrenamentul de azi e bifat. Bravo, Cristian!` : 'Azi mușchii cresc. Mini-Cristian se antrenează în locul tău.'}</p>
+    <div class="next-up"><small>Următorul antrenament</small><b>${p.label} · ${esc(p.name)}</b><span>${i === 1 ? 'mâine' : `peste ${i} zile`}</span></div>
+    ${showOthers ? `<div class="chips">${DAYS.map(d => `<button class="chip" data-start="${d.id}">${d.label}: ${esc(d.name)}</button>`).join('')}</div>`
+      : skipped ? `<button class="link" data-unskip>M-am răzgândit, mă antrenez azi</button>` : `<button class="link muted" data-others>Vreau totuși să mă antrenez azi</button>`}
+  </section>`;
+}
+function viewAzi() {
+  const now = new Date(), tp = planFor(now);
+  const doneToday = S.sessions.some(s => dayKey(new Date(s.date)) === dayKey());
+  const skipped = !!(S.skips && S.skips[dayKey()]);
+  const hero = S.active ? workoutHero(byId(S.active.day), 'Antrenament în desfășurare')
+    : tp && !doneToday && !skipped ? workoutHero(tp, `Azi · ${tp.label}`) : restHero(doneToday, skipped && tp);
+  const today = new Date(dayKey());
+  const monday = new Date(today - ((today.getDay() + 6) % 7) * DAYMS);
+  const week = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday.getTime() + i * DAYMS), k = dayKey(d), plan = planFor(d);
+    const s = S.sessions.find(x => dayKey(new Date(x.date)) === k);
+    const sk = !s && plan && S.skips && S.skips[k];
+    const cls = s ? 'done' : sk ? 'off' : plan ? 'plan' : 'off';
+    week.push(`<div class="wd ${cls} ${k === dayKey() ? 'is-today' : ''}"><small>${d.toLocaleDateString('ro-RO', { weekday: 'short' }).slice(0, 2)}</small><span>${s ? ICON.check : d.getDate()}</span><em>${s ? byId(s.day).short : sk ? 'odihnă' : plan ? plan.short : 'pauză'}</em></div>`);
+  }
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).getTime();
+  const monthCount = S.sessions.filter(s => s.date >= monthStart).length;
+  const weekVol = S.sessions.filter(s => s.date >= today - 6 * DAYMS).reduce((a, s) => a + volume(s), 0);
+  const bw = S.body.length ? S.body[S.body.length - 1].kg : null;
+  const taken = (S.suppLog[dayKey()] || []).length, active = S.supps.filter(s => s.on).length;
+  return `${hero}
+  ${quoteCard()}
+  <section class="sec"><h2>Săptămâna aceasta</h2><div class="week">${week.join('')}</div></section>
+  <section class="sec"><div class="sec-head"><h2>Suplimente azi</h2><span class="count num">${taken}/${active}</span></div>${suppChecklist()}</section>
+  <section class="stats">
+    <div class="stat"><b data-count>${monthCount}</b><small>antrenamente luna aceasta</small></div>
+    <div class="stat"><b data-count>${weekVol ? fmt(weekVol / 1000, 1) + 't' : '–'}</b><small>volum ridicat în 7 zile</small></div>
+    <div class="stat"><b data-count>${bw ? fmt(bw) : '–'}</b><small>kg greutate corporală</small></div>
+  </section>`;
+}
+
+/* ---------- Ecran: Program ---------- */
+function exTarget(ex) { return `${ex.sets} × ${ex.reps[0]}-${ex.reps[1]} · pauză ${fmtTime(ex.rest)}`; }
+function restInfo(ex) { return `Pauză ${fmtTime(ex.rest)} între serii (${KIND_LABEL[ex.kind]}), ${fmtTime(ex.switchRest)} când treci la aparatul următor.`; }
+function exDetail(id) {
+  const ex = EX[id];
+  return `<div class="ex-detail">${Rig.svg(id, 'big')}
+    <div class="target"><span class="pill">${esc(ex.muscles)}</span><span class="pill">${exTarget(ex)}</span></div>
+    <ol class="cues">${ex.cues.map(c => `<li>${esc(c)}</li>`).join('')}</ol>
+    <div class="rest-info">⏱ ${restInfo(ex)}</div>
+    <div class="mistake"><b>Greșeală frecventă:</b> ${esc(ex.mistake)}</div></div>`;
+}
+function viewProgram() {
+  return `<section class="sec"><p class="daymeta" style="margin:0">Trei antrenamente pe săptămână: luni, miercuri și vineri. În restul zilelor, odihnă. Apasă pe un exercițiu ca să vezi animația și execuția.</p></section>` +
+    DAYS.map(d => `<section class="day-block">
+    <div class="day-title"><h3><span>${d.label}</span>${esc(d.name)}</h3><button class="btn btn-ghost" data-start="${d.id}">Începe</button></div>
+    ${d.ex.map(id => `<div class="ex-item ${openEx.has(id) ? 'open' : ''}"><button class="ex-row" data-open="${id}" aria-expanded="${openEx.has(id)}">${Rig.svg(id)}<span><strong>${esc(EX[id].name)}</strong><small>${exTarget(EX[id])}</small></span>${ICON.chev}</button>${openEx.has(id) ? exDetail(id) : ''}</div>`).join('')}
+  </section>`).join('');
+}
+
+/* ---------- Ecran: Progres ---------- */
+function chart(points, unit) {
+  if (points.length < 2) return `<p class="empty">${points.length ? 'Încă un antrenament și apare graficul.' : 'Graficul apare după primele două înregistrări.'}</p>`;
+  const W = 340, H = 170, L = 38, Rr = 40, T = 12, B = 24;
+  const xs = points.map(p => p.t), ys = points.map(p => p.v);
+  let lo = Math.min(...ys), hi = Math.max(...ys);
+  const span = Math.max(hi - lo, hi * 0.04, 1); lo = Math.floor((lo - span * 0.2)); hi = Math.ceil(hi + span * 0.2);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs);
+  const X = t => L + (W - L - Rr) * (x1 === x0 ? 1 : (t - x0) / (x1 - x0));
+  const Y = v => T + (H - T - B) * (1 - (v - lo) / (hi - lo));
+  const ticks = [lo, (lo + hi) / 2, hi];
+  const d = points.map((p, i) => `${i ? 'L' : 'M'}${X(p.t).toFixed(1)} ${Y(p.v).toFixed(1)}`).join(' ');
+  const last = points[points.length - 1];
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Grafic progres">
+    ${ticks.map(v => `<line class="grid" x1="${L}" x2="${W - Rr}" y1="${Y(v)}" y2="${Y(v)}"/><text class="ax" x="${L - 6}" y="${Y(v) + 4}" text-anchor="end">${fmt(v, 0)}</text>`).join('')}
+    <path class="areaA" d="${d} L${X(last.t)} ${H - B} L${X(x0)} ${H - B} Z"/>
+    <path class="lineA" pathLength="1" d="${d}"/>
+    ${points.slice(0, -1).map(p => `<circle class="dot" cx="${X(p.t)}" cy="${Y(p.v)}" r="2.5"/>`).join('')}
+    <circle class="dot-ring" cx="${X(last.t)}" cy="${Y(last.v)}" r="5"/>
+    <text class="endlbl" x="${X(last.t) + 9}" y="${Y(last.v) + 4}">${fmt(last.v)}</text>
+    <text class="ax" x="${L}" y="${H - 6}">${fmtDate(x0)}</text><text class="ax" x="${W - Rr}" y="${H - 6}" text-anchor="end">${fmtDate(x1)}</text>
+  </svg>`;
+}
+function deltaTxt(points, unit) {
+  if (points.length < 2) return '';
+  const dlt = points[points.length - 1].v - points[0].v;
+  return `<span class="${dlt >= 0 ? 'delta-up' : 'delta-down'}">${dlt >= 0 ? '+' : '−'}${fmt(Math.abs(dlt))} ${unit} de la început</span>`;
+}
+function viewProgres() {
+  const bodyPts = S.body.map(b => ({ t: b.t, v: b.kg }));
+  const withData = Object.keys(EX).filter(id => lastSets(id));
+  if (!pickEx || !withData.includes(pickEx)) pickEx = withData[0] || 'bench';
+  const exPts = sessionsSorted().filter(s => s.ex[pickEx] && s.ex[pickEx].length)
+    .map(s => ({ t: s.date, v: Math.max(...s.ex[pickEx].map(x => e1rm(x.kg, x.reps))) }));
+  const best = (() => { let b = null; for (const s of S.sessions) for (const x of (s.ex[pickEx] || [])) if (!b || e1rm(x.kg, x.reps) > e1rm(b.kg, b.reps)) b = x; return b; })();
+  const hist = sessionsSorted().reverse();
+  return `
+  <section class="sec"><h2>Forță pe exercițiu</h2>
+    <div class="ex-pick">${(withData.length ? withData : ['bench', 'squat', 'row']).map(id => `<button class="chip" data-pick="${id}" aria-pressed="${id === pickEx}">${esc(EX[id].name)}</button>`).join('')}</div>
+    <div class="chart-card">
+      <div class="chart-head"><div><b>${exPts.length ? fmt(exPts[exPts.length - 1].v) : '–'}</b> <small>kg, maxim estimat la 1 repetare</small></div>${deltaTxt(exPts, 'kg')}</div>
+      ${chart(exPts, 'kg')}
+      ${best ? `<small class="last">Cel mai bun set: <b>${fmt(best.kg)} kg × ${best.reps}</b></small>` : ''}
+    </div>
+  </section>
+  <section class="sec"><h2>Greutate corporală</h2>
+    <div class="chart-card">
+      <div class="chart-head"><div><b>${bodyPts.length ? fmt(bodyPts[bodyPts.length - 1].v) : '–'}</b> <small>kg</small></div>${deltaTxt(bodyPts, 'kg')}</div>
+      ${chart(bodyPts, 'kg')}
+      <form class="row-input" id="bw-form"><input class="field num" id="bw" inputmode="decimal" placeholder="Greutatea de azi, ex. 82,5" autocomplete="off"><button class="btn btn-ghost" type="submit">Adaugă</button></form>
+    </div>
+  </section>
+  <section class="sec"><h2>Istoric antrenamente</h2>
+    ${hist.length ? `<div class="hist">${hist.map(s => {
+      const d = DAYS.find(x => x.id === s.day);
+      const nsets = Object.values(s.ex).reduce((a, x) => a + x.length, 0);
+      return `<button class="hist-row" data-sess="${s.id}"><span class="badge">${d.label.slice(0, 2)}</span><span><strong>${esc(d.name)}</strong><small>${new Date(s.date).toLocaleDateString('ro-RO', { weekday: 'short', day: 'numeric', month: 'short' })} · ${nsets} serii · ${fmt(volume(s), 0)} kg · ${Math.round((s.dur || 0) / 60000)} min</small></span>${ICON.chev}</button>`;
+    }).join('')}</div>` : `<p class="empty">Antrenamentele terminate apar aici. Apasă pe unul ca să vezi fiecare exercițiu, greutățile și progresul.</p>`}
+  </section>
+`;
+}
+
+function emblemSec() {
+  return `<section class="sec"><h2>Emblema ta</h2>
+    <div class="notice"><p>Alege o imagine din telefon (de exemplu emblema echipei tale). Apare sus lângă FORȚA și în fundalul cardului principal. Rămâne doar pe telefonul tău.</p>
+    <div class="badge-row">${BADGE ? `<img class="badge-prev" src="${BADGE}" alt="Emblema aleasă">` : ''}
+      <label class="btn btn-ghost" for="badge-file">${BADGE ? 'Schimbă imaginea' : 'Alege imaginea'}</label>
+      <input type="file" id="badge-file" accept="image/*" hidden>
+      ${BADGE ? '<button class="del" data-badge-del>Scoate</button>' : ''}</div></div>
+  </section>`;
+}
+function backupSec() {
+  return `<section class="sec"><h2>Copie de siguranță</h2>
+    <div class="notice"><p>Datele stau doar pe acest telefon. Copiază-le din când în când și păstrează textul într-o notiță.</p>
+    <div class="chips"><button class="btn btn-ghost" data-backup>Copiază datele</button><button class="btn btn-ghost" data-restore-open>Restaurează</button></div>
+    <div id="restore" hidden><textarea class="field" id="restore-txt" placeholder="Lipește aici textul copiat anterior"></textarea><button class="btn btn-ghost" data-restore style="margin-top:8px">Restaurează datele</button></div></div>
+  </section>`;
+}
+
+/* ---------- Ecran: Suplimente ---------- */
+function viewSupl() {
+  const list = S.supps.slice().sort((a, b) => (b.on - a.on) || a.time.localeCompare(b.time));
+  return `
+  <section class="sec"><div class="sec-head"><h2>Azi</h2><span class="count num">${(S.suppLog[dayKey()] || []).length}/${S.supps.filter(s => s.on).length}</span></div>${suppChecklist()}</section>
+  <section class="sec"><h2>Notificări</h2>${Push.card()}</section>
+  <section class="sec"><h2>Apă</h2>
+    <div class="supp ${S.water.on ? '' : 'off'}">
+      <div class="supp-top"><span><strong class="ic-row">${LI.drop}Memento pentru apă</strong><small>Un pahar în fiecare oră, cu notificare</small></span>
+        <button class="switch" role="switch" aria-checked="${S.water.on}" aria-label="Memento apă" data-water-toggle></button></div>
+      <div class="supp-ctl"><label class="daymeta" for="w-from">De la</label><input type="time" id="w-from" step="3600" value="${esc(S.water.from)}" data-wtime="from">
+        <label class="daymeta" for="w-to">până la</label><input type="time" id="w-to" step="3600" value="${esc(S.water.to)}" data-wtime="to"></div>
+    </div>
+  </section>
+  <section class="sec"><h2>Lista ta</h2>
+    ${list.map(s => `<div class="supp ${s.on ? '' : 'off'}">
+      <div class="supp-top"><span><strong>${esc(s.name)}</strong><small>${esc(s.dose)}</small></span>
+        <button class="switch" role="switch" aria-checked="${s.on}" aria-label="Activ: ${esc(s.name)}" data-toggle="${s.id}"></button></div>
+      ${s.tip && !s.on ? `<div class="supp-tip">Recomandat: ${esc(s.tip)}</div>` : ''}
+      <div class="supp-ctl"><label class="daymeta" for="t-${s.id}">Ora</label><input type="time" id="t-${s.id}" value="${esc(s.time)}" data-time="${s.id}"><span style="flex:1"></span><button class="del" data-del-supp="${s.id}">Șterge</button></div>
+    </div>`).join('')}
+  </section>
+  <section class="sec"><h2>Adaugă supliment</h2>
+    <form class="add-form" id="add-supp">
+      <input class="field" id="ns-name" placeholder="Nume, ex. Vitamina C" autocomplete="off" required>
+      <div class="two"><input class="field" id="ns-dose" placeholder="Doză, ex. 1 tabletă" autocomplete="off"><input class="field num" id="ns-time" type="time" value="09:00"></div>
+      <button class="btn btn-main" type="submit">Adaugă în listă</button>
+    </form>
+  </section>`;
+}
+
+/* ---------- Antrenament activ ---------- */
+let restT = null, tickT = null, armedFinish = 0, wakeLock = null;
+function startWorkout(dayId) {
+  if (!S.active || S.active.day !== dayId) {
+    if (S.active && S.active.day !== dayId && Object.values(S.active.sets).some(a => a.some(x => x.done))) { toast('Termină sau anulează întâi antrenamentul început.'); dayId = S.active.day; }
+    else {
+      const day = DAYS.find(d => d.id === dayId), sets = {};
+      day.ex.forEach(id => { sets[id] = Array.from({ length: EX[id].sets }, () => ({ kg: '', reps: '', done: false })); });
+      S.active = { day: dayId, start: Date.now(), sets };
+      save();
+    }
+  }
+  render();
+  $('#workout').scrollTop = 0; $('#workout').classList.remove('slide-in'); void $('#workout').offsetWidth; $('#workout').classList.add('slide-in');
+  keepAwake();
+}
+async function keepAwake() { try { if (S.active && 'wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => wakeLock = null); } } catch (e) { } }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') keepAwake(); });
+
+function renderWorkout() {
+  const w = $('#workout');
+  if (!S.active) { w.hidden = true; w.innerHTML = ''; document.body.style.overflow = ''; clearInterval(tickT); return; }
+  const day = DAYS.find(d => d.id === S.active.day);
+  w.hidden = false; document.body.style.overflow = 'hidden';
+  w.innerHTML = `<header class="w-head"><div class="w-head-in">
+    <div class="w-title"><span>${day.label}</span> ${esc(day.name)}</div>
+    <button class="btn btn-ghost w-finish" data-finish>Termină</button>
+    <div class="w-sub"><span id="elapsed" class="num">0:00</span> · <span id="done-count"></span></div>
+    <div class="progressbar"><i id="pbar"></i></div></div></header>
+  <div class="w-body">${day.ex.map(id => wexCard(id)).join('')}
+    <div class="w-foot"><button class="btn btn-main" data-finish>Termină și salvează</button><button class="link muted" data-cancel>Anulează antrenamentul</button></div>
+  </div>`;
+  updateProgress();
+  clearInterval(tickT);
+  tickT = setInterval(() => { const e = $('#elapsed'); if (e && S.active) e.textContent = fmtTime((Date.now() - S.active.start) / 1000); }, 1000);
+}
+function wexCard(id) {
+  const ex = EX[id], last = lastSets(id), sug = suggestion(id), sets = S.active.sets[id];
+  const ph = i => { const l = last && (last.sets[i] || last.sets[last.sets.length - 1]); return l || null; };
+  const complete = sets.length && sets.every(x => x.done);
+  return `<article class="wex ${complete ? 'complete' : ''}" id="wex-${id}">
+    <div class="wex-top">${Rig.svg(id)}<div><h3>${esc(ex.name)}</h3><small>${exTarget(ex)}</small>
+      ${sug ? `<span class="pill ${sug.up ? 'up' : ''}" style="margin-top:6px">${esc(sug.text)}</span>` : ''}</div></div>
+    ${last ? `<div class="last">Data trecută (${fmtDate(last.date)}): <b>${last.sets.map(x => `${fmt(x.kg)}×${x.reps}`).join('  ')}</b></div>` : `<div class="last">Prima dată: alege o greutate cu care faci ${ex.reps[1]} repetări curate.</div>`}
+    <div class="sets"><div class="set-h"><span>Set</span><span>kg</span><span>Repetări</span><span></span></div>
+      ${sets.map((x, i) => { const p = ph(i); return `<div class="set ${x.done ? 'done' : ''}" data-ex="${id}" data-i="${i}">
+        <span class="n">${i + 1}</span>
+        <input id="kg-${id}-${i}" inputmode="decimal" autocomplete="off" aria-label="Kilograme set ${i + 1}" placeholder="${p ? fmt(p.kg) : 'kg'}" value="${esc(x.kg)}" data-f="kg">
+        <input id="rp-${id}-${i}" inputmode="numeric" autocomplete="off" aria-label="Repetări set ${i + 1}" placeholder="${p ? p.reps : ex.reps[0] + '-' + ex.reps[1]}" value="${esc(x.reps)}" data-f="reps">
+        <button class="ok" data-done aria-label="Set ${i + 1} gata">${ICON.check}</button></div>`; }).join('')}
+    </div>
+    <div class="wex-actions"><span class="set-ctl"><button class="link" data-addset="${id}">+ Adaugă set</button>${sets.length > 1 ? `<button class="link danger" data-delset="${id}">− Scoate set</button>` : ''}</span><button class="link muted" data-howto="${id}">${openEx.has('w' + id) ? 'Ascunde execuția' : 'Cum se execută'}</button></div>
+    ${openEx.has('w' + id) ? exDetail(id) : ''}
+  </article>`;
+}
+function updateProgress() {
+  if (!S.active) return;
+  const all = Object.values(S.active.sets).flat(), done = all.filter(x => x.done).length;
+  const dc = $('#done-count'); if (dc) dc.textContent = `${done}/${all.length} seturi`;
+  const pb = $('#pbar'); if (pb) pb.style.width = (100 * done / all.length) + '%';
+}
+function finishWorkout() {
+  const a = S.active, ex = {};
+  for (const id in a.sets) {
+    const rows = a.sets[id].filter(x => x.done).map(x => ({ kg: parseNum(x.kg) ?? 0, reps: parseInt(x.reps) || 0 })).filter(x => x.reps > 0);
+    if (rows.length) ex[id] = rows;
+  }
+  if (Object.keys(ex).length) {
+    S.sessions.push({ id: 'w' + Date.now(), day: a.day, date: a.start, dur: Date.now() - a.start, ex });
+    toast(`Salvat. Ai ridicat ${fmt(volume({ ex }), 0)} kg azi.`); setTimeout(FX.celebrate, 150);
+  } else toast('Nu ai bifat niciun set, așa că nu am salvat nimic.');
+  S.active = null; save(); stopRest(); tab = 'azi'; render(); window.scrollTo(0, 0);
+  if (wakeLock) { wakeLock.release().catch(() => { }); wakeLock = null; }
+}
+
+/* ---------- Pauză între seturi ---------- */
+let audioCtx = null;
+function ctxAudio() { audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); return audioCtx; }
+/* sunet puternic: 3 rafale de câte 3 bipuri, care trec peste muzică (o coboară puțin cât sună) */
+function beep() {
+  try { if (navigator.audioSession) navigator.audioSession.type = 'transient'; } catch (e) { }
+  try {
+    const ac = ctxAudio(), comp = ac.createDynamicsCompressor(), master = ac.createGain();
+    comp.threshold.value = -6; comp.ratio.value = 4; master.gain.value = 1;
+    comp.connect(master); master.connect(ac.destination);
+    const t0 = ac.currentTime + 0.02;
+    for (let r = 0; r < 3; r++) for (let i = 0; i < 3; i++) {
+      const s = t0 + r * 0.9 + i * 0.16, f = i === 2 ? 1760 : 1320;
+      for (const type of ['square', 'sawtooth']) {
+        const o = ac.createOscillator(), g = ac.createGain();
+        o.type = type; o.frequency.value = type === 'square' ? f : f / 2;
+        o.connect(g); g.connect(comp);
+        g.gain.setValueAtTime(0.0001, s); g.gain.exponentialRampToValueAtTime(type === 'square' ? 0.9 : 0.5, s + 0.01); g.gain.setValueAtTime(type === 'square' ? 0.9 : 0.5, s + 0.1); g.gain.exponentialRampToValueAtTime(0.0001, s + 0.14);
+        o.start(s); o.stop(s + 0.15);
+      }
+    }
+    setTimeout(() => { try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; } catch (e) { } }, 3000);
+  } catch (e) { }
+  try { navigator.vibrate && navigator.vibrate([400, 150, 400, 150, 400]); } catch (e) { }
+}
+function unlockAudio() { try { ctxAudio(); } catch (e) { } }
+let rest = null;
+/* next = id-ul exercițiului următor când se schimbă aparatul */
+function startRest(sec, label, next) {
+  rest = { end: Date.now() + sec * 1000, total: sec, label, next: next || null, ended: false };
+  buildRest(); drawRest(); clearInterval(restT); restT = setInterval(drawRest, 250);
+}
+function stopRest() { clearInterval(restT); rest = null; const el = $('#rest'); el.hidden = true; el.innerHTML = ''; }
+function buildRest() {
+  const el = $('#rest'), C = 2 * Math.PI * 25;
+  el.classList.remove('ended'); el.hidden = false;
+  el.innerHTML = `<div class="rest-in" role="timer" aria-live="off">
+    <svg class="ring" viewBox="0 0 58 58"><circle class="bgc" cx="29" cy="29" r="25"/><circle class="fgc" id="rest-ring" cx="29" cy="29" r="25" stroke-dasharray="${C}" stroke-dashoffset="0"/></svg>
+    <div class="rest-txt"><div class="rest-t num" id="rest-t"></div><small id="rest-l"></small></div>
+    <div class="rest-btns"><button data-rest="-15">−15</button><button data-rest="15">+15</button><button data-rest="x">Sari</button></div></div>`;
+}
+function drawRest() {
+  if (!rest) return;
+  const left = Math.max(0, (rest.end - Date.now()) / 1000), C = 2 * Math.PI * 25;
+  const t = $('#rest-t'), l = $('#rest-l'), r = $('#rest-ring'); if (!t) return;
+  const txt = fmtTime(Math.ceil(left)); if (t.textContent !== txt) t.textContent = txt;
+  const lbl = rest.next ? `Schimbi aparatul · urmează ${EX[rest.next].name}` : `Pauză · ${rest.label}`; if (l.textContent !== lbl) l.textContent = lbl;
+  r.setAttribute('stroke-dashoffset', (C * (1 - (rest.total ? left / rest.total : 0))).toFixed(1));
+  if (left <= 0 && !rest.ended) { rest.ended = true; const nx = rest.next; stopRest(); goTime(nx); }
+}
+/* ecranul mare de la finalul pauzei */
+let goT = null;
+function goTime(next) {
+  beep();
+  const g = $('#go');
+  g.innerHTML = `<div class="go-in"><div class="go-ring"></div><div class="go-small">Pauza s-a terminat</div>
+    <div class="go-big">Treci<br>la treabă!</div>
+    <div class="go-next">${next ? `Următorul aparat:<b>${esc(EX[next].name)}</b>` : 'Următoarea serie'}</div>
+    <div class="go-tap">Atinge ecranul ca să continui</div></div>`;
+  g.hidden = false; g.classList.remove('show'); void g.offsetWidth; g.classList.add('show');
+  g.dataset.next = next || '';
+  if (FX.celebrate) setTimeout(FX.celebrate, 120);
+  clearTimeout(goT); goT = setTimeout(closeGo, 6000);
+}
+function closeGo() {
+  const g = $('#go'); if (g.hidden) return;
+  clearTimeout(goT); g.hidden = true; g.classList.remove('show');
+  const nx = g.dataset.next; if (nx) { const c = $('#wex-' + nx); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+}
+document.addEventListener('pointerdown', e => { if (e.target.closest('#go')) closeGo(); });
+function nextUndone(dayId, fromId) {
+  const ex = byId(dayId).ex, i = ex.indexOf(fromId);
+  for (let k = 1; k <= ex.length; k++) { const id = ex[(i + k) % ex.length]; if (S.active.sets[id].some(s => !s.done)) return id; }
+  return null;
+}
+
+/* ---------- Detaliu antrenament din istoric ---------- */
+let sheetId = null;
+function openSession(id) { sheetId = id; renderSheet(); const sh = $('#sheet'); sh.scrollTop = 0; sh.classList.remove('slide-in'); void sh.offsetWidth; sh.classList.add('slide-in'); }
+function closeSheet() { sheetId = null; const sh = $('#sheet'); sh.hidden = true; sh.innerHTML = ''; if (!S.active) document.body.style.overflow = ''; }
+function exHistory(exId, upTo) {
+  return sessionsSorted().filter(s => s.date <= upTo && s.ex[exId] && s.ex[exId].length)
+    .map(s => ({ t: s.date, best: Math.max(...s.ex[exId].map(x => e1rm(x.kg, x.reps))), top: Math.max(...s.ex[exId].map(x => x.kg)), vol: s.ex[exId].reduce((v, x) => v + x.kg * x.reps, 0) }));
+}
+function bars(sets) {
+  const max = Math.max(...sets.map(x => x.kg * x.reps), 1);
+  return `<div class="sbars">${sets.map((x, i) => `<div class="sbar"><i style="--h:${Math.max(8, 100 * x.kg * x.reps / max)}%;--d:${i * 80}ms"></i><b class="num">${fmt(x.kg)}<small>kg</small></b><span class="num">× ${x.reps}</span></div>`).join('')}</div>`;
+}
+function renderSheet() {
+  const s = S.sessions.find(x => x.id === sheetId), sh = $('#sheet');
+  if (!s) { closeSheet(); return; }
+  const d = byId(s.day), order = d.ex.filter(id => s.ex[id]).concat(Object.keys(s.ex).filter(id => !d.ex.includes(id)));
+  const nsets = Object.values(s.ex).reduce((a, x) => a + x.length, 0);
+  sh.hidden = false; document.body.style.overflow = 'hidden';
+  sh.innerHTML = `<header class="w-head"><div class="w-head-in">
+    <div class="w-title"><span>${new Date(s.date).toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' })}</span> ${esc(d.name)}</div>
+    <button class="btn btn-ghost w-finish" data-close-sheet>Închide</button></div></header>
+  <div class="w-body">
+    <section class="stats">
+      <div class="stat"><b class="num">${Math.round((s.dur || 0) / 60000)}</b><small>minute</small></div>
+      <div class="stat"><b class="num">${nsets}</b><small>serii făcute</small></div>
+      <div class="stat"><b class="num">${fmt(volume(s) / 1000, 1)}t</b><small>volum total ridicat</small></div>
+    </section>
+    ${order.map(id => {
+      const ex = EX[id], sets = s.ex[id], hist = exHistory(id, s.date), prev = hist.length > 1 ? hist[hist.length - 2] : null, cur = hist[hist.length - 1];
+      const dl = prev ? cur.best - prev.best : null, vol = sets.reduce((v, x) => v + x.kg * x.reps, 0);
+      return `<article class="wex hx">
+        <div class="wex-top">${Rig.svg(id)}<div><h3>${esc(ex.name)}</h3><small>${sets.length} serii · ${fmt(vol, 0)} kg volum</small>
+          ${dl != null ? `<span class="pill ${dl >= 0 ? 'up' : ''}" style="margin-top:6px">${dl >= 0 ? '▲ +' : '▼ −'}${fmt(Math.abs(dl))} kg forță față de data trecută</span>` : '<span class="pill" style="margin-top:6px">Prima înregistrare</span>'}</div></div>
+        ${bars(sets)}
+        <div class="hx-chart"><div class="hx-h">Progres la acest exercițiu <small>maxim estimat, kg</small></div>${chart(hist.map(h => ({ t: h.t, v: h.best })), 'kg')}</div>
+      </article>`;
+    }).join('')}
+    <div class="w-foot"><button class="link muted" data-del-sess="${s.id}">Șterge acest antrenament</button></div>
+  </div>`;
+}
+
+/* ---------- Mesaje scurte ---------- */
+let toastT;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3200); }
+function armButton(btn, label, cb) {
+  if (btn.classList.contains('armed')) { cb(); return; }
+  const orig = btn.textContent; btn.classList.add('armed'); btn.textContent = label;
+  setTimeout(() => { if (btn.isConnected) { btn.classList.remove('armed'); btn.textContent = orig; } }, 3500);
+}
+
+/* ---------- Evenimente ---------- */
+document.addEventListener('click', e => {
+  unlockAudio();
+  const t = e.target.closest('button'); if (!t) return;
+  const ds = t.dataset;
+  if (ds.tab) { tab = ds.tab; try { localStorage.setItem('forta-tab', tab); } catch (er) { } render(); window.scrollTo(0, 0); return; }
+  if (ds.start) { showOthers = false; startWorkout(ds.start); return; }
+  if ('others' in ds) { showOthers = true; render(); return; }
+  if ('skip' in ds) { S.skips = S.skips || {}; S.skips[dayKey()] = 1; for (const k of Object.keys(S.skips)) if (k < dayKey(new Date(Date.now() - 60 * DAYMS))) delete S.skips[k]; save(); lastTab = null; render(); toast('Odihnă bifată. Ne vedem la următorul antrenament.'); return; }
+  if ('unskip' in ds) { if (S.skips) delete S.skips[dayKey()]; save(); lastTab = null; render(); return; }
+  if (ds.take) {
+    const k = dayKey(), arr = S.suppLog[k] = S.suppLog[k] || [];
+    const i = arr.indexOf(ds.take); i >= 0 ? arr.splice(i, 1) : arr.push(ds.take);
+    for (const key of Object.keys(S.suppLog)) if (key < dayKey(new Date(Date.now() - 60 * DAYMS))) delete S.suppLog[key];
+    save(); render();
+    if (i < 0) { const el = document.querySelector(`[data-take="${ds.take}"] .tick`); FX.pop(el); FX.burst(el, 14); }
+    return;
+  }
+  if (ds.open) { openEx.has(ds.open) ? openEx.delete(ds.open) : openEx.add(ds.open); render(); return; }
+  if (ds.pick) { pickEx = ds.pick; render(); return; }
+  if (ds.toggle) { const s = S.supps.find(x => x.id === ds.toggle); s.on = !s.on; save(); render(); return; }
+  if (ds.delSupp) { armButton(t, 'Sigur?', () => { S.supps = S.supps.filter(x => x.id !== ds.delSupp); save(); render(); toast('Suplimentul a fost șters.'); }); return; }
+  if (ds.delSess) { armButton(t, 'Apasă din nou ca să ștergi', () => { S.sessions = S.sessions.filter(x => x.id !== ds.delSess); save(); closeSheet(); render(); toast('Antrenamentul a fost șters.'); }); return; }
+  if ('done' in ds) {
+    const row = t.closest('.set'), id = row.dataset.ex, i = +row.dataset.i, x = S.active.sets[id][i];
+    if (!x.done) {
+      const kgI = row.querySelector('[data-f="kg"]'), rpI = row.querySelector('[data-f="reps"]');
+      if (!x.kg && kgI.placeholder !== 'kg') x.kg = kgI.placeholder;
+      if (!x.reps && /^\d+$/.test(rpI.placeholder)) x.reps = rpI.placeholder;
+      if (!parseInt(x.reps)) { rpI.focus(); toast('Scrie câte repetări ai făcut.'); return; }
+      x.done = true; kgI.value = x.kg; rpI.value = x.reps;
+      const ex = EX[id], isLastOfAll = Object.values(S.active.sets).flat().every(s => s.done);
+      const exDone = S.active.sets[id].every(s => s.done);
+      if (isLastOfAll) { stopRest(); toast('Toate seriile sunt gata! Apasă Termină și salvează.'); }
+      else if (exDone) { const nx = nextUndone(S.active.day, id); startRest(EX[nx].switchRest, ex.name, nx); toast(`Gata cu ${ex.name}. Treci la ${EX[nx].name}.`); }
+      else startRest(ex.rest, ex.name);
+      FX.pop(t); FX.burst(t, 16);
+      if (S.active.sets[id].every(s => s.done)) setTimeout(() => FX.burst($('#wex-' + id + ' h3'), 30), 120);
+    } else x.done = false;
+    row.classList.toggle('done', x.done);
+    const card = $('#wex-' + id); card.classList.toggle('complete', S.active.sets[id].every(s => s.done));
+    save(); updateProgress(); return;
+  }
+  if (ds.addset) { const arr = S.active.sets[ds.addset]; arr.push({ kg: arr.length ? arr[arr.length - 1].kg : '', reps: '', done: false }); save(); const y = $('#workout').scrollTop; renderWorkout(); $('#workout').scrollTop = y; return; }
+  if (ds.delset) {
+    const arr = S.active.sets[ds.delset]; if (arr.length <= 1) return;
+    let k = -1; for (let j = arr.length - 1; j >= 0; j--) if (!arr[j].done) { k = j; break; }
+    arr.splice(k >= 0 ? k : arr.length - 1, 1); save(); const y = $('#workout').scrollTop; renderWorkout(); $('#workout').scrollTop = y; return;
+  }
+  if (ds.sess) { openSession(ds.sess); return; }
+  if ('closeSheet' in ds) { closeSheet(); return; }
+  if (ds.howto) { const k = 'w' + ds.howto; openEx.has(k) ? openEx.delete(k) : openEx.add(k); const y = $('#workout').scrollTop; renderWorkout(); $('#workout').scrollTop = y; return; }
+  if ('finish' in ds) { armButton(t, 'Apasă din nou', finishWorkout); return; }
+  if ('cancel' in ds) { armButton(t, 'Apasă din nou ca să anulezi, fără salvare', () => { S.active = null; save(); stopRest(); render(); }); return; }
+  if (ds.rest) { if (!rest) return; if (ds.rest === 'x') stopRest(); else { rest.end += (+ds.rest) * 1000; rest.total = Math.max(rest.total, (rest.end - Date.now()) / 1000); drawRest(); } return; }
+  if ('backup' in ds) {
+    const txt = JSON.stringify({ ...S, active: null });
+    navigator.clipboard.writeText(txt).then(() => toast('Datele au fost copiate. Lipește-le într-o notiță.')).catch(() => { $('#restore').hidden = false; const ta = $('#restore-txt'); ta.value = txt; ta.select(); toast('Textul e selectat. Copiază-l manual.'); });
+    return;
+  }
+  if ('restoreOpen' in ds) { $('#restore').hidden = !$('#restore').hidden; return; }
+  if ('restore' in ds) {
+    try { const d = JSON.parse($('#restore-txt').value); if (!Array.isArray(d.sessions)) throw 0; S = Object.assign(fresh(), d); save(); render(); toast('Datele au fost restaurate.'); }
+    catch (er) { toast('Textul nu pare o copie validă. Lipește tot textul copiat.'); }
+    return;
+  }
+  if ('badgeDel' in ds) { BADGE = ''; try { localStorage.removeItem('forta-badge'); } catch (er) { } render(); return; }
+  if (ds.water) {
+    const k = dayKey(), w = S.water; w.log[k] = Math.max(0, (w.log[k] || 0) + (+ds.water));
+    for (const key of Object.keys(w.log)) if (key < dayKey(new Date(Date.now() - 60 * DAYMS))) delete w.log[key];
+    save(); render(); if (+ds.water > 0) { const el = document.querySelector('.water-dots i.on:last-of-type') || document.querySelector('.water .drop'); FX.burst(document.querySelector('.water .drop'), 14); }
+    return;
+  }
+  if ('waterToggle' in ds) { S.water.on = !S.water.on; save(); render(); return; }
+  if ('quote' in ds) {
+    const q = t.closest('.quote'); if (q.classList.contains('open')) return;
+    try { localStorage.setItem('forta-quote', dayKey()); } catch (er) { }
+    q.classList.add('open'); setTimeout(() => FX.celebrate && FX.burst(q, 40), 350); return;
+  }
+  if (ds.push) { Push.action(ds.push); return; }
+});
+document.addEventListener('input', e => {
+  const f = e.target.dataset.f;
+  if (f) { const row = e.target.closest('.set'); S.active.sets[row.dataset.ex][+row.dataset.i][f] = e.target.value.trim(); save(); }
+});
+document.addEventListener('change', e => {
+  if (e.target.dataset.wtime && e.target.value) { S.water[e.target.dataset.wtime] = e.target.value.slice(0, 2) + ':00'; save(); render(); toast('Intervalul pentru apă a fost actualizat.'); return; }
+  if (e.target.id === 'badge-file' && e.target.files[0]) {
+    const img = new Image(), url = URL.createObjectURL(e.target.files[0]);
+    img.onload = () => {
+      BADGE = cutBackground(img); try { localStorage.setItem('forta-badge', BADGE); localStorage.setItem('forta-badge-cut', '1'); } catch (er) { toast('Imaginea e prea mare. Încearcă alta.'); }
+      URL.revokeObjectURL(url); render(); toast('Emblema a fost pusă.');
+    };
+    img.src = url; return;
+  }
+  const id = e.target.dataset.time;
+  if (id && e.target.value) { S.supps.find(x => x.id === id).time = e.target.value; save(); toast('Ora a fost actualizată.'); }
+});
+document.addEventListener('submit', e => {
+  e.preventDefault();
+  if (e.target.id === 'bw-form') {
+    const v = parseNum($('#bw').value); if (!v || v < 30 || v > 250) { toast('Scrie greutatea în kg, de exemplu 82,5.'); return; }
+    const k = dayKey(); S.body = S.body.filter(b => dayKey(new Date(b.t)) !== k); S.body.push({ t: Date.now(), kg: v }); S.body.sort((a, b) => a.t - b.t); save(); render(); toast('Greutatea a fost salvată.');
+  }
+  if (e.target.id === 'add-supp') {
+    const name = $('#ns-name').value.trim(); if (!name) return;
+    S.supps.push({ id: 's' + Date.now(), name, dose: $('#ns-dose').value.trim() || '1 doză', time: $('#ns-time').value || '09:00', on: true }); save(); render(); toast(`${name} a fost adăugat.`);
+  }
+});
+
+/* ---------- Forța Pro: inele, serie, recorduri, hartă musculară, realizări, profil ---------- */
+const IS_DEMO = !!window.FORTA_DEMO;
+const svgI = inner => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+Object.assign(LI, {
+  user: svgI('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'),
+  flame: svgI('<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>'),
+  trophy: svgI('<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>'),
+  award: svgI('<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>'),
+  zap: svgI('<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>'),
+  sunrise: svgI('<path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/>'),
+  crown: svgI('<path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/>'),
+  target: svgI('<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>'),
+  camera: svgI('<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>'),
+  sparkles: svgI('<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>'),
+  lock: svgI('<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'),
+  arrow: svgI('<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>')
+});
+TABS.push({ id: 'profil', label: 'Profil', icon: LI.user });
+
+/* ---------- Grupe musculare ---------- */
+const MUSCLE = {
+  incline: ['piept', 'umeri', 'triceps'], chestpress: ['piept', 'triceps'], pecdeck: ['piept'], rope: ['triceps'], vbar: ['triceps'],
+  pulldown: ['spate', 'biceps'], supine: ['spate', 'biceps'], dbrow: ['spate', 'biceps'], cablerow: ['spate'], straightarm: ['spate'],
+  zwide: ['biceps'], znarrow: ['biceps'], hammer: ['biceps', 'antebrat'], squat: ['cvadriceps', 'fesieri'], rdl: ['femurali', 'fesieri', 'spate'],
+  legpress: ['cvadriceps', 'fesieri'], legcurl: ['femurali'], dbpress: ['umeri', 'triceps'], lateral: ['umeri'], facepull: ['umeri', 'spate'],
+  bench: ['piept', 'triceps'], cross: ['piept'], dips: ['piept', 'triceps'], pushdown: ['triceps'], ohext: ['triceps'], row: ['spate', 'biceps'], curl: ['biceps']
+};
+const GROUP_LABEL = { piept: 'Piept', umeri: 'Umeri', triceps: 'Triceps', spate: 'Spate', biceps: 'Biceps', antebrat: 'Antebraț', cvadriceps: 'Cvadricepși', femurali: 'Femurali', fesieri: 'Fesieri' };
+function groupSets(days = 7) {
+  const from = Date.now() - days * DAYMS, g = {};
+  for (const s of S.sessions) if (s.date >= from) for (const id in s.ex) (MUSCLE[id] || []).forEach((m, i) => { g[m] = (g[m] || 0) + s.ex[id].length * (i === 0 ? 1 : 0.5); });
+  return g;
+}
+function bodyMap() {
+  const g = groupSets(7);
+  const col = m => { const v = g[m] || 0; if (!v) return 'var(--surface-3)'; const k = Math.min(1, v / 12); return `color-mix(in srgb, var(--accent) ${Math.round(25 + k * 75)}%, var(--surface-3))`; };
+  const P = (m, d) => `<path d="${d}" fill="${col(m)}" class="mm" data-m="${m}"/>`;
+  const E = (m, cx, cy, rx, ry, r = 0) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" transform="rotate(${r} ${cx} ${cy})" fill="${col(m)}" class="mm"/>`;
+  const N = 'var(--surface-2)';
+  const head = `<circle cx="60" cy="20" r="12" fill="${N}"/><rect x="54" y="30" width="12" height="9" rx="3" fill="${N}"/>`;
+  const front = `<svg viewBox="0 0 120 250" class="body">${head}
+    ${E('umeri', 35, 52, 11, 10, -20)}${E('umeri', 85, 52, 11, 10, 20)}
+    ${P('piept', 'M42 46 Q60 40 59 46 L59 72 Q48 76 40 68 Q37 56 42 46Z')}${P('piept', 'M78 46 Q60 40 61 46 L61 72 Q72 76 80 68 Q83 56 78 46Z')}
+    <rect x="48" y="77" width="24" height="44" rx="8" fill="${N}"/>
+    ${E('biceps', 27, 80, 7, 15, 10)}${E('biceps', 93, 80, 7, 15, -10)}
+    ${E('antebrat', 22, 112, 6, 15, 12)}${E('antebrat', 98, 112, 6, 15, -12)}
+    <path d="M44 122 L76 122 L74 136 L46 136Z" fill="${N}"/>
+    ${E('cvadriceps', 49, 166, 11, 30, 4)}${E('cvadriceps', 71, 166, 11, 30, -4)}
+    ${E('x', 48, 222, 7, 19)}${E('x', 72, 222, 7, 19)}</svg>`;
+  const back = `<svg viewBox="0 0 120 250" class="body">${head}
+    ${P('spate', 'M44 40 L76 40 L70 52 L50 52Z')}
+    ${E('umeri', 35, 52, 11, 10, -20)}${E('umeri', 85, 52, 11, 10, 20)}
+    ${P('spate', 'M42 54 Q58 56 58 62 L58 100 Q48 106 44 96 Q38 74 42 54Z')}${P('spate', 'M78 54 Q62 56 62 62 L62 100 Q72 106 76 96 Q82 74 78 54Z')}
+    <rect x="50" y="102" width="20" height="18" rx="6" fill="${N}"/>
+    ${E('triceps', 27, 80, 7, 15, 10)}${E('triceps', 93, 80, 7, 15, -10)}
+    ${E('antebrat', 22, 112, 6, 15, 12)}${E('antebrat', 98, 112, 6, 15, -12)}
+    ${E('fesieri', 49, 134, 12, 11)}${E('fesieri', 71, 134, 12, 11)}
+    ${E('femurali', 49, 172, 10, 24, 3)}${E('femurali', 71, 172, 10, 24, -3)}
+    ${E('x', 48, 222, 7, 19)}${E('x', 72, 222, 7, 19)}</svg>`;
+  const list = Object.keys(GROUP_LABEL).map(m => [m, g[m] || 0]).sort((a, b) => b[1] - a[1]);
+  return `<div class="mmap"><div class="mm-bodies"><figure>${front}<figcaption>Față</figcaption></figure><figure>${back}<figcaption>Spate</figcaption></figure></div>
+    <div class="mm-list">${list.map(([m, v]) => `<div class="mm-row"><span>${GROUP_LABEL[m]}</span><i><b style="width:${Math.min(100, v / 16 * 100)}%"></b></i><em class="num">${fmt(v, 0)}</em></div>`).join('')}
+    <small class="mm-note">Serii în ultimele 7 zile. Pentru masă musculară, ținta e 10-20 de serii pe săptămână pentru fiecare grupă.</small></div></div>`;
+}
+
+/* ---------- Statistici, recorduri, serie ---------- */
+function weekStart(t = Date.now()) { const d = new Date(dayKey(new Date(t))); return d.getTime() - ((d.getDay() + 6) % 7) * DAYMS; }
+function weekCount(ws) { return S.sessions.filter(s => s.date >= ws && s.date < ws + 7 * DAYMS).length; }
+function plannedSoFar(ws) { let n = 0; for (let i = 0; i < 7; i++) { const d = new Date(ws + i * DAYMS); if (d.getTime() > Date.now()) break; if (planFor(d)) n++; } return n; }
+function streakWeeks() {
+  let ws = weekStart(), n = 0;
+  if (weekCount(ws) >= Math.max(1, plannedSoFar(ws))) n++;
+  ws -= 7 * DAYMS;
+  while (weekCount(ws) >= DAYS.length) { n++; ws -= 7 * DAYMS; }
+  return n;
+}
+function allPRs() {
+  const best = {}, prs = [];
+  for (const s of sessionsSorted()) for (const id in s.ex) {
+    const top = s.ex[id].reduce((b, x) => (!b || e1rm(x.kg, x.reps) > e1rm(b.kg, b.reps)) ? x : b, null);
+    const v = e1rm(top.kg, top.reps);
+    if (best[id] != null && v > best[id] + 0.01) prs.push({ id, date: s.date, kg: top.kg, reps: top.reps, gain: v - best[id] });
+    best[id] = Math.max(best[id] || 0, v);
+  }
+  return { prs, best };
+}
+function totals() {
+  const vol = S.sessions.reduce((a, s) => a + volume(s), 0), mins = S.sessions.reduce((a, s) => a + (s.dur || 0), 0) / 60000;
+  return { n: S.sessions.length, vol, hours: mins / 60, prs: allPRs().prs.length, sets: S.sessions.reduce((a, s) => a + Object.values(s.ex).reduce((b, x) => b + x.length, 0), 0) };
+}
+
+/* ---------- Inele de activitate ---------- */
+function ringsCard() {
+  const ws = weekStart(), done = weekCount(ws), goal = DAYS.length;
+  const volW = S.sessions.filter(s => s.date >= ws).reduce((a, s) => a + volume(s), 0);
+  const past = [1, 2, 3, 4].map(k => S.sessions.filter(s => s.date >= ws - k * 7 * DAYMS && s.date < ws - (k - 1) * 7 * DAYMS).reduce((a, s) => a + volume(s), 0)).filter(v => v > 0);
+  const volGoal = past.length ? past.reduce((a, b) => a + b, 0) / past.length : 8000;
+  const wGoal = waterTimes().length || 8, wNow = (S.water && S.water.log[dayKey()]) || 0;
+  const rings = [
+    { k: done / goal, c: 'var(--accent)', r: 50, label: 'Antrenamente', val: `${done}/${goal}`, sub: 'săptămâna aceasta' },
+    { k: volW / volGoal, c: '#ff9f43', r: 38, label: 'Volum', val: `${fmt(volW / 1000, 1)} t`, sub: `media ta: ${fmt(volGoal / 1000, 1)} t` },
+    { k: wNow / wGoal, c: 'var(--water)', r: 26, label: 'Apă', val: `${wNow}/${wGoal}`, sub: 'pahare azi' }
+  ];
+  const C = r => 2 * Math.PI * r;
+  const st = streakWeeks();
+  return `<section class="rings">
+    <svg viewBox="0 0 120 120" class="ring3">${rings.map(g => `<circle cx="60" cy="60" r="${g.r}" class="rg-bg" style="stroke:${g.c}"/><circle cx="60" cy="60" r="${g.r}" class="rg-fg" style="stroke:${g.c};--c:${C(g.r)};--o:${C(g.r) * (1 - Math.min(1, g.k))}" stroke-dasharray="${C(g.r)}" stroke-dashoffset="${C(g.r) * (1 - Math.min(1, g.k))}"/>`).join('')}</svg>
+    <div class="rg-list">${rings.map(g => `<div class="rg-item"><i style="background:${g.c}"></i><span><small>${g.label}</small><b class="num">${g.val}</b><em>${g.sub}</em></span></div>`).join('')}</div>
+    ${st ? `<div class="streak">${LI.flame}<b class="num">${st}</b><span>${st === 1 ? 'săptămână' : 'săptămâni'} la rând cu programul complet</span></div>` : ''}
+  </section>`;
+}
+
+/* ---------- Realizări ---------- */
+const ACH = [
+  { id: 'first', icon: 'zap', t: 'Primul pas', d: 'Primul antrenament terminat', ok: x => x.n >= 1 },
+  { id: 'week', icon: 'target', t: 'Săptămână completă', d: 'Toate antrenamentele dintr-o săptămână', ok: x => x.fullWeek },
+  { id: 'pr1', icon: 'trophy', t: 'Primul record', d: 'Ai depășit maximul la un exercițiu', ok: x => x.prs >= 1 },
+  { id: 'n10', icon: 'award', t: 'Constant', d: '10 antrenamente', ok: x => x.n >= 10 },
+  { id: 't10', icon: 'zap', t: '10 tone', d: '10.000 kg ridicate în total', ok: x => x.vol >= 10000 },
+  { id: 'hydro', icon: 'drop', t: 'Hidratat', d: 'Toate paharele de apă într-o zi', ok: x => x.hydro },
+  { id: 's4', icon: 'flame', t: 'De neoprit', d: '4 săptămâni la rând cu programul complet', ok: x => x.streak >= 4 },
+  { id: 'pr10', icon: 'crown', t: 'Colecționar de recorduri', d: '10 recorduri personale', ok: x => x.prs >= 10 },
+  { id: 'n25', icon: 'award', t: 'Veteran', d: '25 de antrenamente', ok: x => x.n >= 25 },
+  { id: 'early', icon: 'sunrise', t: 'Matinal', d: 'Un antrenament început înainte de 9:00', ok: x => x.early },
+  { id: 't50', icon: 'crown', t: '50 de tone', d: '50.000 kg ridicate în total', ok: x => x.vol >= 50000 },
+  { id: 'n50', icon: 'trophy', t: 'Legendă', d: '50 de antrenamente', ok: x => x.n >= 50 }
+];
+function achStats() {
+  const t = totals(), wg = waterTimes().length || 99;
+  const weeks = {}; for (const s of S.sessions) { const w = weekStart(s.date); weeks[w] = (weeks[w] || 0) + 1; }
+  return { ...t, fullWeek: Object.values(weeks).some(v => v >= DAYS.length), hydro: Object.values((S.water && S.water.log) || {}).some(v => v >= wg), streak: streakWeeks(), early: S.sessions.some(s => new Date(s.date).getHours() < 9) };
+}
+function achGrid() {
+  const x = achStats(), got = ACH.filter(a => a.ok(x)).length;
+  return `<div class="ach-head"><b class="num">${got}</b> din ${ACH.length} deblocate</div><div class="ach">${ACH.map(a => { const ok = a.ok(x); return `<div class="ach-i ${ok ? 'ok' : ''}"><span class="ach-ic">${ok ? LI[a.icon] : LI.lock}</span><b>${a.t}</b><small>${a.d}</small></div>`; }).join('')}</div>`;
+}
+
+/* ---------- Profil ---------- */
+function viewProfil() {
+  const t = totals(), first = sessionsSorted()[0];
+  return `<section class="prof">
+    <div class="prof-av">${Buddy.flex.replace('class="buddy ', 'class="buddy avatar ')}</div>
+    <h1>Cristian Demian</h1>
+    <p class="daymeta">${first ? `Se antrenează din ${new Date(first.date).toLocaleDateString('ro-RO', { month: 'long', year: 'numeric' })}` : 'Primul antrenament te așteaptă'} · Obiectiv: masă musculară</p>
+  </section>
+  <section class="pstats">
+    <div class="stat"><b class="num" data-count>${t.n}</b><small>antrenamente</small></div>
+    <div class="stat"><b class="num" data-count>${fmt(t.vol / 1000, 1)}t</b><small>ridicate</small></div>
+    <div class="stat"><b class="num" data-count>${fmt(t.hours, 0)}h</b><small>la sală</small></div>
+    <div class="stat"><b class="num" data-count>${t.prs}</b><small>recorduri</small></div>
+  </section>
+  <section class="sec"><h2>Realizări</h2>${achGrid()}</section>
+  ${typeof emblemSec === 'function' ? emblemSec() : ''}
+  ${typeof backupSec === 'function' ? backupSec() : ''}
+  ${IS_DEMO ? `<section class="sec"><h2>Prezentare</h2><div class="notice"><p>Reia prezentarea de la început, cu crearea avatarului.</p><button class="btn btn-ghost" data-onb-reset>Reia prezentarea</button></div></section>` : ''}`;
+}
+
+/* ---------- Recorduri în Progres ---------- */
+function prSection() {
+  const { prs, best } = allPRs();
+  const recent = prs.slice(-5).reverse();
+  if (!recent.length) return '';
+  return `<section class="sec"><h2>Recorduri recente</h2><div class="hist">${recent.map(p => `<div class="hist-row pr-row"><span class="badge pr-b">${LI.trophy}</span><span><strong>${esc(EX[p.id].name)}</strong><small>${fmt(p.kg)} kg × ${p.reps} · ${fmtDate(p.date)}</small></span><em class="pr-g">+${fmt(p.gain)} kg</em></div>`).join('')}</div></section>`;
+}
+
+/* ---------- Extinderea ecranelor existente ---------- */
+const _viewAzi = viewAzi, _viewProgres = viewProgres;
+viewAzi = function () {
+  const h = _viewAzi();
+  const i = h.indexOf('<section class="quote');
+  return i < 0 ? h : h.slice(0, i) + ringsCard() + h.slice(i);
+};
+viewProgres = function () {
+  return `<section class="sec"><h2>Mușchi lucrați</h2>${bodyMap()}</section>` + prSection() + _viewProgres();
+};
+VIEWS.profil = viewProfil;
+
+/* ---------- Record personal în timpul antrenamentului ---------- */
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-done]'); if (!t || !S.active) return;
+  const row = t.closest('.set'); if (!row || !row.classList.contains('done')) return;
+  const id = row.dataset.ex, x = S.active.sets[id][+row.dataset.i], kg = parseNum(x.kg) || 0, reps = parseInt(x.reps) || 0;
+  if (!kg || !reps) return;
+  const prev = allPRs().best[id]; if (prev == null) return;
+  const v = e1rm(kg, reps); if (v <= prev + 0.01) return;
+  const otherDone = S.active.sets[id].filter((s, j) => s.done && j !== +row.dataset.i).some(s => e1rm(parseNum(s.kg) || 0, parseInt(s.reps) || 0) >= v);
+  if (otherDone) return;
+  showPR(id, kg, reps, v - prev);
+});
+function showPR(id, kg, reps, gain) {
+  const g = $('#pr'); if (!g) return;
+  g.innerHTML = `<div class="pr-card">${Buddy.flex.replace('class="buddy ', 'class="buddy pr-av ')}
+    <div class="pr-badge">${LI.trophy}<span>Record personal</span></div>
+    <h2 class="pr-t">${esc(EX[id].name)}</h2>
+    <div class="pr-v num">${fmt(kg)} kg × ${reps}</div>
+    <p>Cu ${fmt(gain)} kg peste maximul tău estimat de până acum.</p>
+    <button class="btn btn-main" data-pr-close>Continuă</button></div>`;
+  g.hidden = false; g.classList.remove('show'); void g.offsetWidth; g.classList.add('show');
+  Buddy.start(); setTimeout(() => FX.celebrate(), 200);
+  try { beep(); } catch (e) { }
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-pr-close]') || e.target.id === 'pr') { const g = $('#pr'); g.hidden = true; g.innerHTML = ''; const w = $('#workout'), y = w ? w.scrollTop : 0; render(); if (w) w.scrollTop = y; } });
+
+/* ---------- Demo pentru investitori: date de exemplu + prezentarea de la prima pornire ---------- */
+(function () {
+  if (!window.FORTA_DEMO) return;
+  /* 8 săptămâni de antrenamente realiste, cu progres treptat */
+  function seed() {
+    const st = { incline: 20, chestpress: 45, pecdeck: 40, rope: 20, vbar: 25, pulldown: 50, supine: 45, dbrow: 22, cablerow: 50, straightarm: 20, zwide: 25, znarrow: 22.5, hammer: 12, squat: 70, rdl: 60, legpress: 120, legcurl: 35, dbpress: 18, lateral: 8, facepull: 20 };
+    const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const monday = today.getTime() - ((today.getDay() + 6) % 7) * DAYMS;
+    const sess = [];
+    for (let w = 8; w >= 0; w--) for (const d of DAYS) {
+      const day = new Date(monday - w * 7 * DAYMS + (d.wd - 1) * DAYMS);
+      if (day.getTime() >= today.getTime()) continue;
+      if (w === 5 && d.id === 'C') continue;
+      day.setHours(rnd(0, 3) ? 18 : 8, rnd(0, 50));
+      const ex = {};
+      for (const id of d.ex) {
+        const prog = (8 - w) * (EX[id].step || 2.5) * 0.55, kg = Math.round((st[id] + prog) / (EX[id].step || 2.5)) * (EX[id].step || 2.5);
+        ex[id] = [0, 1, 2].map(i => ({ kg, reps: Math.max(9, 12 - i - (rnd(0, 2) === 0 ? 1 : 0)) }));
+      }
+      sess.push({ id: 'd' + day.getTime(), day: d.id, date: day.getTime(), dur: rnd(48, 66) * 60000, ex });
+    }
+    const body = []; for (let i = 0; i < 9; i++) body.push({ t: monday - (8 - i) * 7 * DAYMS + 2 * DAYMS, kg: Math.round((79.4 + i * 0.36 + (Math.random() - .5) * .3) * 10) / 10 });
+    const wlog = {}; for (let i = 1; i < 14; i++) wlog[dayKey(new Date(today.getTime() - i * DAYMS))] = rnd(9, 15);
+    wlog[dayKey()] = 6;
+    S = Object.assign(fresh(), { sessions: sess, body, mig: 2 });
+    S.water.log = wlog;
+    S.suppLog[dayKey()] = ['cr1', 'cr2', 's2'];
+    save();
+  }
+  window.demoSeed = seed;
+
+  const done = () => { try { return localStorage.getItem('forta-onb') === '1'; } catch (e) { return false; } };
+  const ob = document.createElement('div'); ob.className = 'onb'; ob.id = 'onb';
+  let step = 0, photo = '', goal = 'Masă musculară', days = 3;
+  const GOALS = [['Masă musculară', 'Mai mult volum, 8-12 repetări'], ['Forță', 'Greutăți mari, 4-6 repetări'], ['Definire', 'Volum și cardio, deficit caloric'], ['Sănătate', '2-3 antrenamente ușoare pe săptămână']];
+  function view() {
+    if (step === 0) return `<div class="ob-in ob-0">
+      <div class="ob-hero">${Buddy.flex.replace('class="buddy ', 'class="buddy ob-av ')}</div>
+      <div class="ob-brand">Forța</div>
+      <h1>Antrenorul tău are fața ta.</h1>
+      <p>Transformă o poză într-un avatar 3D care se antrenează cu tine, îți arată progresul și te motivează în fiecare zi.</p>
+      <button class="btn btn-main" data-ob="1">Începe</button>
+      <small class="ob-legal">Durează mai puțin de un minut.</small></div>`;
+    if (step === 1) return `<div class="ob-in">
+      <div class="ob-steps"><i class="on"></i><i></i><i></i></div>
+      <h2>Creează-ți avatarul</h2><p>Alege o poză clară cu fața ta, din față, cu lumină bună.</p>
+      <label class="ob-drop" for="ob-file">${photo ? `<img src="${photo}" alt="Poza aleasă">` : `<span class="ob-cam">${LI.camera}</span><b>Alege o poză</b><small>sau fă un selfie acum</small>`}</label>
+      <input type="file" id="ob-file" accept="image/*" hidden>
+      <button class="btn btn-main" data-ob="2">${photo ? 'Generează avatarul 3D' : 'Folosește poza demo'}</button></div>`;
+    if (step === 2) return `<div class="ob-in ob-gen">
+      <div class="ob-steps"><i class="on"></i><i class="on"></i><i></i></div>
+      <div class="gen"><svg viewBox="0 0 200 200" class="gen-ring"><circle cx="100" cy="100" r="90" class="g-bg"/><circle cx="100" cy="100" r="90" class="g-fg" id="g-fg"/></svg>
+        <div class="gen-ph">${photo ? `<img src="${photo}" alt="">` : `<img src="${(window.ASSET || '') + 'mini-cristian-flex.jpg'}" alt="">`}</div><div class="gen-scan"></div></div>
+      <div class="gen-pct num" id="g-pct">0%</div><div class="gen-txt" id="g-txt">Analizăm trăsăturile feței</div></div>`;
+    if (step === 3) return `<div class="ob-in ob-reveal">
+      <div class="ob-steps"><i class="on"></i><i class="on"></i><i></i></div>
+      <div class="ob-badge">${LI.sparkles}<span>Avatarul tău e gata</span></div>
+      <div class="ob-hero big">${Buddy.svg.replace('class="buddy ', 'class="buddy ob-av ')}</div>
+      <p>Dansează în zilele de odihnă, face flotări cu tine și își arată bicepșii la fiecare record.</p>
+      <button class="btn btn-main" data-ob="4">Continuă</button></div>`;
+    if (step === 4) return `<div class="ob-in">
+      <div class="ob-steps"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+      <h2>Care e obiectivul tău?</h2>
+      <div class="ob-goals">${GOALS.map(([g, d]) => `<button class="ob-goal ${g === goal ? 'on' : ''}" data-goal="${g}"><b>${g}</b><small>${d}</small></button>`).join('')}</div>
+      <h3>Câte zile pe săptămână?</h3>
+      <div class="ob-days">${[2, 3, 4, 5].map(n => `<button class="ob-day ${n === days ? 'on' : ''}" data-days="${n}"><b class="num">${n}</b><small>zile</small></button>`).join('')}</div>
+      <button class="btn btn-main" data-ob="5">Generează programul</button></div>`;
+    return `<div class="ob-in ob-final"><div class="ob-check">${ICON.check}</div><h2>Programul tău e gata</h2>
+      <p>${goal} · ${days} zile pe săptămână. Am pregătit și 8 săptămâni de istoric demo, ca să vezi cum arată progresul.</p>
+      <button class="btn btn-main" data-ob="done">Intră în aplicație</button></div>`;
+  }
+  function draw() { ob.innerHTML = view(); ob.firstElementChild.classList.add('in'); Buddy.start(); if (step === 2) generate(); }
+  function generate() {
+    const msgs = ['Analizăm trăsăturile feței', 'Construim modelul 3D', 'Îi alegem echipamentul', 'Îl învățăm să facă flotări', 'Ultimele retușuri'];
+    const C = 2 * Math.PI * 90, fg = $('#g-fg'); fg.style.strokeDasharray = C; let t0 = performance.now();
+    const tick = t => {
+      const k = Math.min(1, (t - t0) / 4600); fg.style.strokeDashoffset = C * (1 - k);
+      const p = $('#g-pct'), m = $('#g-txt'); if (!p) return;
+      p.textContent = Math.round(k * 100) + '%'; m.textContent = msgs[Math.min(msgs.length - 1, Math.floor(k * msgs.length))];
+      if (k < 1) requestAnimationFrame(tick); else setTimeout(() => { step = 3; draw(); FX.celebrate(); }, 350);
+    };
+    requestAnimationFrame(tick);
+  }
+  ob.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.goal) { goal = b.dataset.goal; draw(); return; }
+    if (b.dataset.days) { days = +b.dataset.days; draw(); return; }
+    const n = b.dataset.ob; if (!n) return;
+    if (n === 'done') { try { localStorage.setItem('forta-onb', '1'); } catch (er) { } ob.classList.add('out'); setTimeout(() => { ob.remove(); lastTab = null; tab = 'azi'; render(); }, 450); return; }
+    if (n === '5') seed();
+    step = +n; draw();
+  });
+  ob.addEventListener('change', e => {
+    if (e.target.id !== 'ob-file' || !e.target.files[0]) return;
+    const r = new FileReader(); r.onload = () => { photo = r.result; draw(); }; r.readAsDataURL(e.target.files[0]);
+  });
+  window.startOnboarding = () => { step = 0; photo = ''; document.body.appendChild(ob); ob.classList.remove('out'); draw(); };
+  if (!done()) { if (!S.sessions.length) seed(); window.startOnboarding(); }
+  else if (!S.sessions.length) seed();
+  document.addEventListener('click', e => { if (e.target.closest('[data-onb-reset]')) { try { localStorage.removeItem('forta-onb'); } catch (er) { } window.startOnboarding(); } });
+})();
+
+render();
+(function () {
+  const sp = document.getElementById('splash'); if (!sp) return;
+  const v = sp.querySelector('video'); v.muted = true;
+  const p = v.play(); if (p && p.catch) p.catch(() => { });
+  v.addEventListener('playing', () => sp.classList.add('vid'));
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hide = () => { if (sp.classList.contains('out')) return; sp.classList.add('out'); setTimeout(() => { sp.remove(); }, 650); };
+  setTimeout(hide, still ? 700 : 2600);
+  sp.addEventListener('pointerdown', hide);
+})();
+</script>
+</body></html>

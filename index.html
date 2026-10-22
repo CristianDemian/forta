@@ -411,6 +411,134 @@ svg.chart { width: 100%; height: auto; display: block; overflow: visible; }
 .buddy.full { background: var(--bg); }
 .buddy.full::after { background: linear-gradient(180deg, var(--bg) 0%, transparent 12%, transparent 72%, var(--bg) 100%); }
 .buddy .b-vid, .buddy .b-poster { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 10%, #000 90%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 10%, #000 90%, transparent 100%); -webkit-mask-composite: source-over; mask-composite: add; }
+
+/* ---------- Meniu cu 5 file ---------- */
+.nav-in { grid-template-columns: repeat(5, 1fr); }
+.nav-pill { width: calc((100% - 10px) / 5); }
+.nav button { font-size: 10px; }
+
+/* ---------- Inele de activitate ---------- */
+.rings { display: grid; grid-template-columns: 116px 1fr; gap: 16px; align-items: center; padding: 16px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); }
+.ring3 { width: 116px; height: 116px; transform: rotate(-90deg); }
+.rg-bg { fill: none; stroke-width: 10; opacity: .16; }
+.rg-fg { fill: none; stroke-width: 10; stroke-linecap: round; animation: rgfill 1.2s cubic-bezier(.3, .9, .3, 1) both; }
+@keyframes rgfill { from { stroke-dashoffset: var(--c); } }
+.rg-list { display: grid; gap: 10px; min-width: 0; }
+.rg-item { display: grid; grid-template-columns: 8px 1fr; gap: 10px; align-items: start; }
+.rg-item i { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; }
+.rg-item span { display: grid; grid-template-columns: 1fr auto; gap: 0 8px; align-items: baseline; }
+.rg-item small { font-size: 12px; color: var(--muted); font-weight: 600; }
+.rg-item b { font: 700 16px var(--sys); letter-spacing: -.02em; text-align: right; }
+.rg-item em { grid-column: 1 / -1; font-style: normal; font-size: 11.5px; color: var(--faint); }
+.streak { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: linear-gradient(90deg, color-mix(in srgb, #ff9f43 18%, transparent), transparent); border: 1px solid color-mix(in srgb, #ff9f43 25%, transparent); }
+.streak svg { width: 20px; height: 20px; color: #ff9f43; }
+.streak b { font: 700 18px var(--sys); color: #ffb76b; }
+.streak span { font-size: 13px; color: var(--fg); }
+
+/* ---------- Harta musculară ---------- */
+.mmap { display: grid; gap: 14px; padding: 16px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); }
+.mm-bodies { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mm-bodies figure { margin: 0; display: grid; justify-items: center; gap: 4px; }
+.mm-bodies figcaption { font-size: 11px; color: var(--faint); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+.body { width: 100%; max-width: 130px; height: auto; }
+.mm { transition: fill .6s; }
+.mm-list { display: grid; gap: 7px; }
+.mm-row { display: grid; grid-template-columns: 84px 1fr 26px; gap: 10px; align-items: center; font-size: 13px; }
+.mm-row i { height: 6px; border-radius: 3px; background: var(--surface-3); overflow: hidden; }
+.mm-row i b { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--red-deep), var(--accent), var(--red-hi)); animation: growx .8s ease-out both; transform-origin: left; }
+.mm-row em { font-style: normal; text-align: right; color: var(--muted); font-weight: 600; }
+.mm-note { color: var(--faint); font-size: 11.5px; line-height: 1.4; }
+
+/* ---------- Recorduri ---------- */
+.pr-b { background: color-mix(in srgb, #ffc94d 16%, transparent) !important; color: #ffc94d !important; }
+.pr-b svg { width: 17px; height: 17px; }
+.pr-row { grid-template-columns: 34px 1fr auto; }
+.pr-g { font-style: normal; font-weight: 700; font-size: 13px; color: var(--good); }
+.pr { position: fixed; inset: 0; z-index: 55; display: grid; place-items: center; padding: 20px; background: rgba(5,4,5,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.pr-card { width: min(100%, 360px); display: grid; justify-items: center; gap: 10px; text-align: center; padding: 0 20px 20px; border-radius: 26px; overflow: hidden;
+  background: radial-gradient(120% 60% at 50% 0%, color-mix(in srgb, #ffc94d 22%, var(--surface)), var(--surface) 60%); border: 1px solid color-mix(in srgb, #ffc94d 30%, transparent); box-shadow: 0 30px 60px -20px rgba(0,0,0,.8); }
+.pr.show .pr-card { animation: prin .6s cubic-bezier(.2, 1.4, .4, 1) both; }
+@keyframes prin { from { transform: scale(.7) translateY(30px); opacity: 0; } }
+.buddy.pr-av { width: 100%; height: 220px; margin: 0 -20px; }
+.buddy.pr-av .b-vid, .buddy.pr-av .b-poster { height: 100%; }
+.pr-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; background: #ffc94d; color: #2a1d00; font: 700 12px var(--sys); text-transform: uppercase; letter-spacing: .06em; margin-top: -8px; }
+.pr-badge svg { width: 15px; height: 15px; }
+.pr-t { margin: 4px 0 0; font: 600 16px var(--sys); color: var(--fg); }
+.pr-v { font: 800 36px/1 var(--sys); letter-spacing: -.03em; color: #ffd27a; }
+.pr-card p { margin: 0 0 6px; color: var(--muted); font-size: 13.5px; }
+
+/* ---------- Profil ---------- */
+.prof { display: grid; justify-items: center; text-align: center; gap: 4px; padding-top: 8px; }
+.prof h1 { margin: 6px 0 0; font: 700 22px var(--sys); letter-spacing: -.02em; }
+.prof-av { width: 112px; height: 112px; border-radius: 50%; overflow: hidden; position: relative; background: var(--surface-2);
+  box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--accent), 0 18px 40px -14px var(--accent); }
+.buddy.avatar { position: absolute; inset: 0; }
+.buddy.avatar .b-vid, .buddy.avatar .b-poster { height: 190%; top: -4%; -webkit-mask-image: none; mask-image: none; }
+.pstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.pstats .stat { text-align: center; padding: 12px 6px; }
+.pstats .stat b { font-size: 19px; }
+.ach-head { font-size: 13px; color: var(--muted); } .ach-head b { color: var(--fg); font-size: 15px; }
+.ach { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.ach-i { display: grid; justify-items: center; text-align: center; gap: 4px; padding: 14px 8px 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); opacity: .5; }
+.ach-i.ok { opacity: 1; background: linear-gradient(180deg, color-mix(in srgb, #ffc94d 10%, var(--surface)), var(--surface)); border-color: color-mix(in srgb, #ffc94d 25%, transparent); }
+.ach-ic { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-3); color: var(--faint); }
+.ach-i.ok .ach-ic { background: linear-gradient(160deg, #ffe08a, #f2a51a); color: #3a2600; box-shadow: 0 6px 16px -6px #f2a51a; }
+.ach-ic svg { width: 20px; height: 20px; }
+.ach-i b { font: 600 12.5px/1.2 var(--sys); }
+.ach-i small { font-size: 10.5px; color: var(--muted); line-height: 1.3; }
+
+/* ---------- Prezentarea de la prima pornire ---------- */
+.onb { position: fixed; inset: 0; z-index: 90; background: radial-gradient(120% 70% at 50% 0%, #2a1013 0%, var(--bg) 60%); overflow-y: auto; transition: opacity .45s, transform .45s;
+  padding: calc(20px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); }
+.onb.out { opacity: 0; transform: scale(1.04); pointer-events: none; }
+.ob-in { max-width: 420px; min-height: 100%; margin: 0 auto; display: grid; align-content: center; gap: 14px; text-align: center; justify-items: center; }
+.ob-in.in > * { animation: rise .55s cubic-bezier(.2, .8, .2, 1) both; }
+.ob-in.in > *:nth-child(2) { animation-delay: .06s; } .ob-in.in > *:nth-child(3) { animation-delay: .12s; } .ob-in.in > *:nth-child(4) { animation-delay: .18s; } .ob-in.in > *:nth-child(n+5) { animation-delay: .24s; }
+.ob-in h1 { margin: 0; font: 800 32px/1.08 var(--sys); letter-spacing: -.03em; text-wrap: balance; }
+.ob-in h2 { margin: 0; font: 700 26px/1.15 var(--sys); letter-spacing: -.02em; }
+.ob-in h3 { margin: 8px 0 0; font: 600 15px var(--sys); color: var(--muted); }
+.ob-in p { margin: 0; color: var(--muted); font-size: 15px; max-width: 34ch; }
+.ob-brand { font: 700 15px var(--display); letter-spacing: .4em; text-transform: uppercase; color: var(--accent); margin-right: -.4em; }
+.ob-legal { color: var(--faint); font-size: 12px; }
+.ob-hero { position: relative; width: 210px; height: 260px; }
+.ob-hero.big { width: 100%; height: 330px; }
+.buddy.ob-av { position: absolute; inset: 0; }
+.buddy.ob-av .b-vid, .buddy.ob-av .b-poster { height: 100%; }
+.ob-steps { display: flex; gap: 6px; } .ob-steps i { width: 28px; height: 4px; border-radius: 2px; background: var(--surface-3); } .ob-steps i.on { background: var(--accent); }
+.ob-drop { width: 200px; height: 200px; border-radius: 50%; display: grid; place-items: center; align-content: center; gap: 4px; cursor: pointer; overflow: hidden; margin: 8px 0;
+  border: 2px dashed color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 7%, transparent); }
+.ob-drop img { width: 100%; height: 100%; object-fit: cover; }
+.ob-drop b { font: 600 15px var(--sys); } .ob-drop small { color: var(--muted); font-size: 12px; }
+.ob-cam { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: #fff; margin-bottom: 6px; box-shadow: 0 10px 24px -10px var(--accent); }
+.ob-cam svg { width: 26px; height: 26px; }
+.gen { position: relative; width: 230px; height: 230px; margin: 10px 0; }
+.gen-ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+.g-bg { fill: none; stroke: var(--surface-3); stroke-width: 6; }
+.g-fg { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; filter: drop-shadow(0 0 8px var(--accent)); }
+.gen-ph { position: absolute; inset: 18px; border-radius: 50%; overflow: hidden; background: var(--surface-2); }
+.gen-ph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; filter: grayscale(.4) contrast(1.1); animation: genpulse 1.6s ease-in-out infinite; }
+@keyframes genpulse { 50% { filter: grayscale(0) contrast(1.2) brightness(1.15); } }
+.gen-scan { position: absolute; inset: 18px; border-radius: 50%; overflow: hidden; pointer-events: none; }
+.gen-scan::after { content: ''; position: absolute; left: 0; right: 0; height: 30%; background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent) 55%, transparent), transparent); animation: scan 1.4s linear infinite; }
+@keyframes scan { from { top: -30%; } to { top: 100%; } }
+.gen-pct { font: 800 40px var(--sys); letter-spacing: -.03em; }
+.gen-txt { color: var(--muted); font-size: 14px; min-height: 20px; }
+.ob-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--red-hi); font: 600 13px var(--sys); }
+.ob-badge svg { width: 16px; height: 16px; }
+.ob-goals { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ob-goal { display: grid; gap: 3px; text-align: left; padding: 14px; border-radius: 16px; background: var(--surface); border: 1.5px solid var(--line); }
+.ob-goal b { font: 600 15px var(--sys); } .ob-goal small { font-size: 12px; color: var(--muted); }
+.ob-goal.on, .ob-day.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+.ob-days { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.ob-day { display: grid; padding: 12px 0; border-radius: 14px; background: var(--surface); border: 1.5px solid var(--line); }
+.ob-day b { font: 700 22px var(--sys); } .ob-day small { font-size: 11px; color: var(--muted); }
+.ob-check { width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; background: var(--good); color: #fff; box-shadow: 0 16px 40px -14px var(--good); animation: pop .6s cubic-bezier(.3, 1.6, .5, 1) both; }
+.ob-check svg { width: 40px; height: 40px; }
+.ob-in .btn-main { margin-top: 6px; max-width: 360px; }
+/* card record: partea de sus are culoarea clipului */
+.pr-card { background: linear-gradient(180deg, var(--bg) 0 210px, color-mix(in srgb, #ffc94d 10%, var(--surface)) 260px, var(--surface)); }
+.buddy.ob-av .b-vid, .buddy.ob-av .b-poster, .buddy.pr-av .b-vid, .buddy.pr-av .b-poster {
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -428,6 +556,7 @@ svg.chart { width: 100%; height: auto; display: block; overflow: visible; }
 <div class="rest" id="rest" hidden></div>
 <section class="workout sheet" id="sheet" hidden aria-label="Detaliu antrenament"></section>
 <div class="go" id="go" hidden role="alert"></div>
+<div class="pr" id="pr" hidden role="dialog" aria-label="Record personal"></div>
 <div class="toast" id="toast" hidden role="status"></div>
 <script>
 /* ---------- Programul: 3 zile, câte două grupe ---------- */
@@ -1013,7 +1142,7 @@ const Buddy = (() => {
   function el(name, label) {
     if (cache[name]) return cache[name];
     const v = document.createElement('video');
-    v.className = 'b-vid'; v.src = name + '.mp4'; v.poster = name + '.jpg';
+    const A = window.ASSET || ''; v.className = 'b-vid'; v.src = A + name + '.mp4'; v.poster = A + name + '.jpg';
     v.muted = true; v.defaultMuted = true; v.loop = true; v.autoplay = true; v.playsInline = true; v.preload = 'auto';
     v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', ''); v.setAttribute('aria-label', label);
     v.disablePictureInPicture = true; v.controls = false;
@@ -1027,7 +1156,7 @@ const Buddy = (() => {
     v.addEventListener('pause', () => mark(false));
     cache[name] = v; return v;
   }
-  const slot = (name, label, cls = '') => `<div class="buddy ${cls}" data-vid="${name}" data-label="${label}"><img class="b-poster" src="${name}.jpg" alt=""></div>`;
+  const slot = (name, label, cls = '') => `<div class="buddy ${cls}" data-vid="${name}" data-label="${label}"><img class="b-poster" src="${window.ASSET || ''}${name}.jpg" alt=""></div>`;
   const svg = slot('mini-cristian', 'Mini-Cristian dansează, face flotări și o tumbă');
   const flex = slot('mini-cristian-flex', 'Mini-Cristian își arată bicepșii și ridică degetul mare', 'flex');
   function playAll() {
@@ -1250,7 +1379,7 @@ const TABS = [
 ];
 let tab = 'azi';
 try { tab = localStorage.getItem('forta-tab') || 'azi'; } catch (e) { }
-if (/^#(azi|program|progres|supl)$/.test(location.hash)) tab = location.hash.slice(1);
+if (/^#(azi|program|progres|supl|profil)$/.test(location.hash)) tab = location.hash.slice(1);
 const openEx = new Set();
 let pickEx = null;
 
@@ -1263,7 +1392,7 @@ function renderNav() {
 }
 function render() {
   renderNav();
-  const v = { azi: viewAzi, program: viewProgram, progres: viewProgres, supl: viewSupl }[tab]();
+  const v = (VIEWS[tab] || VIEWS.azi)();
   const view = $('#view'); view.innerHTML = v;
   if (lastTab !== tab) { lastTab = tab; view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter'); FX.countUp(view); }
   renderWorkout();
@@ -1272,6 +1401,7 @@ function render() {
   fitBrand();
 }
 let lastTab = null;
+const VIEWS = { get azi() { return viewAzi; }, get program() { return viewProgram; }, get progres() { return viewProgres; }, get supl() { return viewSupl; } };
 let BADGE = ''; try { BADGE = localStorage.getItem('forta-badge') || ''; } catch (e) { }
 /* scoate fundalul: pornește din margini și face transparent tot ce seamănă cu culoarea fundalului */
 function cutBackground(img, size = 256) {
@@ -1468,14 +1598,20 @@ function viewProgres() {
       return `<button class="hist-row" data-sess="${s.id}"><span class="badge">${d.label.slice(0, 2)}</span><span><strong>${esc(d.name)}</strong><small>${new Date(s.date).toLocaleDateString('ro-RO', { weekday: 'short', day: 'numeric', month: 'short' })} · ${nsets} serii · ${fmt(volume(s), 0)} kg · ${Math.round((s.dur || 0) / 60000)} min</small></span>${ICON.chev}</button>`;
     }).join('')}</div>` : `<p class="empty">Antrenamentele terminate apar aici. Apasă pe unul ca să vezi fiecare exercițiu, greutățile și progresul.</p>`}
   </section>
-  <section class="sec"><h2>Emblema ta</h2>
+`;
+}
+
+function emblemSec() {
+  return `<section class="sec"><h2>Emblema ta</h2>
     <div class="notice"><p>Alege o imagine din telefon (de exemplu emblema echipei tale). Apare sus lângă FORȚA și în fundalul cardului principal. Rămâne doar pe telefonul tău.</p>
     <div class="badge-row">${BADGE ? `<img class="badge-prev" src="${BADGE}" alt="Emblema aleasă">` : ''}
       <label class="btn btn-ghost" for="badge-file">${BADGE ? 'Schimbă imaginea' : 'Alege imaginea'}</label>
       <input type="file" id="badge-file" accept="image/*" hidden>
       ${BADGE ? '<button class="del" data-badge-del>Scoate</button>' : ''}</div></div>
-  </section>
-  <section class="sec"><h2>Copie de siguranță</h2>
+  </section>`;
+}
+function backupSec() {
+  return `<section class="sec"><h2>Copie de siguranță</h2>
     <div class="notice"><p>Datele stau doar pe acest telefon. Copiază-le din când în când și păstrează textul într-o notiță.</p>
     <div class="chips"><button class="btn btn-ghost" data-backup>Copiază datele</button><button class="btn btn-ghost" data-restore-open>Restaurează</button></div>
     <div id="restore" hidden><textarea class="field" id="restore-txt" placeholder="Lipește aici textul copiat anterior"></textarea><button class="btn btn-ghost" data-restore style="margin-top:8px">Restaurează datele</button></div></div>
@@ -1823,6 +1959,312 @@ document.addEventListener('submit', e => {
     S.supps.push({ id: 's' + Date.now(), name, dose: $('#ns-dose').value.trim() || '1 doză', time: $('#ns-time').value || '09:00', on: true }); save(); render(); toast(`${name} a fost adăugat.`);
   }
 });
+
+/* ---------- Forța Pro: inele, serie, recorduri, hartă musculară, realizări, profil ---------- */
+const IS_DEMO = !!window.FORTA_DEMO;
+const svgI = inner => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+Object.assign(LI, {
+  user: svgI('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'),
+  flame: svgI('<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>'),
+  trophy: svgI('<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>'),
+  award: svgI('<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>'),
+  zap: svgI('<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>'),
+  sunrise: svgI('<path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/>'),
+  crown: svgI('<path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/>'),
+  target: svgI('<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>'),
+  camera: svgI('<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>'),
+  sparkles: svgI('<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>'),
+  lock: svgI('<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'),
+  arrow: svgI('<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>')
+});
+TABS.push({ id: 'profil', label: 'Profil', icon: LI.user });
+
+/* ---------- Grupe musculare ---------- */
+const MUSCLE = {
+  incline: ['piept', 'umeri', 'triceps'], chestpress: ['piept', 'triceps'], pecdeck: ['piept'], rope: ['triceps'], vbar: ['triceps'],
+  pulldown: ['spate', 'biceps'], supine: ['spate', 'biceps'], dbrow: ['spate', 'biceps'], cablerow: ['spate'], straightarm: ['spate'],
+  zwide: ['biceps'], znarrow: ['biceps'], hammer: ['biceps', 'antebrat'], squat: ['cvadriceps', 'fesieri'], rdl: ['femurali', 'fesieri', 'spate'],
+  legpress: ['cvadriceps', 'fesieri'], legcurl: ['femurali'], dbpress: ['umeri', 'triceps'], lateral: ['umeri'], facepull: ['umeri', 'spate'],
+  bench: ['piept', 'triceps'], cross: ['piept'], dips: ['piept', 'triceps'], pushdown: ['triceps'], ohext: ['triceps'], row: ['spate', 'biceps'], curl: ['biceps']
+};
+const GROUP_LABEL = { piept: 'Piept', umeri: 'Umeri', triceps: 'Triceps', spate: 'Spate', biceps: 'Biceps', antebrat: 'Antebraț', cvadriceps: 'Cvadricepși', femurali: 'Femurali', fesieri: 'Fesieri' };
+function groupSets(days = 7) {
+  const from = Date.now() - days * DAYMS, g = {};
+  for (const s of S.sessions) if (s.date >= from) for (const id in s.ex) (MUSCLE[id] || []).forEach((m, i) => { g[m] = (g[m] || 0) + s.ex[id].length * (i === 0 ? 1 : 0.5); });
+  return g;
+}
+function bodyMap() {
+  const g = groupSets(7);
+  const col = m => { const v = g[m] || 0; if (!v) return 'var(--surface-3)'; const k = Math.min(1, v / 12); return `color-mix(in srgb, var(--accent) ${Math.round(25 + k * 75)}%, var(--surface-3))`; };
+  const P = (m, d) => `<path d="${d}" fill="${col(m)}" class="mm" data-m="${m}"/>`;
+  const E = (m, cx, cy, rx, ry, r = 0) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" transform="rotate(${r} ${cx} ${cy})" fill="${col(m)}" class="mm"/>`;
+  const N = 'var(--surface-2)';
+  const head = `<circle cx="60" cy="20" r="12" fill="${N}"/><rect x="54" y="30" width="12" height="9" rx="3" fill="${N}"/>`;
+  const front = `<svg viewBox="0 0 120 250" class="body">${head}
+    ${E('umeri', 35, 52, 11, 10, -20)}${E('umeri', 85, 52, 11, 10, 20)}
+    ${P('piept', 'M42 46 Q60 40 59 46 L59 72 Q48 76 40 68 Q37 56 42 46Z')}${P('piept', 'M78 46 Q60 40 61 46 L61 72 Q72 76 80 68 Q83 56 78 46Z')}
+    <rect x="48" y="77" width="24" height="44" rx="8" fill="${N}"/>
+    ${E('biceps', 27, 80, 7, 15, 10)}${E('biceps', 93, 80, 7, 15, -10)}
+    ${E('antebrat', 22, 112, 6, 15, 12)}${E('antebrat', 98, 112, 6, 15, -12)}
+    <path d="M44 122 L76 122 L74 136 L46 136Z" fill="${N}"/>
+    ${E('cvadriceps', 49, 166, 11, 30, 4)}${E('cvadriceps', 71, 166, 11, 30, -4)}
+    ${E('x', 48, 222, 7, 19)}${E('x', 72, 222, 7, 19)}</svg>`;
+  const back = `<svg viewBox="0 0 120 250" class="body">${head}
+    ${P('spate', 'M44 40 L76 40 L70 52 L50 52Z')}
+    ${E('umeri', 35, 52, 11, 10, -20)}${E('umeri', 85, 52, 11, 10, 20)}
+    ${P('spate', 'M42 54 Q58 56 58 62 L58 100 Q48 106 44 96 Q38 74 42 54Z')}${P('spate', 'M78 54 Q62 56 62 62 L62 100 Q72 106 76 96 Q82 74 78 54Z')}
+    <rect x="50" y="102" width="20" height="18" rx="6" fill="${N}"/>
+    ${E('triceps', 27, 80, 7, 15, 10)}${E('triceps', 93, 80, 7, 15, -10)}
+    ${E('antebrat', 22, 112, 6, 15, 12)}${E('antebrat', 98, 112, 6, 15, -12)}
+    ${E('fesieri', 49, 134, 12, 11)}${E('fesieri', 71, 134, 12, 11)}
+    ${E('femurali', 49, 172, 10, 24, 3)}${E('femurali', 71, 172, 10, 24, -3)}
+    ${E('x', 48, 222, 7, 19)}${E('x', 72, 222, 7, 19)}</svg>`;
+  const list = Object.keys(GROUP_LABEL).map(m => [m, g[m] || 0]).sort((a, b) => b[1] - a[1]);
+  return `<div class="mmap"><div class="mm-bodies"><figure>${front}<figcaption>Față</figcaption></figure><figure>${back}<figcaption>Spate</figcaption></figure></div>
+    <div class="mm-list">${list.map(([m, v]) => `<div class="mm-row"><span>${GROUP_LABEL[m]}</span><i><b style="width:${Math.min(100, v / 16 * 100)}%"></b></i><em class="num">${fmt(v, 0)}</em></div>`).join('')}
+    <small class="mm-note">Serii în ultimele 7 zile. Pentru masă musculară, ținta e 10-20 de serii pe săptămână pentru fiecare grupă.</small></div></div>`;
+}
+
+/* ---------- Statistici, recorduri, serie ---------- */
+function weekStart(t = Date.now()) { const d = new Date(dayKey(new Date(t))); return d.getTime() - ((d.getDay() + 6) % 7) * DAYMS; }
+function weekCount(ws) { return S.sessions.filter(s => s.date >= ws && s.date < ws + 7 * DAYMS).length; }
+function plannedSoFar(ws) { let n = 0; for (let i = 0; i < 7; i++) { const d = new Date(ws + i * DAYMS); if (d.getTime() > Date.now()) break; if (planFor(d)) n++; } return n; }
+function streakWeeks() {
+  let ws = weekStart(), n = 0;
+  if (weekCount(ws) >= Math.max(1, plannedSoFar(ws))) n++;
+  ws -= 7 * DAYMS;
+  while (weekCount(ws) >= DAYS.length) { n++; ws -= 7 * DAYMS; }
+  return n;
+}
+function allPRs() {
+  const best = {}, prs = [];
+  for (const s of sessionsSorted()) for (const id in s.ex) {
+    const top = s.ex[id].reduce((b, x) => (!b || e1rm(x.kg, x.reps) > e1rm(b.kg, b.reps)) ? x : b, null);
+    const v = e1rm(top.kg, top.reps);
+    if (best[id] != null && v > best[id] + 0.01) prs.push({ id, date: s.date, kg: top.kg, reps: top.reps, gain: v - best[id] });
+    best[id] = Math.max(best[id] || 0, v);
+  }
+  return { prs, best };
+}
+function totals() {
+  const vol = S.sessions.reduce((a, s) => a + volume(s), 0), mins = S.sessions.reduce((a, s) => a + (s.dur || 0), 0) / 60000;
+  return { n: S.sessions.length, vol, hours: mins / 60, prs: allPRs().prs.length, sets: S.sessions.reduce((a, s) => a + Object.values(s.ex).reduce((b, x) => b + x.length, 0), 0) };
+}
+
+/* ---------- Inele de activitate ---------- */
+function ringsCard() {
+  const ws = weekStart(), done = weekCount(ws), goal = DAYS.length;
+  const volW = S.sessions.filter(s => s.date >= ws).reduce((a, s) => a + volume(s), 0);
+  const past = [1, 2, 3, 4].map(k => S.sessions.filter(s => s.date >= ws - k * 7 * DAYMS && s.date < ws - (k - 1) * 7 * DAYMS).reduce((a, s) => a + volume(s), 0)).filter(v => v > 0);
+  const volGoal = past.length ? past.reduce((a, b) => a + b, 0) / past.length : 8000;
+  const wGoal = waterTimes().length || 8, wNow = (S.water && S.water.log[dayKey()]) || 0;
+  const rings = [
+    { k: done / goal, c: 'var(--accent)', r: 50, label: 'Antrenamente', val: `${done}/${goal}`, sub: 'săptămâna aceasta' },
+    { k: volW / volGoal, c: '#ff9f43', r: 38, label: 'Volum', val: `${fmt(volW / 1000, 1)} t`, sub: `media ta: ${fmt(volGoal / 1000, 1)} t` },
+    { k: wNow / wGoal, c: 'var(--water)', r: 26, label: 'Apă', val: `${wNow}/${wGoal}`, sub: 'pahare azi' }
+  ];
+  const C = r => 2 * Math.PI * r;
+  const st = streakWeeks();
+  return `<section class="rings">
+    <svg viewBox="0 0 120 120" class="ring3">${rings.map(g => `<circle cx="60" cy="60" r="${g.r}" class="rg-bg" style="stroke:${g.c}"/><circle cx="60" cy="60" r="${g.r}" class="rg-fg" style="stroke:${g.c};--c:${C(g.r)};--o:${C(g.r) * (1 - Math.min(1, g.k))}" stroke-dasharray="${C(g.r)}" stroke-dashoffset="${C(g.r) * (1 - Math.min(1, g.k))}"/>`).join('')}</svg>
+    <div class="rg-list">${rings.map(g => `<div class="rg-item"><i style="background:${g.c}"></i><span><small>${g.label}</small><b class="num">${g.val}</b><em>${g.sub}</em></span></div>`).join('')}</div>
+    ${st ? `<div class="streak">${LI.flame}<b class="num">${st}</b><span>${st === 1 ? 'săptămână' : 'săptămâni'} la rând cu programul complet</span></div>` : ''}
+  </section>`;
+}
+
+/* ---------- Realizări ---------- */
+const ACH = [
+  { id: 'first', icon: 'zap', t: 'Primul pas', d: 'Primul antrenament terminat', ok: x => x.n >= 1 },
+  { id: 'week', icon: 'target', t: 'Săptămână completă', d: 'Toate antrenamentele dintr-o săptămână', ok: x => x.fullWeek },
+  { id: 'pr1', icon: 'trophy', t: 'Primul record', d: 'Ai depășit maximul la un exercițiu', ok: x => x.prs >= 1 },
+  { id: 'n10', icon: 'award', t: 'Constant', d: '10 antrenamente', ok: x => x.n >= 10 },
+  { id: 't10', icon: 'zap', t: '10 tone', d: '10.000 kg ridicate în total', ok: x => x.vol >= 10000 },
+  { id: 'hydro', icon: 'drop', t: 'Hidratat', d: 'Toate paharele de apă într-o zi', ok: x => x.hydro },
+  { id: 's4', icon: 'flame', t: 'De neoprit', d: '4 săptămâni la rând cu programul complet', ok: x => x.streak >= 4 },
+  { id: 'pr10', icon: 'crown', t: 'Colecționar de recorduri', d: '10 recorduri personale', ok: x => x.prs >= 10 },
+  { id: 'n25', icon: 'award', t: 'Veteran', d: '25 de antrenamente', ok: x => x.n >= 25 },
+  { id: 'early', icon: 'sunrise', t: 'Matinal', d: 'Un antrenament început înainte de 9:00', ok: x => x.early },
+  { id: 't50', icon: 'crown', t: '50 de tone', d: '50.000 kg ridicate în total', ok: x => x.vol >= 50000 },
+  { id: 'n50', icon: 'trophy', t: 'Legendă', d: '50 de antrenamente', ok: x => x.n >= 50 }
+];
+function achStats() {
+  const t = totals(), wg = waterTimes().length || 99;
+  const weeks = {}; for (const s of S.sessions) { const w = weekStart(s.date); weeks[w] = (weeks[w] || 0) + 1; }
+  return { ...t, fullWeek: Object.values(weeks).some(v => v >= DAYS.length), hydro: Object.values((S.water && S.water.log) || {}).some(v => v >= wg), streak: streakWeeks(), early: S.sessions.some(s => new Date(s.date).getHours() < 9) };
+}
+function achGrid() {
+  const x = achStats(), got = ACH.filter(a => a.ok(x)).length;
+  return `<div class="ach-head"><b class="num">${got}</b> din ${ACH.length} deblocate</div><div class="ach">${ACH.map(a => { const ok = a.ok(x); return `<div class="ach-i ${ok ? 'ok' : ''}"><span class="ach-ic">${ok ? LI[a.icon] : LI.lock}</span><b>${a.t}</b><small>${a.d}</small></div>`; }).join('')}</div>`;
+}
+
+/* ---------- Profil ---------- */
+function viewProfil() {
+  const t = totals(), first = sessionsSorted()[0];
+  return `<section class="prof">
+    <div class="prof-av">${Buddy.flex.replace('class="buddy ', 'class="buddy avatar ')}</div>
+    <h1>Cristian Demian</h1>
+    <p class="daymeta">${first ? `Se antrenează din ${new Date(first.date).toLocaleDateString('ro-RO', { month: 'long', year: 'numeric' })}` : 'Primul antrenament te așteaptă'} · Obiectiv: masă musculară</p>
+  </section>
+  <section class="pstats">
+    <div class="stat"><b class="num" data-count>${t.n}</b><small>antrenamente</small></div>
+    <div class="stat"><b class="num" data-count>${fmt(t.vol / 1000, 1)}t</b><small>ridicate</small></div>
+    <div class="stat"><b class="num" data-count>${fmt(t.hours, 0)}h</b><small>la sală</small></div>
+    <div class="stat"><b class="num" data-count>${t.prs}</b><small>recorduri</small></div>
+  </section>
+  <section class="sec"><h2>Realizări</h2>${achGrid()}</section>
+  ${typeof emblemSec === 'function' ? emblemSec() : ''}
+  ${typeof backupSec === 'function' ? backupSec() : ''}
+  ${IS_DEMO ? `<section class="sec"><h2>Prezentare</h2><div class="notice"><p>Reia prezentarea de la început, cu crearea avatarului.</p><button class="btn btn-ghost" data-onb-reset>Reia prezentarea</button></div></section>` : ''}`;
+}
+
+/* ---------- Recorduri în Progres ---------- */
+function prSection() {
+  const { prs, best } = allPRs();
+  const recent = prs.slice(-5).reverse();
+  if (!recent.length) return '';
+  return `<section class="sec"><h2>Recorduri recente</h2><div class="hist">${recent.map(p => `<div class="hist-row pr-row"><span class="badge pr-b">${LI.trophy}</span><span><strong>${esc(EX[p.id].name)}</strong><small>${fmt(p.kg)} kg × ${p.reps} · ${fmtDate(p.date)}</small></span><em class="pr-g">+${fmt(p.gain)} kg</em></div>`).join('')}</div></section>`;
+}
+
+/* ---------- Extinderea ecranelor existente ---------- */
+const _viewAzi = viewAzi, _viewProgres = viewProgres;
+viewAzi = function () {
+  const h = _viewAzi();
+  const i = h.indexOf('<section class="quote');
+  return i < 0 ? h : h.slice(0, i) + ringsCard() + h.slice(i);
+};
+viewProgres = function () {
+  return `<section class="sec"><h2>Mușchi lucrați</h2>${bodyMap()}</section>` + prSection() + _viewProgres();
+};
+VIEWS.profil = viewProfil;
+
+/* ---------- Record personal în timpul antrenamentului ---------- */
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-done]'); if (!t || !S.active) return;
+  const row = t.closest('.set'); if (!row || !row.classList.contains('done')) return;
+  const id = row.dataset.ex, x = S.active.sets[id][+row.dataset.i], kg = parseNum(x.kg) || 0, reps = parseInt(x.reps) || 0;
+  if (!kg || !reps) return;
+  const prev = allPRs().best[id]; if (prev == null) return;
+  const v = e1rm(kg, reps); if (v <= prev + 0.01) return;
+  const otherDone = S.active.sets[id].filter((s, j) => s.done && j !== +row.dataset.i).some(s => e1rm(parseNum(s.kg) || 0, parseInt(s.reps) || 0) >= v);
+  if (otherDone) return;
+  showPR(id, kg, reps, v - prev);
+});
+function showPR(id, kg, reps, gain) {
+  const g = $('#pr'); if (!g) return;
+  g.innerHTML = `<div class="pr-card">${Buddy.flex.replace('class="buddy ', 'class="buddy pr-av ')}
+    <div class="pr-badge">${LI.trophy}<span>Record personal</span></div>
+    <h2 class="pr-t">${esc(EX[id].name)}</h2>
+    <div class="pr-v num">${fmt(kg)} kg × ${reps}</div>
+    <p>Cu ${fmt(gain)} kg peste maximul tău estimat de până acum.</p>
+    <button class="btn btn-main" data-pr-close>Continuă</button></div>`;
+  g.hidden = false; g.classList.remove('show'); void g.offsetWidth; g.classList.add('show');
+  Buddy.start(); setTimeout(() => FX.celebrate(), 200);
+  try { beep(); } catch (e) { }
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-pr-close]') || e.target.id === 'pr') { const g = $('#pr'); g.hidden = true; g.innerHTML = ''; const w = $('#workout'), y = w ? w.scrollTop : 0; render(); if (w) w.scrollTop = y; } });
+
+/* ---------- Demo pentru investitori: date de exemplu + prezentarea de la prima pornire ---------- */
+(function () {
+  if (!window.FORTA_DEMO) return;
+  /* 8 săptămâni de antrenamente realiste, cu progres treptat */
+  function seed() {
+    const st = { incline: 20, chestpress: 45, pecdeck: 40, rope: 20, vbar: 25, pulldown: 50, supine: 45, dbrow: 22, cablerow: 50, straightarm: 20, zwide: 25, znarrow: 22.5, hammer: 12, squat: 70, rdl: 60, legpress: 120, legcurl: 35, dbpress: 18, lateral: 8, facepull: 20 };
+    const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const monday = today.getTime() - ((today.getDay() + 6) % 7) * DAYMS;
+    const sess = [];
+    for (let w = 8; w >= 0; w--) for (const d of DAYS) {
+      const day = new Date(monday - w * 7 * DAYMS + (d.wd - 1) * DAYMS);
+      if (day.getTime() >= today.getTime()) continue;
+      if (w === 5 && d.id === 'C') continue;
+      day.setHours(rnd(0, 3) ? 18 : 8, rnd(0, 50));
+      const ex = {};
+      for (const id of d.ex) {
+        const prog = (8 - w) * (EX[id].step || 2.5) * 0.55, kg = Math.round((st[id] + prog) / (EX[id].step || 2.5)) * (EX[id].step || 2.5);
+        ex[id] = [0, 1, 2].map(i => ({ kg, reps: Math.max(9, 12 - i - (rnd(0, 2) === 0 ? 1 : 0)) }));
+      }
+      sess.push({ id: 'd' + day.getTime(), day: d.id, date: day.getTime(), dur: rnd(48, 66) * 60000, ex });
+    }
+    const body = []; for (let i = 0; i < 9; i++) body.push({ t: monday - (8 - i) * 7 * DAYMS + 2 * DAYMS, kg: Math.round((79.4 + i * 0.36 + (Math.random() - .5) * .3) * 10) / 10 });
+    const wlog = {}; for (let i = 1; i < 14; i++) wlog[dayKey(new Date(today.getTime() - i * DAYMS))] = rnd(9, 15);
+    wlog[dayKey()] = 6;
+    S = Object.assign(fresh(), { sessions: sess, body, mig: 2 });
+    S.water.log = wlog;
+    S.suppLog[dayKey()] = ['cr1', 'cr2', 's2'];
+    save();
+  }
+  window.demoSeed = seed;
+
+  const done = () => { try { return localStorage.getItem('forta-onb') === '1'; } catch (e) { return false; } };
+  const ob = document.createElement('div'); ob.className = 'onb'; ob.id = 'onb';
+  let step = 0, photo = '', goal = 'Masă musculară', days = 3;
+  const GOALS = [['Masă musculară', 'Mai mult volum, 8-12 repetări'], ['Forță', 'Greutăți mari, 4-6 repetări'], ['Definire', 'Volum și cardio, deficit caloric'], ['Sănătate', '2-3 antrenamente ușoare pe săptămână']];
+  function view() {
+    if (step === 0) return `<div class="ob-in ob-0">
+      <div class="ob-hero">${Buddy.flex.replace('class="buddy ', 'class="buddy ob-av ')}</div>
+      <div class="ob-brand">Forța</div>
+      <h1>Antrenorul tău are fața ta.</h1>
+      <p>Transformă o poză într-un avatar 3D care se antrenează cu tine, îți arată progresul și te motivează în fiecare zi.</p>
+      <button class="btn btn-main" data-ob="1">Începe</button>
+      <small class="ob-legal">Durează mai puțin de un minut.</small></div>`;
+    if (step === 1) return `<div class="ob-in">
+      <div class="ob-steps"><i class="on"></i><i></i><i></i></div>
+      <h2>Creează-ți avatarul</h2><p>Alege o poză clară cu fața ta, din față, cu lumină bună.</p>
+      <label class="ob-drop" for="ob-file">${photo ? `<img src="${photo}" alt="Poza aleasă">` : `<span class="ob-cam">${LI.camera}</span><b>Alege o poză</b><small>sau fă un selfie acum</small>`}</label>
+      <input type="file" id="ob-file" accept="image/*" hidden>
+      <button class="btn btn-main" data-ob="2">${photo ? 'Generează avatarul 3D' : 'Folosește poza demo'}</button></div>`;
+    if (step === 2) return `<div class="ob-in ob-gen">
+      <div class="ob-steps"><i class="on"></i><i class="on"></i><i></i></div>
+      <div class="gen"><svg viewBox="0 0 200 200" class="gen-ring"><circle cx="100" cy="100" r="90" class="g-bg"/><circle cx="100" cy="100" r="90" class="g-fg" id="g-fg"/></svg>
+        <div class="gen-ph">${photo ? `<img src="${photo}" alt="">` : `<img src="${(window.ASSET || '') + 'mini-cristian-flex.jpg'}" alt="">`}</div><div class="gen-scan"></div></div>
+      <div class="gen-pct num" id="g-pct">0%</div><div class="gen-txt" id="g-txt">Analizăm trăsăturile feței</div></div>`;
+    if (step === 3) return `<div class="ob-in ob-reveal">
+      <div class="ob-steps"><i class="on"></i><i class="on"></i><i></i></div>
+      <div class="ob-badge">${LI.sparkles}<span>Avatarul tău e gata</span></div>
+      <div class="ob-hero big">${Buddy.svg.replace('class="buddy ', 'class="buddy ob-av ')}</div>
+      <p>Dansează în zilele de odihnă, face flotări cu tine și își arată bicepșii la fiecare record.</p>
+      <button class="btn btn-main" data-ob="4">Continuă</button></div>`;
+    if (step === 4) return `<div class="ob-in">
+      <div class="ob-steps"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+      <h2>Care e obiectivul tău?</h2>
+      <div class="ob-goals">${GOALS.map(([g, d]) => `<button class="ob-goal ${g === goal ? 'on' : ''}" data-goal="${g}"><b>${g}</b><small>${d}</small></button>`).join('')}</div>
+      <h3>Câte zile pe săptămână?</h3>
+      <div class="ob-days">${[2, 3, 4, 5].map(n => `<button class="ob-day ${n === days ? 'on' : ''}" data-days="${n}"><b class="num">${n}</b><small>zile</small></button>`).join('')}</div>
+      <button class="btn btn-main" data-ob="5">Generează programul</button></div>`;
+    return `<div class="ob-in ob-final"><div class="ob-check">${ICON.check}</div><h2>Programul tău e gata</h2>
+      <p>${goal} · ${days} zile pe săptămână. Am pregătit și 8 săptămâni de istoric demo, ca să vezi cum arată progresul.</p>
+      <button class="btn btn-main" data-ob="done">Intră în aplicație</button></div>`;
+  }
+  function draw() { ob.innerHTML = view(); ob.firstElementChild.classList.add('in'); Buddy.start(); if (step === 2) generate(); }
+  function generate() {
+    const msgs = ['Analizăm trăsăturile feței', 'Construim modelul 3D', 'Îi alegem echipamentul', 'Îl învățăm să facă flotări', 'Ultimele retușuri'];
+    const C = 2 * Math.PI * 90, fg = $('#g-fg'); fg.style.strokeDasharray = C; let t0 = performance.now();
+    const tick = t => {
+      const k = Math.min(1, (t - t0) / 4600); fg.style.strokeDashoffset = C * (1 - k);
+      const p = $('#g-pct'), m = $('#g-txt'); if (!p) return;
+      p.textContent = Math.round(k * 100) + '%'; m.textContent = msgs[Math.min(msgs.length - 1, Math.floor(k * msgs.length))];
+      if (k < 1) requestAnimationFrame(tick); else setTimeout(() => { step = 3; draw(); FX.celebrate(); }, 350);
+    };
+    requestAnimationFrame(tick);
+  }
+  ob.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.goal) { goal = b.dataset.goal; draw(); return; }
+    if (b.dataset.days) { days = +b.dataset.days; draw(); return; }
+    const n = b.dataset.ob; if (!n) return;
+    if (n === 'done') { try { localStorage.setItem('forta-onb', '1'); } catch (er) { } ob.classList.add('out'); setTimeout(() => { ob.remove(); lastTab = null; tab = 'azi'; render(); }, 450); return; }
+    if (n === '5') seed();
+    step = +n; draw();
+  });
+  ob.addEventListener('change', e => {
+    if (e.target.id !== 'ob-file' || !e.target.files[0]) return;
+    const r = new FileReader(); r.onload = () => { photo = r.result; draw(); }; r.readAsDataURL(e.target.files[0]);
+  });
+  window.startOnboarding = () => { step = 0; photo = ''; document.body.appendChild(ob); ob.classList.remove('out'); draw(); };
+  if (!done()) { if (!S.sessions.length) seed(); window.startOnboarding(); }
+  else if (!S.sessions.length) seed();
+  document.addEventListener('click', e => { if (e.target.closest('[data-onb-reset]')) { try { localStorage.removeItem('forta-onb'); } catch (er) { } window.startOnboarding(); } });
+})();
 
 render();
 (function () {
