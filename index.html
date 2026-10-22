@@ -404,6 +404,56 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
   -webkit-mask-composite: source-in; mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 80%, transparent 100%), linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%); mask-composite: intersect; }
 .buddy.flex .b-poster { height: min(380px, 52vh); }
 .buddy[data-vid].playing .b-poster { opacity: 0; transition: opacity .25s .1s; }
+
+/* ---------- Cronometru stabil (fără pâlpâit) ---------- */
+.rest-in { animation: slidein .35s cubic-bezier(.2, .8, .2, 1) 1; }
+.rest-txt { min-width: 0; }
+.rest-txt small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rest-t { font-variant-numeric: tabular-nums; }
+
+/* ---------- Treci la treabă ---------- */
+.go { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; text-align: center; overflow: hidden;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: radial-gradient(circle at 50% 45%, var(--red-hi) 0%, var(--accent) 35%, var(--red-deep) 75%, #3a0509 100%); color: #fff; }
+.go::before { content: ''; position: absolute; inset: -50%; background: repeating-conic-gradient(from 0deg, rgba(255,255,255,.10) 0 10deg, transparent 10deg 20deg); animation: gospin 8s linear infinite; }
+@keyframes gospin { to { transform: rotate(360deg); } }
+.go-in { position: relative; display: grid; gap: 14px; justify-items: center; }
+.go-ring { position: absolute; top: 50%; left: 50%; width: 120vmin; height: 120vmin; margin: -60vmin 0 0 -60vmin; border-radius: 50%; border: 6px solid rgba(255,255,255,.5); animation: ping 1.2s ease-out infinite; }
+@keyframes ping { from { transform: scale(.2); opacity: 1; } to { transform: scale(1.1); opacity: 0; } }
+.go-small { font: 700 16px var(--display); letter-spacing: .2em; text-transform: uppercase; opacity: .85; }
+.go-big { font: 800 clamp(64px, 22vw, 130px)/.88 var(--display); text-transform: uppercase; letter-spacing: .01em; text-shadow: 0 6px 30px rgba(0,0,0,.35); }
+.go-next { font: 600 17px var(--body); display: grid; gap: 4px; background: rgba(0,0,0,.22); padding: 12px 18px; border-radius: 16px; max-width: 34ch; }
+.go-next b { font: 800 24px/1.1 var(--display); text-transform: uppercase; }
+.go-tap { font-size: 13px; opacity: .75; margin-top: 8px; }
+.go.show .go-big { animation: slam .7s cubic-bezier(.2, 1.6, .4, 1) both, shake .5s .7s ease-in-out 3; }
+.go.show .go-small, .go.show .go-next, .go.show .go-tap { animation: rise .5s .35s both; }
+.go.show { animation: goflash .6s ease-out; }
+@keyframes slam { from { transform: scale(3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes shake { 25% { transform: rotate(-3deg) scale(1.04); } 75% { transform: rotate(3deg) scale(1.04); } }
+@keyframes goflash { 0% { filter: brightness(2.2); } 100% { filter: none; } }
+
+/* ---------- Serii: adaugă / scoate ---------- */
+.set-ctl { display: inline-flex; gap: 14px; flex-wrap: wrap; }
+.link.danger { color: var(--muted); }
+.rest-info { font-size: 13.5px; color: var(--fg); background: var(--surface-2); border-radius: 10px; padding: 10px 12px; }
+
+/* ---------- Istoric: rânduri pe care le poți deschide ---------- */
+button.hist-row { width: 100%; text-align: left; grid-template-columns: 34px 1fr 20px; cursor: pointer; }
+button.hist-row:active { transform: scale(.98); }
+.sheet { z-index: 25; }
+.sheet .stats { margin-bottom: 2px; }
+.hx .wex-top .rig { width: 64px; height: 64px; }
+.hx .wex-top { grid-template-columns: 64px 1fr; }
+.sbars { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; align-items: end; height: 150px; }
+.sbar { display: grid; grid-template-rows: 1fr auto auto; justify-items: center; height: 100%; gap: 2px; min-width: 0; }
+.sbar i { align-self: end; width: 100%; max-width: 64px; height: var(--h); border-radius: 10px 10px 4px 4px; background: linear-gradient(180deg, var(--red-hi), var(--accent) 60%, var(--red-deep)); box-shadow: 0 0 18px -6px var(--accent); transform-origin: bottom; animation: growup .6s var(--d) cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes growup { from { transform: scaleY(0); } }
+.sbar b { font: 800 18px/1 var(--display); } .sbar b small { font-size: 11px; color: var(--muted); margin-left: 1px; }
+.sbar span { font-size: 12.5px; color: var(--muted); }
+.hx-chart { border-top: 1px solid var(--line); padding-top: 10px; display: grid; gap: 6px; }
+.hx-h { font: 700 13px var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.hx-h small { text-transform: none; letter-spacing: 0; font: 400 12px var(--body); margin-left: 4px; }
+@media (prefers-reduced-motion: reduce) { .go::before, .go-ring, .go.show .go-big, .sbar i { animation: none !important; } }
 </style>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
@@ -413,6 +463,8 @@ textarea.field { padding: 10px 12px; min-height: 90px; resize: vertical; font-si
 <nav class="nav" id="nav" aria-label="Navigare"></nav>
 <section class="workout" id="workout" hidden aria-label="Antrenament"></section>
 <div class="rest" id="rest" hidden></div>
+<section class="workout sheet" id="sheet" hidden aria-label="Detaliu antrenament"></section>
+<div class="go" id="go" hidden role="alert"></div>
 <div class="toast" id="toast" hidden role="status"></div>
 <script>
 /* ---------- Programul: 3 zile, câte două grupe ---------- */
@@ -729,6 +781,15 @@ const DEFAULT_SUPPS = [
 
 /* Cristian lucrează 3 serii de 10-12 repetări la fiecare exercițiu */
 for (const id in EX) { EX[id].sets = 3; EX[id].reps = [10, 12]; }
+
+/* Pauze după studiile despre masă musculară (Singer și colab. 2024; Schoenfeld și colab. 2016):
+   compuse partea de sus 2:00, compuse picioare 2:30, izolare 1:15 (picioare 1:30).
+   Între aparate: pauza exercițiului următor + 30 s pentru mutare și reglaj. */
+const REST = { compUp: 120, compLow: 150, iso: 75, isoLow: 90 };
+const KIND = { incline: 'compUp', chestpress: 'compUp', pulldown: 'compUp', supine: 'compUp', dbrow: 'compUp', cablerow: 'compUp', dbpress: 'compUp',
+  squat: 'compLow', rdl: 'compLow', legpress: 'compLow', legcurl: 'isoLow' };
+const KIND_LABEL = { compUp: 'exercițiu compus', compLow: 'exercițiu compus pentru picioare', iso: 'exercițiu de izolare', isoLow: 'izolare pentru picioare' };
+for (const id in EX) { EX[id].kind = KIND[id] || 'iso'; EX[id].rest = REST[EX[id].kind]; EX[id].switchRest = EX[id].rest + 30; }
 
 /* ---------- Animații: un singur schelet, două poziții per exercițiu ---------- */
 const Rig = (() => {
@@ -1240,11 +1301,13 @@ function viewAzi() {
 
 /* ---------- Ecran: Program ---------- */
 function exTarget(ex) { return `${ex.sets} × ${ex.reps[0]}-${ex.reps[1]} · pauză ${fmtTime(ex.rest)}`; }
+function restInfo(ex) { return `Pauză ${fmtTime(ex.rest)} între serii (${KIND_LABEL[ex.kind]}), ${fmtTime(ex.switchRest)} când treci la aparatul următor.`; }
 function exDetail(id) {
   const ex = EX[id];
   return `<div class="ex-detail">${Rig.svg(id, 'big')}
     <div class="target"><span class="pill">${esc(ex.muscles)}</span><span class="pill">${exTarget(ex)}</span></div>
     <ol class="cues">${ex.cues.map(c => `<li>${esc(c)}</li>`).join('')}</ol>
+    <div class="rest-info">⏱ ${restInfo(ex)}</div>
     <div class="mistake"><b>Greșeală frecventă:</b> ${esc(ex.mistake)}</div></div>`;
 }
 function viewProgram() {
@@ -1311,8 +1374,8 @@ function viewProgres() {
     ${hist.length ? `<div class="hist">${hist.map(s => {
       const d = DAYS.find(x => x.id === s.day);
       const nsets = Object.values(s.ex).reduce((a, x) => a + x.length, 0);
-      return `<div class="hist-row"><span class="badge">${d.label.slice(0, 2)}</span><span><strong>${esc(d.name)}</strong><small>${new Date(s.date).toLocaleDateString('ro-RO', { weekday: 'short', day: 'numeric', month: 'short' })} · ${nsets} seturi · ${fmt(volume(s), 0)} kg · ${Math.round((s.dur || 0) / 60000)} min</small></span><button class="del" data-del-sess="${s.id}">Șterge</button></div>`;
-    }).join('')}</div>` : `<p class="empty">Antrenamentele terminate apar aici, cu volum și durată.</p>`}
+      return `<button class="hist-row" data-sess="${s.id}"><span class="badge">${d.label.slice(0, 2)}</span><span><strong>${esc(d.name)}</strong><small>${new Date(s.date).toLocaleDateString('ro-RO', { weekday: 'short', day: 'numeric', month: 'short' })} · ${nsets} serii · ${fmt(volume(s), 0)} kg · ${Math.round((s.dur || 0) / 60000)} min</small></span>${ICON.chev}</button>`;
+    }).join('')}</div>` : `<p class="empty">Antrenamentele terminate apar aici. Apasă pe unul ca să vezi fiecare exercițiu, greutățile și progresul.</p>`}
   </section>
   <section class="sec"><h2>Emblema ta</h2>
     <div class="notice"><p>Alege o imagine din telefon (de exemplu emblema echipei tale). Apare sus lângă FORȚA și în fundalul cardului principal. Rămâne doar pe telefonul tău.</p>
@@ -1402,7 +1465,7 @@ function wexCard(id) {
         <input id="rp-${id}-${i}" inputmode="numeric" autocomplete="off" aria-label="Repetări set ${i + 1}" placeholder="${p ? p.reps : ex.reps[0] + '-' + ex.reps[1]}" value="${esc(x.reps)}" data-f="reps">
         <button class="ok" data-done aria-label="Set ${i + 1} gata">${ICON.check}</button></div>`; }).join('')}
     </div>
-    <div class="wex-actions"><button class="link" data-addset="${id}">+ Adaugă set</button><button class="link muted" data-howto="${id}">${openEx.has('w' + id) ? 'Ascunde execuția' : 'Cum se execută'}</button></div>
+    <div class="wex-actions"><span class="set-ctl"><button class="link" data-addset="${id}">+ Adaugă set</button>${sets.length > 1 ? `<button class="link danger" data-delset="${id}">− Scoate set</button>` : ''}</span><button class="link muted" data-howto="${id}">${openEx.has('w' + id) ? 'Ascunde execuția' : 'Cum se execută'}</button></div>
     ${openEx.has('w' + id) ? exDetail(id) : ''}
   </article>`;
 }
@@ -1428,32 +1491,119 @@ function finishWorkout() {
 
 /* ---------- Pauză între seturi ---------- */
 let audioCtx = null;
+function ctxAudio() { audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); return audioCtx; }
+/* sunet puternic: 3 rafale de câte 3 bipuri, care trec peste muzică (o coboară puțin cât sună) */
 function beep() {
+  try { if (navigator.audioSession) navigator.audioSession.type = 'transient'; } catch (e) { }
   try {
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    [0, 0.22, 0.44].forEach((t, i) => {
-      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-      o.frequency.value = i === 2 ? 1320 : 880; o.connect(g); g.connect(audioCtx.destination);
-      const s = audioCtx.currentTime + t; g.gain.setValueAtTime(0.0001, s); g.gain.exponentialRampToValueAtTime(0.35, s + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, s + 0.18);
-      o.start(s); o.stop(s + 0.2);
-    });
+    const ac = ctxAudio(), comp = ac.createDynamicsCompressor(), master = ac.createGain();
+    comp.threshold.value = -6; comp.ratio.value = 4; master.gain.value = 1;
+    comp.connect(master); master.connect(ac.destination);
+    const t0 = ac.currentTime + 0.02;
+    for (let r = 0; r < 3; r++) for (let i = 0; i < 3; i++) {
+      const s = t0 + r * 0.9 + i * 0.16, f = i === 2 ? 1760 : 1320;
+      for (const type of ['square', 'sawtooth']) {
+        const o = ac.createOscillator(), g = ac.createGain();
+        o.type = type; o.frequency.value = type === 'square' ? f : f / 2;
+        o.connect(g); g.connect(comp);
+        g.gain.setValueAtTime(0.0001, s); g.gain.exponentialRampToValueAtTime(type === 'square' ? 0.9 : 0.5, s + 0.01); g.gain.setValueAtTime(type === 'square' ? 0.9 : 0.5, s + 0.1); g.gain.exponentialRampToValueAtTime(0.0001, s + 0.14);
+        o.start(s); o.stop(s + 0.15);
+      }
+    }
+    setTimeout(() => { try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; } catch (e) { } }, 3000);
   } catch (e) { }
-  try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch (e) { }
+  try { navigator.vibrate && navigator.vibrate([400, 150, 400, 150, 400]); } catch (e) { }
 }
-function unlockAudio() { try { audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); } catch (e) { } }
+function unlockAudio() { try { ctxAudio(); } catch (e) { } }
 let rest = null;
-function startRest(sec, label) { rest = { end: Date.now() + sec * 1000, total: sec, label, ended: false }; drawRest(); clearInterval(restT); restT = setInterval(drawRest, 250); }
-function stopRest() { clearInterval(restT); rest = null; $('#rest').hidden = true; }
-function drawRest() {
-  const el = $('#rest'); if (!rest) { el.hidden = true; return; }
-  const left = Math.max(0, (rest.end - Date.now()) / 1000);
-  if (left <= 0 && !rest.ended) { rest.ended = true; beep(); setTimeout(() => { if (rest && rest.ended) stopRest(); }, 6000); }
-  const C = 2 * Math.PI * 25, frac = rest.total ? left / rest.total : 0;
-  el.hidden = false; el.classList.toggle('ended', rest.ended);
+/* next = id-ul exercițiului următor când se schimbă aparatul */
+function startRest(sec, label, next) {
+  rest = { end: Date.now() + sec * 1000, total: sec, label, next: next || null, ended: false };
+  buildRest(); drawRest(); clearInterval(restT); restT = setInterval(drawRest, 250);
+}
+function stopRest() { clearInterval(restT); rest = null; const el = $('#rest'); el.hidden = true; el.innerHTML = ''; }
+function buildRest() {
+  const el = $('#rest'), C = 2 * Math.PI * 25;
+  el.classList.remove('ended'); el.hidden = false;
   el.innerHTML = `<div class="rest-in" role="timer" aria-live="off">
-    <svg class="ring" viewBox="0 0 58 58"><circle class="bgc" cx="29" cy="29" r="25"/><circle class="fgc" cx="29" cy="29" r="25" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - frac)}"/></svg>
-    <div><div class="rest-t">${rest.ended ? 'Gata!' : fmtTime(Math.ceil(left))}</div><small>${rest.ended ? 'Următorul set' : 'Pauză · ' + esc(rest.label)}</small></div>
-    <div class="rest-btns">${rest.ended ? '' : '<button data-rest="-15">−15</button><button data-rest="15">+15</button>'}<button data-rest="x">${rest.ended ? 'OK' : 'Sari'}</button></div></div>`;
+    <svg class="ring" viewBox="0 0 58 58"><circle class="bgc" cx="29" cy="29" r="25"/><circle class="fgc" id="rest-ring" cx="29" cy="29" r="25" stroke-dasharray="${C}" stroke-dashoffset="0"/></svg>
+    <div class="rest-txt"><div class="rest-t num" id="rest-t"></div><small id="rest-l"></small></div>
+    <div class="rest-btns"><button data-rest="-15">−15</button><button data-rest="15">+15</button><button data-rest="x">Sari</button></div></div>`;
+}
+function drawRest() {
+  if (!rest) return;
+  const left = Math.max(0, (rest.end - Date.now()) / 1000), C = 2 * Math.PI * 25;
+  const t = $('#rest-t'), l = $('#rest-l'), r = $('#rest-ring'); if (!t) return;
+  const txt = fmtTime(Math.ceil(left)); if (t.textContent !== txt) t.textContent = txt;
+  const lbl = rest.next ? `Schimbi aparatul · urmează ${EX[rest.next].name}` : `Pauză · ${rest.label}`; if (l.textContent !== lbl) l.textContent = lbl;
+  r.setAttribute('stroke-dashoffset', (C * (1 - (rest.total ? left / rest.total : 0))).toFixed(1));
+  if (left <= 0 && !rest.ended) { rest.ended = true; const nx = rest.next; stopRest(); goTime(nx); }
+}
+/* ecranul mare de la finalul pauzei */
+let goT = null;
+function goTime(next) {
+  beep();
+  const g = $('#go');
+  g.innerHTML = `<div class="go-in"><div class="go-ring"></div><div class="go-small">Pauza s-a terminat</div>
+    <div class="go-big">Treci<br>la treabă!</div>
+    <div class="go-next">${next ? `Următorul aparat:<b>${esc(EX[next].name)}</b>` : 'Următoarea serie'}</div>
+    <div class="go-tap">Atinge ecranul ca să continui</div></div>`;
+  g.hidden = false; g.classList.remove('show'); void g.offsetWidth; g.classList.add('show');
+  g.dataset.next = next || '';
+  if (FX.celebrate) setTimeout(FX.celebrate, 120);
+  clearTimeout(goT); goT = setTimeout(closeGo, 6000);
+}
+function closeGo() {
+  const g = $('#go'); if (g.hidden) return;
+  clearTimeout(goT); g.hidden = true; g.classList.remove('show');
+  const nx = g.dataset.next; if (nx) { const c = $('#wex-' + nx); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+}
+document.addEventListener('pointerdown', e => { if (e.target.closest('#go')) closeGo(); });
+function nextUndone(dayId, fromId) {
+  const ex = byId(dayId).ex, i = ex.indexOf(fromId);
+  for (let k = 1; k <= ex.length; k++) { const id = ex[(i + k) % ex.length]; if (S.active.sets[id].some(s => !s.done)) return id; }
+  return null;
+}
+
+/* ---------- Detaliu antrenament din istoric ---------- */
+let sheetId = null;
+function openSession(id) { sheetId = id; renderSheet(); const sh = $('#sheet'); sh.scrollTop = 0; sh.classList.remove('slide-in'); void sh.offsetWidth; sh.classList.add('slide-in'); }
+function closeSheet() { sheetId = null; const sh = $('#sheet'); sh.hidden = true; sh.innerHTML = ''; if (!S.active) document.body.style.overflow = ''; }
+function exHistory(exId, upTo) {
+  return sessionsSorted().filter(s => s.date <= upTo && s.ex[exId] && s.ex[exId].length)
+    .map(s => ({ t: s.date, best: Math.max(...s.ex[exId].map(x => e1rm(x.kg, x.reps))), top: Math.max(...s.ex[exId].map(x => x.kg)), vol: s.ex[exId].reduce((v, x) => v + x.kg * x.reps, 0) }));
+}
+function bars(sets) {
+  const max = Math.max(...sets.map(x => x.kg * x.reps), 1);
+  return `<div class="sbars">${sets.map((x, i) => `<div class="sbar"><i style="--h:${Math.max(8, 100 * x.kg * x.reps / max)}%;--d:${i * 80}ms"></i><b class="num">${fmt(x.kg)}<small>kg</small></b><span class="num">× ${x.reps}</span></div>`).join('')}</div>`;
+}
+function renderSheet() {
+  const s = S.sessions.find(x => x.id === sheetId), sh = $('#sheet');
+  if (!s) { closeSheet(); return; }
+  const d = byId(s.day), order = d.ex.filter(id => s.ex[id]).concat(Object.keys(s.ex).filter(id => !d.ex.includes(id)));
+  const nsets = Object.values(s.ex).reduce((a, x) => a + x.length, 0);
+  sh.hidden = false; document.body.style.overflow = 'hidden';
+  sh.innerHTML = `<header class="w-head"><div class="w-head-in">
+    <div class="w-title"><span>${new Date(s.date).toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' })}</span> ${esc(d.name)}</div>
+    <button class="btn btn-ghost w-finish" data-close-sheet>Închide</button></div></header>
+  <div class="w-body">
+    <section class="stats">
+      <div class="stat"><b class="num">${Math.round((s.dur || 0) / 60000)}</b><small>minute</small></div>
+      <div class="stat"><b class="num">${nsets}</b><small>serii făcute</small></div>
+      <div class="stat"><b class="num">${fmt(volume(s) / 1000, 1)}t</b><small>volum total ridicat</small></div>
+    </section>
+    ${order.map(id => {
+      const ex = EX[id], sets = s.ex[id], hist = exHistory(id, s.date), prev = hist.length > 1 ? hist[hist.length - 2] : null, cur = hist[hist.length - 1];
+      const dl = prev ? cur.best - prev.best : null, vol = sets.reduce((v, x) => v + x.kg * x.reps, 0);
+      return `<article class="wex hx">
+        <div class="wex-top">${Rig.svg(id)}<div><h3>${esc(ex.name)}</h3><small>${sets.length} serii · ${fmt(vol, 0)} kg volum</small>
+          ${dl != null ? `<span class="pill ${dl >= 0 ? 'up' : ''}" style="margin-top:6px">${dl >= 0 ? '▲ +' : '▼ −'}${fmt(Math.abs(dl))} kg forță față de data trecută</span>` : '<span class="pill" style="margin-top:6px">Prima înregistrare</span>'}</div></div>
+        ${bars(sets)}
+        <div class="hx-chart"><div class="hx-h">Progres la acest exercițiu <small>maxim estimat, kg</small></div>${chart(hist.map(h => ({ t: h.t, v: h.best })), 'kg')}</div>
+      </article>`;
+    }).join('')}
+    <div class="w-foot"><button class="link muted" data-del-sess="${s.id}">Șterge acest antrenament</button></div>
+  </div>`;
 }
 
 /* ---------- Mesaje scurte ---------- */
@@ -1487,7 +1637,7 @@ document.addEventListener('click', e => {
   if (ds.pick) { pickEx = ds.pick; render(); return; }
   if (ds.toggle) { const s = S.supps.find(x => x.id === ds.toggle); s.on = !s.on; save(); render(); return; }
   if (ds.delSupp) { armButton(t, 'Sigur?', () => { S.supps = S.supps.filter(x => x.id !== ds.delSupp); save(); render(); toast('Suplimentul a fost șters.'); }); return; }
-  if (ds.delSess) { armButton(t, 'Sigur?', () => { S.sessions = S.sessions.filter(x => x.id !== ds.delSess); save(); render(); }); return; }
+  if (ds.delSess) { armButton(t, 'Apasă din nou ca să ștergi', () => { S.sessions = S.sessions.filter(x => x.id !== ds.delSess); save(); closeSheet(); render(); toast('Antrenamentul a fost șters.'); }); return; }
   if ('done' in ds) {
     const row = t.closest('.set'), id = row.dataset.ex, i = +row.dataset.i, x = S.active.sets[id][i];
     if (!x.done) {
@@ -1497,7 +1647,10 @@ document.addEventListener('click', e => {
       if (!parseInt(x.reps)) { rpI.focus(); toast('Scrie câte repetări ai făcut.'); return; }
       x.done = true; kgI.value = x.kg; rpI.value = x.reps;
       const ex = EX[id], isLastOfAll = Object.values(S.active.sets).flat().every(s => s.done);
-      if (!isLastOfAll) startRest(ex.rest, ex.name);
+      const exDone = S.active.sets[id].every(s => s.done);
+      if (isLastOfAll) { stopRest(); toast('Toate seriile sunt gata! Apasă Termină și salvează.'); }
+      else if (exDone) { const nx = nextUndone(S.active.day, id); startRest(EX[nx].switchRest, ex.name, nx); toast(`Gata cu ${ex.name}. Treci la ${EX[nx].name}.`); }
+      else startRest(ex.rest, ex.name);
       FX.pop(t); FX.burst(t, 16);
       if (S.active.sets[id].every(s => s.done)) setTimeout(() => FX.burst($('#wex-' + id + ' h3'), 30), 120);
     } else x.done = false;
@@ -1506,6 +1659,13 @@ document.addEventListener('click', e => {
     save(); updateProgress(); return;
   }
   if (ds.addset) { const arr = S.active.sets[ds.addset]; arr.push({ kg: arr.length ? arr[arr.length - 1].kg : '', reps: '', done: false }); save(); const y = $('#workout').scrollTop; renderWorkout(); $('#workout').scrollTop = y; return; }
+  if (ds.delset) {
+    const arr = S.active.sets[ds.delset]; if (arr.length <= 1) return;
+    let k = -1; for (let j = arr.length - 1; j >= 0; j--) if (!arr[j].done) { k = j; break; }
+    arr.splice(k >= 0 ? k : arr.length - 1, 1); save(); const y = $('#workout').scrollTop; renderWorkout(); $('#workout').scrollTop = y; return;
+  }
+  if (ds.sess) { openSession(ds.sess); return; }
+  if ('closeSheet' in ds) { closeSheet(); return; }
   if (ds.howto) { const k = 'w' + ds.howto; openEx.has(k) ? openEx.delete(k) : openEx.add(k); const y = $('#workout').scrollTop; renderWorkout(); $('#workout').scrollTop = y; return; }
   if ('finish' in ds) { armButton(t, 'Apasă din nou', finishWorkout); return; }
   if ('cancel' in ds) { armButton(t, 'Apasă din nou ca să anulezi, fără salvare', () => { S.active = null; save(); stopRest(); render(); }); return; }
