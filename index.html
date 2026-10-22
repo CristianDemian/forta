@@ -1587,6 +1587,10 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .b-f { color: #fff !important; -webkit-text-stroke: 1.6px #1a1416; paint-order: stroke fill;
   text-shadow: 1px 1px 0 #1a1416, 2px 2px 0 #1a1416, 3px 3px 0 #1a1416, 4px 4px 0 #1a1416, 6px 8px 8px rgba(0,0,0,.35) !important; }
 @media (prefers-color-scheme: dark) { .b-f { color: #fff !important; -webkit-text-stroke: 1.6px #000; text-shadow: 1px 1px 0 #d8101c, 2px 2px 0 #c10e19, 3px 3px 0 #a30c15, 4px 4px 0 #850a11, 6px 8px 10px rgba(0,0,0,.7) !important; } }
+/* antet pe toată lățimea */
+.brand { width: 100%; overflow: hidden; gap: .4em !important; }
+.b-w { font-size: 1.6em; }
+.brand { padding-left: 4px !important; padding-right: 2px !important; } .stage { margin-top: -28px !important; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -2520,8 +2524,10 @@ function renderBadge() {
 /* potrivește FORȚA + CRISTIAN DEMIAN exact pe lățimea ecranului */
 function fitBrand() {
   const b = $('.brand'); if (!b) return;
-  let size = 19; b.style.fontSize = size + 'px';
-  while (b.scrollWidth > b.clientWidth + 1 && size > 12) { size -= 0.5; b.style.fontSize = size + 'px'; }
+  /* mărește emblema și textul până umplu exact lățimea ecranului */
+  let lo = 12, hi = 60;
+  for (let k = 0; k < 14; k++) { const mid = (lo + hi) / 2; b.style.fontSize = mid + 'px'; if (b.scrollWidth > b.clientWidth + 1) hi = mid; else lo = mid; }
+  b.style.fontSize = Math.floor(lo * 4) / 4 + 'px';
 }
 addEventListener('resize', fitBrand);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBrand);
@@ -2591,7 +2597,7 @@ function workoutHero(nd, eyebrow) {
   const nSets = nd.ex.reduce((a, id) => a + EX[id].sets, 0);
   const mins = Math.round(nd.ex.reduce((a, id) => a + EX[id].sets * (EX[id].rest + 45), 0) / 60 / 5) * 5;
   const parts = nd.name.split(/\s*\+\s*/), words = parts.length > 1 ? [parts[0], '+ ' + parts.slice(1).join(' + ')] : [nd.name];
-  return `<section class="stage">${stageDate()}${S.active ? '<div class="st-live"><i></i>În desfășurare</div>' : ''}
+  return `<section class="stage">${S.active ? '<div class="st-live"><i></i>În desfășurare</div>' : ''}
     ${Buddy.flex.replace('class="buddy ', 'class="buddy st-av ')}${stageTitle(words)}<canvas class="st-fx" aria-hidden="true"></canvas></section>
   <section class="st-card">
     <p class="st-lead">${S.active ? 'Antrenamentul e pornit. Continuă de unde ai rămas.' : `Azi lucrezi ${esc(nd.name.toLowerCase())}.${lastOfDay ? ` Ultima dată ${relDays(lastOfDay.date)}.` : ''}`}</p>
@@ -2617,7 +2623,7 @@ function restHero(doneToday, skipped) {
   const C = 2 * Math.PI * 34, rc = avg >= 90 ? '#22c55e' : avg >= 65 ? '#a3d93a' : avg >= 40 ? '#f5a524' : '#e11d2a';
   const mins = Math.round(p.ex.reduce((x, id) => x + EX[id].sets * (EX[id].rest + 45), 0) / 60 / 5) * 5;
   const tips = [[RI.sleep, 'Somn', '7-9 ore', '#7c5cff'], [RI.food, 'Proteine', `${fmt(1.8 * ((S.body.length && S.body[S.body.length - 1].kg) || 80) / 1, 0)} g azi`, '#f59e0b'], [RI.walk, 'Plimbare', '30 de minute', '#22c55e'], [RI.stretch, 'Stretching', '10 minute', '#0ea5e9']];
-  return `<section class="stage st-rest">${stageDate()}
+  return `<section class="stage st-rest">
     ${Buddy.svg.replace('class="buddy ', 'class="buddy st-av ')}${stageTitle([doneToday ? 'Bifat' : 'Odihnă'])}<canvas class="st-fx" aria-hidden="true"></canvas></section>
   <section class="st-card rest-card">
     <div class="rc-mini">
