@@ -539,6 +539,14 @@ svg.chart { width: 100%; height: auto; display: block; overflow: visible; }
 .pr-card { background: linear-gradient(180deg, var(--bg) 0 210px, color-mix(in srgb, #ffc94d 10%, var(--surface)) 260px, var(--surface)); }
 .buddy.ob-av .b-vid, .buddy.ob-av .b-poster, .buddy.pr-av .b-vid, .buddy.pr-av .b-poster {
   -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); }
+
+/* ---------- Mai luminos, fără umbră sus ---------- */
+:root { --surface: #1c181b; --surface-2: #262125; --surface-3: #322b30; --line: rgba(255,255,255,.09); --line-2: rgba(255,255,255,.14); --muted: #b0a5a9; --faint: #85797d; }
+.ambient { display: none; }
+.top { background: var(--bg); backdrop-filter: none; -webkit-backdrop-filter: none; }
+.buddy.full::after { background: linear-gradient(180deg, transparent 0%, transparent 74%, var(--bg) 100%); }
+.next, .rest-day, .rings, .mmap { background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02)), var(--surface); }
+.stat, .check, .supp, .ex-item, .hist-row, .chart-card, .notice, .wex, .add-form, .week { background-color: var(--surface); }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
