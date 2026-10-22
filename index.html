@@ -472,6 +472,11 @@ button.hist-row:active { transform: scale(.98); }
 .sp-stripe { position: relative; width: 70%; height: 6px; margin-top: 14px; border-radius: 3px; background: repeating-linear-gradient(90deg, #fff 0 22px, var(--red-deep) 22px 44px); background-size: 44px 6px; animation: stripes 1.2s linear infinite, growx .6s .8s ease-out both; }
 @keyframes growx { from { transform: scaleX(0); } }
 @media (prefers-reduced-motion: reduce) { .sp-rays, .sp-fig, .sp-a, .sp-b, .sp-stripe { animation: none !important; } }
+/* pașii numerotați: textul curge normal, inclusiv cuvintele îngroșate */
+.cues li { display: block; position: relative; padding-left: 28px; }
+.cues li::before { position: absolute; left: 0; top: 0; }
+.notice .cues { margin: 2px 0; }
+.notice .cues li { font-size: 14.5px; color: var(--fg); }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
