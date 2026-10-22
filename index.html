@@ -454,7 +454,31 @@ button.hist-row:active { transform: scale(.98); }
 .hx-h { font: 700 13px var(--display); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .hx-h small { text-transform: none; letter-spacing: 0; font: 400 12px var(--body); margin-left: 4px; }
 @media (prefers-reduced-motion: reduce) { .go::before, .go-ring, .go.show .go-big, .sbar i { animation: none !important; } }
+
+/* ---------- Ecran de pornire ---------- */
+.splash { position: fixed; inset: 0; z-index: 100; overflow: hidden; display: grid; place-items: center; grid-template-rows: 1fr auto auto; padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); padding-top: env(safe-area-inset-top, 0px);
+  background: radial-gradient(circle at 50% 38%, var(--red-hi) 0%, var(--accent) 30%, var(--red-deep) 62%, #12050a 100%); transition: opacity .55s ease, transform .55s ease; }
+.splash.out { opacity: 0; transform: scale(1.08); pointer-events: none; }
+.sp-rays { position: absolute; inset: -60%; background: repeating-conic-gradient(from 0deg at 50% 45%, rgba(255,255,255,.09) 0 9deg, transparent 9deg 18deg); animation: gospin 10s linear infinite; }
+.sp-fig { position: relative; height: min(58vh, 520px); aspect-ratio: 9 / 16; align-self: end; animation: spfig .9s cubic-bezier(.2, 1.4, .4, 1) both;
+  -webkit-mask-image: radial-gradient(ellipse 48% 50% at 50% 50%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 48% 50% at 50% 50%, #000 62%, transparent 100%); }
+.sp-fig img, .sp-fig video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.sp-fig video { opacity: 0; transition: opacity .3s; }
+.splash.vid .sp-fig video { opacity: 1; }
+@keyframes spfig { from { transform: translateY(40px) scale(.7); opacity: 0; } }
+.sp-title { position: relative; display: grid; justify-items: center; line-height: .9; text-transform: uppercase; font-family: var(--display); font-weight: 800; color: #fff; text-shadow: 0 6px 24px rgba(0,0,0,.45); }
+.sp-a { font-size: clamp(72px, 24vw, 140px); letter-spacing: .03em; animation: slam .7s .25s cubic-bezier(.2, 1.6, .4, 1) both; }
+.sp-b { font-size: clamp(26px, 8.6vw, 52px); letter-spacing: .08em; animation: rise .6s .6s cubic-bezier(.2, .8, .2, 1) both; }
+.sp-stripe { position: relative; width: 70%; height: 6px; margin-top: 14px; border-radius: 3px; background: repeating-linear-gradient(90deg, #fff 0 22px, var(--red-deep) 22px 44px); background-size: 44px 6px; animation: stripes 1.2s linear infinite, growx .6s .8s ease-out both; }
+@keyframes growx { from { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { .sp-rays, .sp-fig, .sp-a, .sp-b, .sp-stripe { animation: none !important; } }
 </style>
+<div class="splash" id="splash" aria-hidden="true">
+  <div class="sp-rays"></div>
+  <div class="sp-fig"><img src="mini-cristian-flex.jpg" alt=""><video src="mini-cristian-flex.mp4" muted autoplay playsinline webkit-playsinline preload="auto"></video></div>
+  <div class="sp-title"><span class="sp-a">Forța</span><span class="sp-b">Cristian Demian</span></div>
+  <div class="sp-stripe"></div>
+</div>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
   <header class="top"><div class="brand"><img id="hbadge" class="hbadge" alt="" hidden><span class="b1">Forța</span><span class="b2">Cristian Demian</span></div><div class="today" id="today"></div></header>
@@ -1715,5 +1739,15 @@ document.addEventListener('submit', e => {
 });
 
 render();
+(function () {
+  const sp = document.getElementById('splash'); if (!sp) return;
+  const v = sp.querySelector('video'); v.muted = true;
+  const p = v.play(); if (p && p.catch) p.catch(() => { });
+  v.addEventListener('playing', () => sp.classList.add('vid'));
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hide = () => { if (sp.classList.contains('out')) return; sp.classList.add('out'); setTimeout(() => { sp.remove(); }, 650); };
+  setTimeout(hide, still ? 700 : 2600);
+  sp.addEventListener('pointerdown', hide);
+})();
 </script>
 </body></html>
