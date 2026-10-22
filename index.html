@@ -2379,7 +2379,7 @@ const Push = (() => {
   /* actualizare automată: când apare o versiune nouă, aplicația se reîncarcă singură */
   if ('serviceWorker' in navigator) {
     const had = !!navigator.serviceWorker.controller;
-    navigator.serviceWorker.register('sw.js').then(reg => {
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(reg => { reg.update(); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update(); });
       const check = () => reg.update().catch(() => { });
       document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
       setInterval(check, 5 * 60 * 1000);
