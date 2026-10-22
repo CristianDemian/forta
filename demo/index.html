@@ -1487,6 +1487,49 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .credits { margin: 8px 0 0; font: 500 11.5px var(--sys); color: var(--faint); text-align: center; }
 .credits a { color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { span.rig.exa .ex-p { animation: none; opacity: 0; } }
+
+/* ================= Progres v2: plăci cu mușchi reali ================= */
+.recov { gap: 16px !important; }
+.rv-top { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; }
+.rv-big { display: flex; align-items: baseline; }
+.rv-big b { font: 800 72px/.8 var(--display); color: #fff; text-shadow: 0 0 30px rgba(34,197,94,.5); }
+.rv-big span { font: 800 26px var(--display); color: rgba(255,255,255,.5); }
+.rv-top small { font: 600 12.5px var(--sys); color: rgba(255,255,255,.5); }
+.rv-top p { margin: 3px 0 0; font: 500 13.5px/1.35 var(--sys); color: rgba(255,255,255,.85); }
+.mgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.mtile { position: relative; display: grid; justify-items: center; gap: 2px; padding: 10px 6px 10px; border-radius: 18px; text-align: center;
+  background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03)); box-shadow: inset 0 1px 0 rgba(255,255,255,.1), inset 0 0 0 1px color-mix(in srgb, var(--c) 25%, transparent); }
+.mt-img { width: 72px; height: 72px; border-radius: 50%; overflow: hidden; display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 40%, #f4f2f2, #d9d5d6); box-shadow: 0 0 0 3px rgba(0,0,0,.25), 0 0 22px color-mix(in srgb, var(--c) 55%, transparent); }
+.mt-img img { width: 100%; height: 100%; object-fit: cover; filter: hue-rotate(var(--hue)) saturate(1.25); }
+.mt-ring { position: absolute; top: 4px; left: 50%; width: 84px; height: 84px; margin-left: -42px; transform: rotate(-90deg); pointer-events: none; }
+.mr-bg { fill: none; stroke: rgba(255,255,255,.08); stroke-width: 2.6; }
+.mr-fg { fill: none; stroke: var(--c); stroke-width: 2.6; stroke-linecap: round; filter: drop-shadow(0 0 3px var(--c)); }
+#view.intro .mr-fg, .rv-in .mr-fg { animation: mring 1.3s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(.3s + var(--i) * .06s); }
+@keyframes mring { from { stroke-dashoffset: var(--c0); } }
+.mtile b { margin-top: 8px; font: 600 12.5px var(--sys); color: rgba(255,255,255,.9); }
+.mtile small { font: 800 18px/1 var(--display) !important; color: var(--c); }
+#view.intro .mtile, .rv-in .mtile { animation: rise3 .6s cubic-bezier(.2, .85, .25, 1) both; animation-delay: calc(.2s + var(--i) * .05s); }
+
+.vol { display: grid; gap: 10px; padding: 16px; border-radius: var(--r-lg); background: var(--surface);
+  box-shadow: inset 0 1px 0 var(--hl), 0 6px 12px -6px rgba(40,18,22,.10), 0 26px 40px -26px rgba(60,20,26,.35); }
+.vol-note { margin: 0 0 4px; font: 500 12.5px/1.4 var(--sys); color: var(--muted); }
+.vrow { display: grid; grid-template-columns: 50px 1fr; gap: 12px; align-items: center; }
+.vr-img { width: 50px; height: 50px; border-radius: 14px; overflow: hidden; background: radial-gradient(circle at 50% 40%, #fbfafa, #e4e0e1); box-shadow: inset 0 0 0 1px rgba(0,0,0,.04); }
+.vr-img img { width: 100%; height: 100%; object-fit: cover; filter: hue-rotate(-14deg) saturate(1.3); }
+.vrow.lo .vr-img img { filter: grayscale(.7) opacity(.8); }
+.vr-main { display: grid; gap: 6px; min-width: 0; }
+.vr-h { display: flex; justify-content: space-between; align-items: baseline; }
+.vr-h b { font: 600 14px var(--sys); color: var(--ink); }
+.vr-h em { font: 800 20px/1 var(--display) !important; font-style: normal; color: var(--ink); }
+.vrow.ok .vr-h em { color: #16a34a; } .vrow.hi .vr-h em { color: #f59e0b; }
+.vr-bar { position: relative; height: 10px; border-radius: 5px; background: var(--soft); overflow: hidden; }
+.vr-bar .zone { position: absolute; top: 0; bottom: 0; background: repeating-linear-gradient(135deg, rgba(34,197,94,.22) 0 4px, rgba(34,197,94,.1) 4px 8px); }
+.vr-bar b { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; background: linear-gradient(90deg, #ff4a55, var(--accent)); box-shadow: 0 0 10px rgba(216,16,28,.45); transform-origin: 0 50%; }
+.vrow.ok .vr-bar b { background: linear-gradient(90deg, #4ade80, #16a34a); box-shadow: 0 0 10px rgba(34,197,94,.5); }
+#view.intro .vr-bar b, .rv-in .vr-bar b { animation: growx 1.1s cubic-bezier(.2, 1, .3, 1) both; animation-delay: calc(.3s + var(--i) * .06s); }
+@media (prefers-color-scheme: dark) { .vr-img { background: radial-gradient(circle at 50% 40%, #f4f2f2, #d6d1d2); } }
+.vrow.hi .vr-bar b { background: linear-gradient(90deg, #fbbf24, #f59e0b); box-shadow: 0 0 10px rgba(245,158,11,.5); }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -3083,7 +3126,7 @@ function progHero() {
     <div class="ph-bars">${weeks.map((v, i) => `<div class="phb ${i === 7 ? 'now' : ''}" style="--h:${(v / mx).toFixed(3)};--i:${i}"><i></i><small>${i === 7 ? 'acum' : `−${7 - i}`}</small></div>`).join('')}</div></section>`;
 }
 viewProgres = function () {
-  return progHero() + `<section class="sec"><h2>Mușchi lucrați</h2>${bodyMap()}</section>` + prSection() + _viewProgres();
+  return progHero() + (typeof volumeCard === 'function' ? volumeCard() : `<section class="sec"><h2>Mușchi lucrați</h2>${bodyMap()}</section>`) + prSection() + _viewProgres();
 };
 VIEWS.profil = viewProfil;
 
@@ -3360,22 +3403,39 @@ function anatomy(side, colorOf) {
     <path d="M45 182c4-1 8 0 11 2l-1 22c-3 2-7 2-10 0-1-8-1-16 0-24z" class="an-n"/><path d="M75 182c-4-1-8 0-11 2l1 22c3 2 7 2 10 0 1-8 1-16 0-24z" class="an-n"/>`;
   return `<svg viewBox="0 0 120 252" class="anat">${sil}${side === 'front' ? front : back}</svg>`;
 }
+const MUS_IMG = { piept: 'pectoralis-major', umeri: 'lateral-deltoid', triceps: 'triceps-brachii', spate: 'latissimus-dorsi', biceps: 'biceps-brachii', antebrat: 'forearm-flexors', cvadriceps: 'quadriceps', femurali: 'hamstrings', fesieri: 'gluteus-maximus' };
+const musImg = m => `<img src="${window.ASSET || ''}mus/${MUS_IMG[m]}.webp" alt="" loading="lazy" decoding="async">`;
+/* culoarea mușchiului din imagine (portocaliu) e rotită spre roșu, galben sau verde după stare */
+const hueFor = p => p >= 90 ? 95 : p >= 65 ? 55 : p >= 40 ? 18 : -18;
 function recoveryCard() {
   const r = recovery(), order = Object.keys(GROUP_LABEL).sort((a, b) => r[a].pct - r[b].pct);
-  const ready = order.filter(m => r[m].pct >= 90).length;
-  const col = m => recColor(r[m].pct);
+  const avg = Math.round(order.reduce((x, m) => x + r[m].pct, 0) / order.length), ready = order.filter(m => r[m].pct >= 90).length;
   const nextUp = (() => { const { p } = nextPlan(); if (!p) return ''; const ms = [...new Set(p.ex.flatMap(id => (MUSCLE[id] || []).slice(0, 1)))]; const low = ms.filter(m => r[m] && r[m].pct < 80); return low.length ? `Pentru ${esc(p.name)}: ${low.map(m => GROUP_LABEL[m].toLowerCase()).join(', ')} încă se refac.` : `Toți mușchii pentru ${esc(p.name)} sunt pregătiți.`; })();
-  return `<section class="sec"><div class="sec-head"><h2>Recuperare</h2><span class="count num">${ready}/${order.length}</span></div>
+  const C = 2 * Math.PI * 16;
+  return `<section class="sec"><div class="sec-head"><h2>Recuperare</h2><span class="count num">${ready}/${order.length} gata</span></div>
     <div class="recov">
-      <div class="rc-bodies"><figure>${anatomy('front', col)}<figcaption>Față</figcaption></figure><figure>${anatomy('back', col)}<figcaption>Spate</figcaption></figure></div>
-      <p class="rc-tip">${nextUp}</p>
-      <div class="rc-list">${order.map(m => `<div class="rc-row"><span>${GROUP_LABEL[m]}</span><i><b style="width:${r[m].pct}%;background:${col(m)}"></b></i><em class="num" style="color:${col(m)}">${r[m].pct}%</em></div>`).join('')}</div>
+      <div class="rv-top"><div class="rv-big"><b class="num">${avg}</b><span>%</span></div><div><small>Refacere medie</small><p>${nextUp}</p></div></div>
+      <div class="mgrid">${order.map((m, k) => { const p = r[m].pct, c = recColor(p); return `<div class="mtile" style="--c:${c};--hue:${hueFor(p)}deg;--i:${k}">
+        <div class="mt-img">${musImg(m)}</div>
+        <svg viewBox="0 0 40 40" class="mt-ring" aria-hidden="true"><circle cx="20" cy="20" r="16" class="mr-bg"/><circle cx="20" cy="20" r="16" class="mr-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - p / 100)).toFixed(1)}" style="--c0:${C.toFixed(1)}"/></svg>
+        <b>${GROUP_LABEL[m]}</b><small class="num">${p}%</small></div>`; }).join('')}</div>
       <div class="rc-legend"><span><i style="background:#e11d2a"></i>obosit</span><span><i style="background:#f5a524"></i>se reface</span><span><i style="background:#22c55e"></i>pregătit</span></div>
+    </div></section>`;
+}
+function volumeCard() {
+  const g = groupSets(7), order = Object.keys(GROUP_LABEL).sort((a, b) => (g[b] || 0) - (g[a] || 0)), MAX = 24;
+  const inZone = order.filter(m => (g[m] || 0) >= 10 && (g[m] || 0) <= 20).length;
+  return `<section class="sec"><div class="sec-head"><h2>Serii pe mușchi</h2><span class="count num">${inZone}/${order.length} în țintă</span></div>
+    <div class="vol">
+      <p class="vol-note">Ultimele 7 zile. Pentru masă musculară, ținta e 10-20 de serii pe săptămână pentru fiecare grupă (zona verde).</p>
+      ${order.map((m, k) => { const v = Math.round((g[m] || 0) * 10) / 10, st = v >= 10 && v <= 20 ? 'ok' : v > 20 ? 'hi' : 'lo';
+        return `<div class="vrow ${st}" style="--i:${k}"><div class="vr-img">${musImg(m)}</div><div class="vr-main"><div class="vr-h"><b>${GROUP_LABEL[m]}</b><em class="num">${fmt(v, v % 1 ? 1 : 0)}</em></div>
+          <div class="vr-bar"><i class="zone" style="left:${10 / MAX * 100}%;width:${10 / MAX * 100}%"></i><b style="width:${Math.min(100, v / MAX * 100).toFixed(1)}%"></b></div></div></div>`; }).join('')}
     </div></section>`;
 }
 {
   const _vp = viewProgres;
-  viewProgres = function () { const h = _vp(); const i = h.indexOf('<section class="sec"><h2>Mușchi lucrați'); return i < 0 ? h : h.slice(0, i) + recoveryCard() + h.slice(i); };
+  viewProgres = function () { const h = _vp(); const i = h.indexOf('<section class="sec"><div class="sec-head"><h2>Serii pe mușchi'); return i < 0 ? h : h.slice(0, i) + recoveryCard() + h.slice(i); };
 }
 
 /* ================= Calculator de discuri și încălzire ================= */
