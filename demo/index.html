@@ -1510,7 +1510,7 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 /* ---------- Programul: 3 zile, câte două grupe ---------- */
 const DAYS = [
   { id: 'A', wd: 1, label: 'Luni', short: 'Piept', name: 'Piept + Triceps', ex: ['incline', 'chestpress', 'pecdeck', 'rope', 'vbar'] },
-  { id: 'B', wd: 3, label: 'Miercuri', short: 'Spate', name: 'Spate + Biceps', ex: ['pulldown', 'closegrip', 'vpull', 'dbrow', 'cablerow', 'straightarm', 'zwide', 'znarrow', 'hammer'] },
+  { id: 'B', wd: 3, label: 'Miercuri', short: 'Spate', name: 'Spate + Biceps', ex: ['pulldown', 'closegrip', 'vpull', 'machrow', 'dbrow', 'cablerow', 'straightarm', 'zwide', 'znarrow', 'hammer'] },
   { id: 'C', wd: 5, label: 'Vineri', short: 'Umeri', name: 'Umeri + Picioare', ex: ['squat', 'rdl', 'legpress', 'legcurl', 'dbpress', 'lateral', 'facepull'] }
 ];
 
@@ -1802,6 +1802,18 @@ Object.assign(EX, {
       A: { hip: [92, 141], t: -10, ua: 172, fa: 178, th: 90, sh: 0 },
       B: { hip: [92, 141], t: -18, ua: -18, fa: 150, th: 90, sh: 0 } }
   },
+  machrow: {
+    name: 'Ramat la aparat cu sprijin pe piept', muscles: 'Mijlocul spatelui, dorsali, umăr posterior, biceps',
+    sets: 3, reps: [8, 12], rest: 90, step: 5,
+    cues: ['Reglează scaunul astfel încât mânerele să fie la nivelul pieptului de jos, cu pieptul lipit de pernă.',
+      'Prinde mânerele verticale, cu palmele față în față, și pornește cu brațele întinse.',
+      'Trage coatele înapoi pe lângă corp și strânge omoplații la final, o secundă.',
+      'Revino lent până la brațe întinse, fără să desprinzi pieptul de pernă.'],
+    mistake: 'Pieptul se desprinde de pernă și tragi din spate. Pieptul rămâne lipit, lucrează doar brațele și omoplații.',
+    rig: { eq: [{ k: 'pad', a: [80, 148], b: [118, 148] }, { k: 'pad', a: [120, 96], b: [124, 132] }, { k: 'handle', at: 'hand' }],
+      A: { hip: [94, 143], t: 12, ua: 82, fa: 4, th: 90, sh: 0 },
+      B: { hip: [94, 143], t: 12, ua: -40, fa: 100, th: 90, sh: 0 } }
+  },
   dbrow: {
     name: 'Ramat cu gantera cu o singură mână', muscles: 'Dorsali, spate mijlociu, biceps',
     sets: 3, reps: [8, 10], rest: 90, step: 2,
@@ -1853,7 +1865,7 @@ for (const id in EX) { EX[id].sets = 3; EX[id].reps = [10, 12]; }
    compuse partea de sus 2:00, compuse picioare 2:30, izolare 1:15 (picioare 1:30).
    Între aparate: pauza exercițiului următor + 30 s pentru mutare și reglaj. */
 const REST = { compUp: 120, compLow: 150, iso: 75, isoLow: 90 };
-const KIND = { incline: 'compUp', chestpress: 'compUp', pulldown: 'compUp', supine: 'compUp', closegrip: 'compUp', vpull: 'compUp', dbrow: 'compUp', cablerow: 'compUp', dbpress: 'compUp',
+const KIND = { incline: 'compUp', chestpress: 'compUp', pulldown: 'compUp', supine: 'compUp', closegrip: 'compUp', vpull: 'compUp', machrow: 'compUp', dbrow: 'compUp', cablerow: 'compUp', dbpress: 'compUp',
   squat: 'compLow', rdl: 'compLow', legpress: 'compLow', legcurl: 'isoLow' };
 const KIND_LABEL = { compUp: 'exercițiu compus', compLow: 'exercițiu compus pentru picioare', iso: 'exercițiu de izolare', isoLow: 'izolare pentru picioare' };
 for (const id in EX) { EX[id].kind = KIND[id] || 'iso'; EX[id].rest = REST[EX[id].kind]; EX[id].switchRest = EX[id].rest + 30; }
@@ -2909,7 +2921,7 @@ TABS.push({ id: 'profil', label: 'Profil', icon: LI.user });
 /* ---------- Grupe musculare ---------- */
 const MUSCLE = {
   incline: ['piept', 'umeri', 'triceps'], chestpress: ['piept', 'umeri', 'triceps'], pecdeck: ['piept'], rope: ['triceps'], vbar: ['triceps'],
-  pulldown: ['spate', 'biceps'], supine: ['spate', 'biceps'], closegrip: ['spate', 'biceps'], vpull: ['spate', 'biceps'], dbrow: ['spate', 'biceps'], cablerow: ['spate'], straightarm: ['spate'],
+  pulldown: ['spate', 'biceps'], supine: ['spate', 'biceps'], closegrip: ['spate', 'biceps'], vpull: ['spate', 'biceps'], machrow: ['spate', 'umeri', 'biceps'], dbrow: ['spate', 'biceps'], cablerow: ['spate'], straightarm: ['spate'],
   zwide: ['biceps'], znarrow: ['biceps'], hammer: ['biceps', 'antebrat'], squat: ['cvadriceps', 'fesieri'], rdl: ['femurali', 'fesieri', 'spate'],
   legpress: ['cvadriceps', 'fesieri'], legcurl: ['femurali'], dbpress: ['umeri', 'triceps'], lateral: ['umeri'], facepull: ['umeri', 'spate'],
   bench: ['piept', 'triceps'], cross: ['piept'], dips: ['piept', 'triceps'], pushdown: ['triceps'], ohext: ['triceps'], row: ['spate', 'biceps'], curl: ['biceps']
@@ -3513,7 +3525,7 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-shar
 /* ================= Ilustrații animate de exerciții (RepDB, gratuit cu atribuire) ================= */
 const MEDIA = window.FORTA_MEDIA || {};
 const ILLU = { incline: 'incline-db-press', chestpress: 'chest-press-machine', pecdeck: 'pec-deck', rope: 'tricep-pushdown', vbar: 'v-bar-tricep-pushdown',
-  pulldown: 'lat-pulldown', supine: 'reverse-grip-lat-pulldown', closegrip: 'lat-pulldown', vpull: 'close-grip-lat-pulldown', dbrow: 'single-arm-db-row', cablerow: 'seated-cable-row', straightarm: 'straight-arm-pulldown',
+  pulldown: 'lat-pulldown', supine: 'reverse-grip-lat-pulldown', closegrip: 'lat-pulldown', vpull: 'close-grip-lat-pulldown', machrow: 'chest-supported-machine-row', dbrow: 'single-arm-db-row', cablerow: 'seated-cable-row', straightarm: 'straight-arm-pulldown',
   zwide: 'ez-bar-curl', znarrow: 'close-grip-ez-bar-curl', hammer: 'hammer-curl', squat: 'squat', rdl: 'romanian-deadlift', legpress: 'leg-press',
   legcurl: 'leg-curl', dbpress: 'seated-db-press', lateral: 'lateral-raise', facepull: 'face-pull' };
 {
@@ -3533,7 +3545,7 @@ const ILLU = { incline: 'incline-db-press', chestpress: 'chest-press-machine', p
   if (!window.FORTA_DEMO) return;
   /* 8 săptămâni de antrenamente realiste, cu progres treptat */
   function seed() {
-    const st = { incline: 20, chestpress: 45, pecdeck: 40, rope: 20, vbar: 25, pulldown: 50, supine: 45, closegrip: 47.5, vpull: 50, dbrow: 22, cablerow: 50, straightarm: 20, zwide: 25, znarrow: 22.5, hammer: 12, squat: 70, rdl: 60, legpress: 120, legcurl: 35, dbpress: 18, lateral: 8, facepull: 20 };
+    const st = { incline: 20, chestpress: 45, pecdeck: 40, rope: 20, vbar: 25, pulldown: 50, supine: 45, closegrip: 47.5, vpull: 50, machrow: 45, dbrow: 22, cablerow: 50, straightarm: 20, zwide: 25, znarrow: 22.5, hammer: 12, squat: 70, rdl: 60, legpress: 120, legcurl: 35, dbpress: 18, lateral: 8, facepull: 20 };
     const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const monday = today.getTime() - ((today.getDay() + 6) % 7) * DAYMS;
