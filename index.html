@@ -1793,6 +1793,15 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .prof h1 .fn { font: 500 32px/1 var(--sys); letter-spacing: -.02em; color: var(--ink); }
 .prof h1 .ln { font: 800 46px/.9 var(--display); letter-spacing: .02em; color: var(--ink); }
 .sp-b b { font-weight: 900; }
+.bk { display: grid; gap: 14px; padding: 16px; border-radius: var(--r-lg); background: var(--surface); box-shadow: inset 0 1px 0 var(--hl), 0 6px 12px -6px rgba(40,18,22,.10), 0 26px 40px -26px rgba(60,20,26,.35); }
+.bk-top { display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: center; }
+.bk-top b { font: 800 20px/1.05 var(--display); color: var(--ink); } .bk-top small { display: block; margin-top: 3px; font: 500 12.5px/1.35 var(--sys); color: var(--muted); }
+.bk-ic { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: #f59e0b; color: #fff; font: 800 22px var(--display); }
+.bk-ic.ok { background: linear-gradient(160deg, #4ade80, #16a34a); box-shadow: 0 8px 16px -8px #16a34a; } .bk-ic svg { width: 22px; height: 22px; }
+.bk-code { display: grid; gap: 6px; padding: 14px; border-radius: 16px; background: var(--soft); text-align: center; }
+.bk-code small { font: 600 12px var(--sys); color: var(--muted); }
+.bk-code b { font: 800 26px/1 var(--display); letter-spacing: .08em; color: var(--ink); user-select: all; -webkit-user-select: all; }
+.bk-code p { margin: 0; font: 500 12px/1.35 var(--sys); color: var(--muted); }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -2579,7 +2588,50 @@ const Push = (() => {
       }
     } catch (e) { busy = false; P.err = e.message; keep(); toast(e.message); render(); }
   }
-  return { card, action };
+
+  /* ---------- Copie de siguranță în GitHub, criptată cu codul tău de recuperare ---------- */
+  const ABC = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const newCode = () => { const r = crypto.getRandomValues(new Uint8Array(16)); let c = ''; for (let i = 0; i < 16; i++) c += ABC[r[i] % ABC.length]; return c.match(/.{4}/g).join('-'); };
+  async function keyFrom(code) {
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(code.replace(/[^A-Z0-9]/gi, '').toUpperCase()), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: new TextEncoder().encode('forta-backup-v1'), iterations: 150000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  }
+  let bkT = null, bkBusy = false;
+  async function backupNow(force) {
+    if (!P.token || bkBusy) return;
+    if (!P.bcode) { P.bcode = newCode(); keep(); }
+    const body = JSON.stringify(S), h = body.length + ':' + body.slice(-200);
+    if (!force && h === P.bhash) return;
+    bkBusy = true;
+    try {
+      const key = await keyFrom(P.bcode), iv = crypto.getRandomValues(new Uint8Array(12));
+      const data = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(body));
+      const enc = { v: 1, at: new Date().toISOString(), iv: b64(iv), d: b64(data) };
+      const cur = await api('/contents/backup.enc.json?ref=' + CFG.branch);
+      const sha = cur.status === 200 ? (await cur.json()).sha : undefined;
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify(enc))));
+      await api('/contents/backup.enc.json', { method: 'PUT', body: JSON.stringify({ message: 'Copie de siguranță', branch: CFG.branch, sha, content }) });
+      P.bhash = h; P.bat = Date.now(); P.berr = ''; keep();
+    } catch (e) { P.berr = e.message || 'Copia nu a reușit.'; keep(); }
+    bkBusy = false;
+    if (tab === 'profil') render();
+  }
+  async function restoreFrom(code) {
+    const r = await fetch('https://raw.githubusercontent.com/' + CFG.repo + '/' + CFG.branch + '/backup.enc.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('Nu găsesc nicio copie în GitHub.');
+    const enc = await r.json(), key = await keyFrom(code);
+    let txt;
+    try { txt = new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: Uint8Array.from(atob(enc.iv), c => c.charCodeAt(0)) }, key, Uint8Array.from(atob(enc.d), c => c.charCodeAt(0)))); }
+    catch (e) { throw new Error('Codul de recuperare nu e corect.'); }
+    const data = JSON.parse(txt); if (!data || !Array.isArray(data.sessions)) throw new Error('Copia pare deteriorată.');
+    S = data; save(); P.bcode = code.toUpperCase(); P.bhash = ''; keep();
+    return { n: data.sessions.length, at: enc.at };
+  }
+  const _onSaved = window.onSaved;
+  window.onSaved = () => { _onSaved && _onSaved(); clearTimeout(bkT); bkT = setTimeout(() => backupNow(false), 20000); };
+  if (P.token) setTimeout(() => backupNow(!P.bat || Date.now() - P.bat > 6 * 3600000), 6000);
+  const bkInfo = () => ({ on: !!P.token, code: P.bcode || '', at: P.bat || 0, err: P.berr || '' });
+  return { card, action, backupNow, restoreFrom, bkInfo };
 })();
 
 /* ---------- Utilitare ---------- */
@@ -2974,12 +3026,28 @@ function emblemSec() {
   </section>`;
 }
 function backupSec() {
+  const b = Push.bkInfo ? Push.bkInfo() : { on: false };
+  const ago = b.at ? relAgo(b.at) : '';
   return `<section class="sec"><h2>Copie de siguranță</h2>
-    <div class="notice"><p>Datele stau doar pe acest telefon. Copiază-le din când în când și păstrează textul într-o notiță.</p>
-    <div class="chips"><button class="btn btn-ghost" data-backup>Copiază datele</button><button class="btn btn-ghost" data-restore-open>Restaurează</button></div>
-    <div id="restore" hidden><textarea class="field" id="restore-txt" placeholder="Lipește aici textul copiat anterior"></textarea><button class="btn btn-ghost" data-restore style="margin-top:8px">Restaurează datele</button></div></div>
+    <div class="bk">
+      <div class="bk-top"><span class="bk-ic ${b.on && b.at ? 'ok' : ''}">${b.on && b.at ? ICON.check : '!'}</span><div><b>${b.on ? (b.at ? 'Datele tale sunt salvate' : 'Prima copie se face acum') : 'Copia automată e oprită'}</b>
+        <small>${b.on ? (b.err ? esc(b.err) : b.at ? `Ultima copie ${ago}, criptată, în GitHub-ul tău. Se face singură după fiecare schimbare.` : 'Durează câteva secunde.') : 'Pornește notificările din Suplimente (cheia GitHub) și copia se face singură.'}</small></div></div>
+      ${b.code ? `<div class="bk-code"><small>Codul tău de recuperare</small><b class="num">${esc(b.code)}</b><p>Păstrează-l în Notițe sau în Parole. Fără el, copia nu se poate deschide pe alt telefon.</p><button class="btn btn-ghost" data-bk-copy>Copiază codul</button></div>` : ''}
+      <div class="chips">${b.on ? '<button class="btn btn-ghost" data-bk-now>Salvează acum</button>' : ''}<button class="btn btn-ghost" data-restore-open>Restaurează</button><button class="btn btn-ghost" data-backup>Copiază ca text</button></div>
+      <div id="restore" hidden><input class="field num" id="bk-code" placeholder="Codul de recuperare, ex. ABCD-EFGH-..." autocomplete="off" autocapitalize="characters"><button class="btn btn-main" data-bk-restore style="margin-top:8px">Restaurează din GitHub</button>
+        <textarea class="field" id="restore-txt" placeholder="Sau lipește aici textul copiat anterior" style="margin-top:10px"></textarea><button class="btn btn-ghost" data-restore style="margin-top:8px">Restaurează din text</button></div></div>
   </section>`;
 }
+function relAgo(t) { const m = Math.round((Date.now() - t) / 60000); return m < 1 ? 'acum câteva secunde' : m < 60 ? `acum ${m} min` : m < 1440 ? `acum ${Math.round(m / 60)} h` : `acum ${Math.round(m / 1440)} zile`; }
+document.addEventListener('click', async e => {
+  const t = e.target;
+  if (t.closest('[data-bk-now]')) { toast('Salvez...'); await Push.backupNow(true); toast(Push.bkInfo().err || 'Copia e salvată.'); render(); }
+  if (t.closest('[data-bk-copy]')) { try { await navigator.clipboard.writeText(Push.bkInfo().code); toast('Codul e copiat.'); } catch (er) { toast('Nu am putut copia. Notează codul de pe ecran.'); } }
+  if (t.closest('[data-bk-restore]')) {
+    const c = ($('#bk-code').value || '').trim(); if (c.replace(/[^A-Z0-9]/gi, '').length < 16) { toast('Scrie codul complet, 16 caractere.'); return; }
+    try { toast('Caut copia...'); const r = await Push.restoreFrom(c); toast(`Restaurat: ${r.n} antrenamente.`); lastTab = null; tab = 'azi'; render(); } catch (er) { toast(er.message); }
+  }
+});
 
 /* ---------- Ecran: Suplimente ---------- */
 function viewSupl() {
