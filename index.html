@@ -1789,11 +1789,15 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 #view.intro .pp-up .pp-v { animation: ppbump .8s calc(1.2s + var(--i) * .08s) cubic-bezier(.3, 1.6, .5, 1) both; }
 @keyframes ppbump { from { transform: translateY(8px) scale(.8); opacity: 0; } }
 @media (prefers-color-scheme: dark) { .prog-why.prog-up { color: #4ade80; } .prog-why.prog-down { color: #fbbf24; } }
+.prof h1 { display: flex; align-items: baseline; justify-content: center; gap: .25em; }
+.prof h1 .fn { font: 500 32px/1 var(--sys); letter-spacing: -.02em; color: var(--ink); }
+.prof h1 .ln { font: 800 46px/.9 var(--display); letter-spacing: .02em; color: var(--ink); }
+.sp-b b { font-weight: 900; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
   <div class="sp-fig"><img src="mini-cristian-flex.jpg" alt=""><video src="mini-cristian-flex.mp4" muted autoplay playsinline webkit-playsinline preload="auto"></video></div>
-  <div class="sp-title"><span class="sp-a">Forța</span><span class="sp-b">Cristian Demian</span></div>
+  <div class="sp-title"><span class="sp-a">Forța</span><span class="sp-b">Cristian <b>DEMIAN</b></span></div>
   <div class="sp-stripe"></div>
 </div>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -3460,7 +3464,7 @@ function viewProfil() {
   const t = totals(), first = sessionsSorted()[0];
   return `<section class="prof">
     <div class="prof-av">${Buddy.flex.replace('class="buddy ', 'class="buddy avatar ')}</div>
-    <h1>Cristian Demian</h1>
+    <h1><span class="fn">Cristian</span> <b class="ln">DEMIAN</b></h1>
     <p class="daymeta">${first ? `Se antrenează din ${new Date(first.date).toLocaleDateString('ro-RO', { month: 'long', year: 'numeric' })}` : 'Primul antrenament te așteaptă'} · Obiectiv: masă musculară</p>
   </section>
   <section class="pstats">
