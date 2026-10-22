@@ -1772,6 +1772,23 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .dn-sc b { font: 800 44px/1 var(--display); } .dn-sc b i { font-style: normal; opacity: .6; margin: 0 4px; }
 .dn-res em { font: 700 12px var(--sys); font-style: normal; padding: 3px 10px; border-radius: 999px; background: rgba(255,255,255,.18); }
 .dn-w em { background: #16a34a; } .dn-l em { background: rgba(0,0,0,.35); }
+/* plan de creștere */
+.pill.prog-up { background: linear-gradient(90deg, #16a34a, #22c55e) !important; color: #fff !important; border: 0 !important; box-shadow: 0 6px 14px -6px rgba(34,197,94,.8); animation: progpulse 2.4s ease-in-out infinite; }
+.pill.prog-down { background: linear-gradient(90deg, #f59e0b, #fbbf24) !important; color: #3a2600 !important; border: 0 !important; }
+@keyframes progpulse { 50% { box-shadow: 0 6px 18px -4px rgba(34,197,94,1), 0 0 0 5px rgba(34,197,94,.15); } }
+.prog-why { margin: 2px 0 4px; padding: 9px 12px; border-radius: 12px; font: 500 12.5px/1.35 var(--sys); }
+.prog-why.prog-up { background: rgba(34,197,94,.1); color: #15803d; } .prog-why.prog-down { background: rgba(245,158,11,.12); color: #92400e; }
+.pplan { display: grid; gap: 6px; padding: 12px; border-radius: 16px; background: linear-gradient(120deg, rgba(34,197,94,.1), rgba(34,197,94,.02)); box-shadow: inset 0 0 0 1px rgba(34,197,94,.2); }
+.pp-h { display: flex; align-items: center; gap: 8px; } .pp-h b { font: 800 18px var(--display); color: var(--ink); }
+.pp-ic { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; background: #16a34a; color: #fff; } .pp-ic svg { width: 14px; height: 14px; }
+.pp-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; font: 500 13.5px var(--sys); color: var(--ink); }
+.pp-n { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pp-v { font: 700 13px var(--sys); white-space: nowrap; color: #16a34a; } .pp-v b { font: 800 20px var(--display); }
+.pp-down .pp-v { color: #b45309; }
+#view.intro .pp-row { animation: rise3 .5s cubic-bezier(.2, .85, .25, 1) both; animation-delay: calc(.9s + var(--i) * .08s); }
+#view.intro .pp-up .pp-v { animation: ppbump .8s calc(1.2s + var(--i) * .08s) cubic-bezier(.3, 1.6, .5, 1) both; }
+@keyframes ppbump { from { transform: translateY(8px) scale(.8); opacity: 0; } }
+@media (prefers-color-scheme: dark) { .prog-why.prog-up { color: #4ade80; } .prog-why.prog-down { color: #fbbf24; } }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -2516,10 +2533,16 @@ function lastSets(exId) {
 function suggestion(exId) {
   const ex = EX[exId], last = lastSets(exId);
   if (!last) return null;
-  const top = Math.max(...last.sets.map(x => x.kg));
+  const top = Math.max(...last.sets.map(x => x.kg)), step = ex.step || 2.5;
   const topSets = last.sets.filter(x => x.kg === top);
-  if (topSets.length >= ex.sets && topSets.every(x => x.reps >= ex.reps[1])) return { up: true, text: `Crește la ${fmt(top + ex.step)} kg` };
-  return { up: false, text: `Țintă: ${ex.reps[1]} repetări la ${fmt(top)} kg` };
+  /* stagnare: în ultimele 3 antrenamente forța estimată n-a depășit-o pe cea dinainte */
+  const hist = sessionsSorted().filter(s => s.ex[exId] && s.ex[exId].length).map(s => Math.max(...s.ex[exId].map(x => e1rm(x.kg, x.reps))));
+  if (hist.length >= 4 && Math.max(...hist.slice(-3)) <= hist[hist.length - 4] + 0.25) {
+    const kg = Math.max(step, Math.round(top * 0.9 / step) * step);
+    return { kind: 'down', up: false, kg, reps: ex.reps[1], text: `Săptămână ușoară: ${fmt(kg)} kg`, why: `Ai stagnat 3 antrenamente. Coboară 10%, apoi revii mai puternic.` };
+  }
+  if (topSets.length >= ex.sets && topSets.every(x => x.reps >= ex.reps[1])) return { kind: 'up', up: true, kg: top + step, text: `Crește la ${fmt(top + step)} kg`, why: `Ai făcut ${ex.reps[1]} repetări la toate seriile. E timpul pentru +${fmt(step)} kg.` };
+  return { kind: 'hold', up: false, kg: top, text: `Țintă: ${ex.reps[1]} repetări la ${fmt(top)} kg`, why: '' };
 }
 const e1rm = (kg, reps) => kg * (1 + reps / 30);
 function volume(sess) { let v = 0; for (const id in sess.ex) for (const x of sess.ex[id]) v += x.kg * x.reps; return v; }
@@ -2916,11 +2939,12 @@ function renderWorkout() {
 }
 function wexCard(id) {
   const ex = EX[id], last = lastSets(id), sug = suggestion(id), sets = S.active.sets[id];
-  const ph = i => { const l = last && (last.sets[i] || last.sets[last.sets.length - 1]); return l || null; };
+  const ph = i => { const l = last && (last.sets[i] || last.sets[last.sets.length - 1]); if (!l) return null; return sug && sug.kind !== 'hold' ? { kg: sug.kg, reps: sug.kind === 'down' ? sug.reps : ex.reps[0] } : l; };
   const complete = sets.length && sets.every(x => x.done);
   return `<article class="wex ${complete ? 'complete' : ''}" id="wex-${id}">
     <div class="wex-top">${Rig.svg(id)}<div><h3>${esc(ex.name)}</h3><small>${exTarget(ex)}</small>
-      ${sug ? `<span class="pill ${sug.up ? 'up' : ''}" style="margin-top:6px">${esc(sug.text)}</span>` : ''}</div></div>
+      ${sug ? `<span class="pill prog-${sug.kind} ${sug.up ? 'up' : ''}" style="margin-top:6px">${sug.kind === 'up' ? '▲ ' : sug.kind === 'down' ? '↻ ' : ''}${esc(sug.text)}</span>` : ''}</div></div>
+    ${sug && sug.why ? `<div class="prog-why prog-${sug.kind}">${esc(sug.why)}</div>` : ''}
     ${last ? `<div class="last">Data trecută (${fmtDate(last.date)}): <b>${last.sets.map(x => `${fmt(x.kg)}×${x.reps}`).join('  ')}</b></div>` : `<div class="last">Prima dată: alege o greutate cu care faci ${ex.reps[1]} repetări curate.</div>`}
     <div class="sets"><div class="set-h"><span>Set</span><span>kg</span><span>Repetări</span><span></span></div>
       ${sets.map((x, i) => { const p = ph(i); return `<div class="set ${x.done ? 'done' : ''}" data-ex="${id}" data-i="${i}">
@@ -4173,6 +4197,9 @@ function weatherCard() {
   viewAzi = function () {
     let h = _va();
     const tp = planFor(new Date()), doneToday = S.sessions.some(s => dayKey(new Date(s.date)) === dayKey());
+    const pd = S.active ? byId(S.active.day) : tp && !doneToday ? tp : null;
+    if (pd) { const items = pd.ex.map(id => [id, suggestion(id)]).filter(([, g]) => g && g.kind !== 'hold');
+      if (items.length) h = h.replace('<div class="rigs-row">', `<div class="pplan"><div class="pp-h"><span class="pp-ic">${LI.zap}</span><b>Planul de creștere de azi</b></div>${items.map(([id, g], i) => `<div class="pp-row pp-${g.kind}" style="--i:${i}"><span class="pp-n">${esc(EX[id].name)}</span><span class="pp-v">${g.kind === 'up' ? '▲' : '↻'} <b class="num">${fmt(g.kg)}</b> kg</span></div>`).join('')}</div><div class="rigs-row">`); }
     const wx = tp && !doneToday ? weatherCard() : '';
     const sc = S.sessions.length ? scoreCard() : '';
     const i = h.indexOf('<section class="rings');
