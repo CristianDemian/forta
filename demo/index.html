@@ -1593,6 +1593,91 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .brand { padding-left: 4px !important; padding-right: 2px !important; } .stage { margin-top: -28px !important; }
 .st-title { left: 0 !important; right: 0 !important; justify-items: center !important; text-align: center; }
 .stage .buddy.st-av .b-vid, .stage .buddy.st-av .b-poster { left: 50% !important; }
+
+/* ================= reglaje, ghid, tempo, Dinamo, provocări ================= */
+.setup { display: flex; align-items: center; gap: 8px; padding: 0 12px; min-height: 44px; border-radius: 14px; background: var(--soft); margin: 4px 0 2px; }
+.su-ic { color: var(--accent); display: grid; } .su-ic svg { width: 17px; height: 17px; }
+.setup input { flex: 1; min-width: 0; border: 0; background: transparent; font: 600 14px var(--sys); color: var(--ink); outline: none; padding: 10px 0; }
+.setup input::placeholder { color: var(--faint); font-weight: 500; }
+.ex-detail .setup { margin: 0; }
+
+.tempo-b { display: inline-flex; align-items: center; gap: 6px; margin: 6px 0 2px; padding: 8px 12px; border-radius: 999px; background: var(--soft); color: var(--ink); font: 600 13px var(--sys); }
+.tempo-b svg { width: 15px; height: 15px; color: var(--accent); }
+.tempo-b.on { background: var(--ink); color: #fff; box-shadow: 0 8px 16px -8px rgba(0,0,0,.6); }
+.tempo { position: fixed; z-index: 35; left: 50%; transform: translateX(-50%); top: calc(env(safe-area-inset-top, 0px) + 86px); width: min(92vw, 420px); }
+.tp-in { display: grid; grid-template-columns: auto auto 1fr auto 32px; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 20px; color: #fff;
+  background: rgba(26,20,22,.88); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); box-shadow: 0 16px 34px -14px rgba(0,0,0,.7); animation: rise3 .4s both; }
+.tp-ph { font: 800 22px/1 var(--display); padding: 6px 10px; border-radius: 12px; }
+.tp-0 { background: #1f8ae0; } .tp-1 { background: #f59e0b; } .tp-2 { background: var(--accent); }
+.tp-in > b { font: 800 34px/1 var(--display); min-width: 20px; text-align: center; }
+.tp-dots { display: flex; gap: 4px; } .tp-dots i { height: 6px; border-radius: 3px; background: rgba(255,255,255,.15); }
+.tp-dots i.on { background: #fff; } .tp-dots i.past { background: rgba(255,255,255,.5); }
+.tp-r { font: 600 12px var(--sys); color: rgba(255,255,255,.6); } .tp-r b { font: 800 18px var(--display); color: #fff; }
+.tp-in button { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.12); color: #fff; font-size: 20px; }
+
+.gcards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.st-card .gcards + .btn-main { margin-top: 0; }
+.gcard { display: grid; grid-template-columns: 36px 1fr auto; gap: 10px; align-items: center; padding: 12px; border-radius: 16px; text-align: left; background: var(--soft); color: var(--ink); }
+.gcard b { display: block; font: 800 18px/1 var(--display); } .gcard small { font: 500 11.5px/1.25 var(--sys); color: var(--muted); }
+.gc-ic { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; color: #fff; background: linear-gradient(160deg, #ff8a3d, #f04a1a); box-shadow: 0 6px 12px -6px #f04a1a; }
+.gcard.stretch .gc-ic { background: linear-gradient(160deg, #a78bfa, #7c3aed); box-shadow: 0 6px 12px -6px #7c3aed; }
+.gc-ic svg { width: 18px; height: 18px; }
+.gc-go { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; background: var(--ink); color: #fff; }
+.gc-go svg { width: 13px; height: 13px; }
+.gcard.did { opacity: .7; } .gcard.did .gc-go { background: #16a34a; }
+.done-str { width: 100%; min-height: 48px; display: flex !important; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,.08) !important; color: #fff !important; border: 0 !important; border-radius: 16px !important; }
+.done-str svg { width: 18px; height: 18px; color: #a78bfa; }
+
+.guide { position: fixed; inset: 0; z-index: 80; display: grid; background: radial-gradient(120% 80% at 50% 0%, #3a2328, #150f11 60%, #0b0809); color: #fff; opacity: 0; transition: opacity .3s; overflow-y: auto; }
+.guide.open { opacity: 1; }
+.gd-in { max-width: 520px; width: 100%; margin: 0 auto; display: grid; align-content: start; gap: 14px; padding: calc(16px + env(safe-area-inset-top, 0px)) 20px calc(24px + env(safe-area-inset-bottom, 0px)); text-align: center; }
+.gd-head { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; text-align: left; }
+.gd-head small { font: 600 13px var(--sys); color: rgba(255,255,255,.6); }
+.gd-prog { height: 5px; border-radius: 3px; background: rgba(255,255,255,.12); margin-top: 8px; overflow: hidden; } .gd-prog i { display: block; height: 100%; background: linear-gradient(90deg, #ff4a55, var(--accent)); transition: width 1s linear; }
+.gd-x { background: rgba(255,255,255,.1) !important; color: #fff !important; }
+.gd-fig { display: grid; place-items: center; }
+.gd-anim { width: min(76vw, 320px) !important; height: auto !important; aspect-ratio: 1; border-radius: 28px !important; box-shadow: 0 30px 60px -24px rgba(0,0,0,.8); }
+.gd-name { margin: 6px 0 0; font: 800 40px/.95 var(--display); }
+.gd-cue { margin: 0 auto; max-width: 34ch; font: 500 15px/1.4 var(--sys); color: rgba(255,255,255,.72); }
+.gd-timer { position: relative; width: 140px; height: 140px; margin: 4px auto 0; display: grid; place-items: center; }
+.gd-timer svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.gt-bg { fill: none; stroke: rgba(255,255,255,.1); stroke-width: 8; } .gt-fg { fill: none; stroke: #ff4a55; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s linear; filter: drop-shadow(0 0 6px #ff2a36); }
+.gd-timer b { font: 800 64px/1 var(--display); }
+.gd-next { font: 500 13.5px var(--sys); color: rgba(255,255,255,.55); } .gd-next b { color: #fff; }
+.gd-btns { display: grid; grid-template-columns: 56px 1fr 56px; gap: 10px; }
+.gd-btns .btn-ghost { background: rgba(255,255,255,.1) !important; color: #fff !important; border: 0 !important; font-size: 26px; min-height: 54px; border-radius: 16px; }
+.gd-done { align-content: center; min-height: 100%; } .gd-done .buddy.gd-av { width: 100%; height: 300px; border-radius: 30px; overflow: hidden; background: #f3f1f0; }
+
+.dinamo { position: relative; overflow: hidden; isolation: isolate; display: grid; gap: 8px; padding: 16px 18px; border-radius: var(--r-lg); color: #fff;
+  background: linear-gradient(120deg, #b30d17 0%, #d8101c 45%, #7c0911 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 24px 40px -22px rgba(216,16,28,.8); }
+.dinamo::before { content: ''; position: absolute; z-index: -1; inset: 0; background: repeating-linear-gradient(115deg, rgba(255,255,255,.07) 0 14px, transparent 14px 28px); }
+.dinamo::after { content: ''; position: absolute; z-index: -1; right: -30px; bottom: -40px; width: 160px; height: 160px; border-radius: 50%; display: none; }
+.dn-top { display: flex; justify-content: space-between; align-items: center; }
+.dn-top small { font: 600 12.5px var(--sys); color: rgba(255,255,255,.8); }
+.dn-when { font: 700 12px var(--sys); padding: 4px 10px; border-radius: 999px; background: rgba(0,0,0,.25); }
+.dinamo.live .dn-when { background: #fff; color: var(--accent); animation: latepulse 1.6s ease-in-out infinite; }
+.dn-vs { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; }
+.dn-t { font: 800 26px/1 var(--display); text-align: center; color: rgba(255,255,255,.85); }
+.dn-t.us { color: #fff; font-size: 32px; text-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.dn-x { font: 800 16px var(--display); padding: 6px 9px; border-radius: 10px; background: rgba(0,0,0,.25); }
+.dn-meta { font: 600 13px var(--sys); color: rgba(255,255,255,.85); text-align: center; }
+.dn-meta::first-letter { text-transform: uppercase; }
+.dn-link { justify-self: center; font: 700 13px var(--sys); color: #fff; padding: 8px 14px; border-radius: 999px; background: rgba(0,0,0,.25); text-decoration: none; }
+
+.ch-rail { display: grid; grid-auto-flow: column; grid-auto-columns: 46%; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 4px max(16px, env(safe-area-inset-left, 0px)) 16px; scrollbar-width: none; }
+.ch-rail::-webkit-scrollbar { display: none; }
+.ch { scroll-snap-align: start; display: grid; gap: 4px; padding: 14px; border-radius: 20px; background: var(--surface); box-shadow: inset 0 1px 0 var(--hl), 0 6px 12px -6px rgba(40,18,22,.1), 0 22px 34px -24px rgba(60,20,26,.35); }
+.ch-ring { position: relative; width: 52px; height: 52px; margin-bottom: 6px; display: grid; place-items: center; }
+.ch-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.cr-bg { fill: none; stroke: var(--soft); stroke-width: 5; } .cr-fg { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; }
+#view.intro .cr-fg, .rv-in .cr-fg { animation: mring 1.3s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(.3s + var(--i) * .08s); }
+.ch-ring span { color: var(--accent); display: grid; } .ch-ring svg + span svg { width: 20px; height: 20px; }
+.ch b { font: 800 18px/1 var(--display); color: var(--ink); } .ch > small { font: 500 11.5px/1.3 var(--sys); color: var(--muted); min-height: 2.6em; }
+.ch-v { display: flex; align-items: baseline; gap: 4px; margin-top: 2px; } .ch-v b { font: 800 26px/1 var(--display); } .ch-v span { font: 600 12px var(--sys); color: var(--faint); }
+.ch.ok { background: radial-gradient(120% 120% at 100% 0%, #ff4a55, var(--accent) 45%, #7c0911); color: #fff; }
+.ch.ok b, .ch.ok .ch-v b { color: #fff; } .ch.ok > small, .ch.ok .ch-v span { color: rgba(255,255,255,.75); }
+.ch.ok .cr-bg { stroke: rgba(255,255,255,.2); } .ch.ok .cr-fg { stroke: #fff; } .ch.ok .ch-ring span { color: #fff; }
+.tempo { top: auto !important; bottom: calc(env(safe-area-inset-bottom, 0px) + 96px) !important; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -3665,6 +3750,230 @@ const ILLU = { incline: 'incline-db-press', chestpress: 'chest-press-machine', p
     return `<span class="rig exa ${cls || ''}" role="img" aria-label="Animație ${esc(EX[id].name)}" style="--d:-${d}s"><img src="${A}exr/${f}-start.webp" alt="" decoding="async"><img class="ex-p" src="${A}exr/${f}-peak.webp" alt="" decoding="async"></span>`;
   };
 }
+
+/* ---------- Pentru sală: reglaje, încălzire și stretching, tempo, Dinamo, provocări ---------- */
+
+/* ================= 1. Reglajele aparatelor ================= */
+function getNote(id) { return (S.notes && S.notes[id]) || ''; }
+function setNote(id, v) { S.notes = S.notes || {}; if (v.trim()) S.notes[id] = v.trim(); else delete S.notes[id]; save(); }
+function noteRow(id) {
+  return `<label class="setup"><span class="su-ic">${LI.wrench || '⚙︎'}</span><input data-note="${id}" value="${esc(getNote(id))}" placeholder="Reglaje: scaun 4, spătar 2, priză lată" autocomplete="off" enterkeyhint="done"></label>`;
+}
+LI.wrench = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>';
+let noteT = 0;
+document.addEventListener('input', e => { const i = e.target.closest && e.target.closest('[data-note]'); if (!i) return; clearTimeout(noteT); noteT = setTimeout(() => setNote(i.dataset.note, i.value), 350); });
+document.addEventListener('change', e => { const i = e.target.closest && e.target.closest('[data-note]'); if (i) setNote(i.dataset.note, i.value); });
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.dataset && e.target.dataset.note) e.target.blur(); });
+{
+  const _ed = exDetail;
+  exDetail = function (id) { return _ed(id).replace('<div class="target">', noteRow(id) + '<div class="target">'); };
+  const _rw = renderWorkout;
+  renderWorkout = function () {
+    const f = document.activeElement && document.activeElement.dataset && document.activeElement.dataset.note;
+    _rw();
+    document.querySelectorAll('#workout .wex').forEach(w => {
+      const id = w.id.replace('wex-', ''); if (!EX[id] || w.querySelector('.setup')) return;
+      const top = w.querySelector('.wex-top'); if (top) top.insertAdjacentHTML('afterend', noteRow(id) + tempoBtn(id));
+    });
+    if (f) { const i = document.querySelector(`#workout [data-note="${f}"]`); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }
+    syncTempo();
+  };
+}
+
+/* ================= 3. Încălzire și stretching ghidate ================= */
+const MOVES = {
+  'jumping-jacks': ['Sărituri cu brațele sus', 'Ritm vioi, aterizezi moale pe vârfuri.'],
+  'cat-cow': ['Pisica și cămila', 'În patru labe, arcuiește și rotunjește spatele, lent, cu respirația.'],
+  'band-pull-apart': ['Desfaceri cu banda', 'Brațele întinse în față, desfaci banda până la piept, omoplații strânși.'],
+  'inchworm': ['Omida', 'Din picioare, mergi cu mâinile până în planșă, apoi înapoi.'],
+  'leg-swing-front-to-back': ['Balansări picior față-spate', 'Ține-te de ceva, balansează relaxat, schimbi piciorul la jumătate.'],
+  'lateral-leg-swing': ['Balansări picior lateral', 'Piciorul trece prin fața celuilalt și iese în lateral.'],
+  'bodyweight-reverse-lunge': ['Fandări înapoi', 'Pas mare înapoi, genunchiul din spate aproape de podea, alternezi.'],
+  'downward-dog-to-low-lunge': ['Câinele cu fandare', 'Din câinele cu capul în jos, aduci un picior între mâini, alternezi.'],
+  'doorway-chest-stretch': ['Întindere piept la ușă', 'Antebrațul pe tocul ușii, pășești înainte până simți pieptul.'],
+  'overhead-triceps-stretch': ['Întindere triceps', 'Cotul sus, palma pe spate, tragi ușor cotul cu cealaltă mână.'],
+  'cross-body-shoulder-stretch': ['Întindere umăr', 'Brațul peste piept, îl tragi ușor spre tine. Schimbi la jumătate.'],
+  'childs-pose': ['Poziția copilului', 'Șezi pe călcâie, brațele întinse înainte, respiri adânc.'],
+  'cobra-stretch': ['Cobra', 'Pe burtă, împingi din palme și ridici pieptul, șoldurile rămân jos.'],
+  'dead-hang': ['Atârnare la bară', 'Atârni relaxat, umerii se întind, respiri.'],
+  'bench-lat-stretch': ['Întindere dorsali pe bancă', 'Coatele pe bancă, lași pieptul în jos între brațe.'],
+  'standing-quad-stretch': ['Întindere cvadriceps', 'Prinzi glezna la fesă, genunchii împreună. Schimbi la jumătate.'],
+  'bench-hamstring-stretch': ['Întindere femurali', 'Călcâiul pe bancă, te apleci din șold cu spatele drept.'],
+  'pigeon-stretch': ['Porumbelul', 'Un picior îndoit în față, celălalt întins în spate. Schimbi la jumătate.'],
+  'kneeling-hip-flexor-stretch': ['Întindere flexori șold', 'Un genunchi jos, împingi șoldul înainte, fesa strânsă.'],
+  'standing-calf-stretch': ['Întindere gambe', 'Mâinile pe perete, piciorul din spate întins, călcâiul jos.']
+};
+const WARM = [['jumping-jacks', 40], ['cat-cow', 30], ['band-pull-apart', 30], ['inchworm', 40], ['leg-swing-front-to-back', 30], ['lateral-leg-swing', 30], ['bodyweight-reverse-lunge', 40], ['downward-dog-to-low-lunge', 40]];
+const STRETCH = {
+  A: [['doorway-chest-stretch', 45], ['cross-body-shoulder-stretch', 40], ['overhead-triceps-stretch', 40], ['cobra-stretch', 35], ['childs-pose', 45], ['cat-cow', 30]],
+  B: [['dead-hang', 30], ['bench-lat-stretch', 45], ['childs-pose', 45], ['cross-body-shoulder-stretch', 40], ['cat-cow', 30], ['cobra-stretch', 30]],
+  C: [['standing-quad-stretch', 40], ['bench-hamstring-stretch', 45], ['pigeon-stretch', 50], ['kneeling-hip-flexor-stretch', 40], ['standing-calf-stretch', 35], ['cross-body-shoulder-stretch', 30]]
+};
+const img2 = f => { const A = window.ASSET || ''; return ['start', 'peak', 'main'].map(p => `${A}exr/${f}-${p}.webp`); };
+let G = null;
+function say(t) { try { if (!('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'ro-RO'; u.rate = 1.02; speechSynthesis.speak(u); } catch (e) { } }
+function tick(f = 880, d = .07, v = .25) { try { const c = ctxAudio(), o = c.createOscillator(), g = c.createGain(); o.frequency.value = f; o.type = 'sine'; g.gain.setValueAtTime(v, c.currentTime); g.gain.exponentialRampToValueAtTime(.001, c.currentTime + d); o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + d + .02); } catch (e) { } }
+function openGuide(kind, day) {
+  const list = kind === 'warm' ? WARM : (STRETCH[day] || STRETCH.A);
+  G = { kind, list, i: 0, left: list[0][1], run: true, t: 0 };
+  let m = document.getElementById('guide'); if (!m) { m = document.createElement('div'); m.id = 'guide'; m.className = 'guide'; document.body.appendChild(m); }
+  m.hidden = false; requestAnimationFrame(() => m.classList.add('open'));
+  try { navigator.wakeLock && navigator.wakeLock.request('screen').then(l => G && (G.lock = l)).catch(() => { }); } catch (e) { }
+  drawGuide(true); clearInterval(G.t); G.t = setInterval(stepGuide, 1000);
+}
+function drawGuide(announce) {
+  const m = document.getElementById('guide'); if (!m || !G) return;
+  const [f, sec] = G.list[G.i], [name, cue] = MOVES[f], im = img2(f), next = G.list[G.i + 1];
+  const C = 2 * Math.PI * 54, k = G.left / sec, tot = G.list.reduce((a, x) => a + x[1], 0), done = G.list.slice(0, G.i).reduce((a, x) => a + x[1], 0) + (sec - G.left);
+  m.innerHTML = `<div class="gd-in">
+    <div class="gd-head"><div><small>${G.kind === 'warm' ? 'Încălzire' : 'Stretching'}, ${G.i + 1} din ${G.list.length}</small><div class="gd-prog"><i style="width:${(done / tot * 100).toFixed(1)}%"></i></div></div><button class="pl-x gd-x" data-gd="close" aria-label="Închide">×</button></div>
+    <div class="gd-fig"><span class="rig exa big gd-anim"><img src="${im[0]}" alt="" onerror="this.src='${im[2]}'"><img class="ex-p" src="${im[1]}" alt="" onerror="this.remove()"></span></div>
+    <h2 class="gd-name">${esc(name)}</h2><p class="gd-cue">${esc(cue)}</p>
+    <div class="gd-timer"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" class="gt-bg"/><circle cx="60" cy="60" r="54" class="gt-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - k)).toFixed(1)}"/></svg><b class="num">${G.left}</b></div>
+    <div class="gd-next">${next ? `Urmează: <b>${esc(MOVES[next[0]][0])}</b>` : 'Ultimul exercițiu'}</div>
+    <div class="gd-btns"><button class="btn btn-ghost" data-gd="prev" aria-label="Înapoi">‹</button><button class="btn btn-main" data-gd="toggle">${G.run ? 'Pauză' : 'Continuă'}</button><button class="btn btn-ghost" data-gd="next" aria-label="Sari">›</button></div>
+  </div>`;
+  if (announce) say(`${name}. ${sec} de secunde.`);
+}
+function stepGuide() {
+  if (!G || !G.run) return;
+  G.left--;
+  if (G.left <= 3 && G.left > 0) tick(660);
+  if (G.left <= 0) { tick(990, .2, .35); if (G.i >= G.list.length - 1) return finishGuide(); G.i++; G.left = G.list[G.i][1]; drawGuide(true); return; }
+  const m = document.getElementById('guide'); if (!m) return;
+  const [, sec] = G.list[G.i], C = 2 * Math.PI * 54, fg = m.querySelector('.gt-fg'), b = m.querySelector('.gd-timer b');
+  if (fg) fg.setAttribute('stroke-dashoffset', (C * (1 - G.left / sec)).toFixed(1)); if (b) b.textContent = G.left;
+  const tot = G.list.reduce((a, x) => a + x[1], 0), done = G.list.slice(0, G.i).reduce((a, x) => a + x[1], 0) + (sec - G.left), pi = m.querySelector('.gd-prog i'); if (pi) pi.style.width = (done / tot * 100).toFixed(1) + '%';
+}
+function finishGuide() {
+  const m = document.getElementById('guide'); clearInterval(G.t);
+  const kind = G.kind; say(kind === 'warm' ? 'Gata. Ești încălzit, treci la treabă!' : 'Gata. Bravo, Cristian!');
+  S.guides = S.guides || {}; S.guides[dayKey()] = Object.assign(S.guides[dayKey()] || {}, { [kind]: 1 }); save();
+  m.innerHTML = `<div class="gd-in gd-done">${Buddy.cele.replace('class="buddy ', 'class="buddy gd-av ')}<h2 class="gd-name">${kind === 'warm' ? 'Ești încălzit!' : 'Mușchii îți mulțumesc!'}</h2><p class="gd-cue">${kind === 'warm' ? 'Corpul e pregătit. Treci la primul exercițiu.' : 'Stretching terminat. Ziua de azi e completă.'}</p><button class="btn btn-main" data-gd="close">${kind === 'warm' ? 'Începe antrenamentul' : 'Închide'}</button></div>`;
+  Buddy.start(); if (FX.celebrate) FX.celebrate(); G = null;
+}
+function closeGuide() {
+  if (G) { clearInterval(G.t); try { G.lock && G.lock.release(); } catch (e) { } } G = null;
+  try { speechSynthesis.cancel(); } catch (e) { }
+  const m = document.getElementById('guide'); if (!m) return; m.classList.remove('open'); setTimeout(() => { m.hidden = true; m.innerHTML = ''; }, 300); render();
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-gd]'); if (b) {
+    const a = b.dataset.gd;
+    if (a === 'close') return closeGuide();
+    if (!G) return;
+    if (a === 'toggle') { G.run = !G.run; drawGuide(false); }
+    if (a === 'next') { if (G.i >= G.list.length - 1) return finishGuide(); G.i++; G.left = G.list[G.i][1]; drawGuide(true); }
+    if (a === 'prev') { G.i = Math.max(0, G.i - 1); G.left = G.list[G.i][1]; drawGuide(true); }
+    return;
+  }
+  const s = e.target.closest && e.target.closest('[data-guide]'); if (s) { try { ctxAudio(); } catch (er) { } openGuide(s.dataset.guide, s.dataset.day); }
+});
+function guideCard(kind, day) {
+  const did = S.guides && S.guides[dayKey()] && S.guides[dayKey()][kind];
+  const list = kind === 'warm' ? WARM : STRETCH[day] || STRETCH.A, min = Math.round(list.reduce((a, x) => a + x[1], 0) / 60);
+  return `<button class="gcard ${kind} ${did ? 'did' : ''}" data-guide="${kind}" data-day="${day || ''}">
+    <span class="gc-ic">${kind === 'warm' ? LI.flame : LI.sparkles}</span><span><b>${kind === 'warm' ? 'Încălzire' : 'Stretching'}</b><small>${did ? 'Făcut azi' : `${list.length} mișcări, ${min} min, cu voce`}</small></span><span class="gc-go">${did ? ICON.check : '▶'}</span></button>`;
+}
+
+/* ================= 4. Tempo pentru repetări ================= */
+const TEMPO = [['Jos', 3, 520], ['Ține', 1, 700], ['Sus', 1, 900]];
+let TP = null;
+function tempoBtn(id) { return `<button class="tempo-b ${TP && TP.id === id ? 'on' : ''}" data-tempo="${id}">${LI.zap}<span>${TP && TP.id === id ? 'Oprește tempo' : 'Tempo 3-1-1'}</span></button>`; }
+function startTempo(id) {
+  stopTempo(); try { ctxAudio(); } catch (e) { }
+  TP = { id, ph: 0, s: 0, reps: 0, t: 0 };
+  let bar = document.getElementById('tempo'); if (!bar) { bar = document.createElement('div'); bar.id = 'tempo'; bar.className = 'tempo'; document.body.appendChild(bar); }
+  bar.hidden = false; const beat = () => {
+    if (!TP) return; const [name, len, f] = TEMPO[TP.ph];
+    tick(TP.s === 0 ? f : 420, TP.s === 0 ? .12 : .05, TP.s === 0 ? .35 : .18);
+    bar.innerHTML = `<div class="tp-in"><span class="tp-ph tp-${TP.ph}">${name}</span><b class="num">${len - TP.s}</b><div class="tp-dots">${TEMPO.map((x, i) => `<i class="${i === TP.ph ? 'on' : i < TP.ph ? 'past' : ''}" style="flex:${x[1]}"></i>`).join('')}</div><span class="tp-r">rep. <b class="num">${TP.reps + 1}</b></span><button data-tempo-stop aria-label="Oprește">×</button></div>`;
+    TP.s++; if (TP.s >= len) { TP.s = 0; TP.ph++; if (TP.ph >= TEMPO.length) { TP.ph = 0; TP.reps++; } }
+  };
+  beat(); TP.t = setInterval(beat, 1000); syncTempo();
+}
+function stopTempo() { if (TP) clearInterval(TP.t); TP = null; const b = document.getElementById('tempo'); if (b) { b.hidden = true; b.innerHTML = ''; } syncTempo(); }
+function syncTempo() { document.querySelectorAll('[data-tempo]').forEach(b => { const on = TP && TP.id === b.dataset.tempo; b.classList.toggle('on', !!on); b.querySelector('span').textContent = on ? 'Oprește tempo' : 'Tempo 3-1-1'; }); if (!S.active && TP) stopTempo(); }
+document.addEventListener('click', e => {
+  if (e.target.closest && e.target.closest('[data-tempo-stop]')) return stopTempo();
+  const b = e.target.closest && e.target.closest('[data-tempo]'); if (!b) return;
+  if (TP && TP.id === b.dataset.tempo) stopTempo(); else startTempo(b.dataset.tempo);
+});
+
+/* ================= 5. Ziua de meci Dinamo ================= */
+/* calendarul Superligii de pe lpf.ro, actualizat la 22 octombrie 2026; orele „–” nu sunt încă stabilite */
+const DINAMO = [
+  ['2026-10-25', '19:00', 'CFR 1907 Cluj', 0], ['2026-11-01', '20:30', 'UTA Arad', 1], ['2026-11-07', '', 'FC Argeș', 0], ['2026-11-21', '', 'FC Petrolul', 1],
+  ['2026-11-28', '', 'Universitatea Craiova', 0], ['2026-12-05', '', 'Oțelul Galați', 1], ['2026-12-12', '', 'FC Voluntari', 0], ['2026-12-19', '', 'Rapid București', 1],
+  ['2027-01-16', '', 'Universitatea Cluj', 0], ['2027-01-23', '', 'Corvinul Hunedoara', 1], ['2027-01-30', '', 'FCSB', 0], ['2027-02-06', '', 'FK Csíkszereda', 1],
+  ['2027-02-10', '', 'FC Farul Constanța', 0], ['2027-02-13', '', 'Sepsi OSK', 1], ['2027-02-20', '', 'FC Botoșani', 0], ['2027-02-27', '', 'CFR 1907 Cluj', 1],
+  ['2027-03-06', '', 'UTA Arad', 0], ['2027-03-13', '', 'FC Argeș', 1]
+];
+function dinamoCard() {
+  const today = dayKey(), m = DINAMO.find(x => x[0] >= today); if (!m) return '';
+  const [d, time, opp, home] = m, days = Math.round((Date.UTC(...d.split('-').map((v, i) => i === 1 ? v - 1 : +v)) - Date.UTC(...today.split('-').map((v, i) => i === 1 ? v - 1 : +v))) / DAYMS);
+  const prev = [...DINAMO].reverse().find(x => x[0] < today), justPlayed = prev && (Date.parse(today) - Date.parse(prev[0])) / DAYMS <= 1;
+  const when = days === 0 ? `Azi${time ? `, la ${time}` : ''}` : days === 1 ? `Mâine${time ? `, la ${time}` : ''}` : `${new Date(d + 'T12:00').toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' })}${time ? `, ${time}` : ''}`;
+  return `<section class="dinamo ${days === 0 ? 'live' : ''}">
+    <div class="dn-top"><small>${days === 0 ? 'Zi de meci' : 'Următorul meci'}</small><span class="dn-when">${days === 0 ? 'Azi' : days === 1 ? 'Mâine' : `în ${days} zile`}</span></div>
+    <div class="dn-vs"><div class="dn-t ${home ? 'us' : ''}">${home ? 'Dinamo' : esc(opp)}</div><span class="dn-x">vs</span><div class="dn-t ${home ? '' : 'us'}">${home ? esc(opp) : 'Dinamo'}</div></div>
+    <div class="dn-meta">${when}, ${home ? 'acasă' : 'în deplasare'}</div>
+    ${justPlayed ? `<a class="dn-link" href="https://lpf.ro/cluburi/dinamo-bucuresti/14/calendar" target="_blank" rel="noopener">Vezi scorul cu ${esc(prev[2])}</a>` : ''}
+  </section>`;
+}
+
+/* ================= 6. Provocările lunii ================= */
+function challenges() {
+  const now = new Date(), y = now.getFullYear(), mo = now.getMonth(), from = new Date(y, mo, 1).getTime(), to = new Date(y, mo + 1, 1).getTime();
+  const ms = S.sessions.filter(s => s.date >= from && s.date < to), dim = new Date(y, mo + 1, 0).getDate();
+  let plan = 0; for (let d = 1; d <= dim; d++) if (planFor(new Date(y, mo, d))) plan++;
+  const keys = Object.keys(S.water && S.water.log || {}).filter(k => k.startsWith(`${y}-${String(mo + 1).padStart(2, '0')}`));
+  const wGoal = waterTimes().length || 8, wDays = keys.filter(k => S.water.log[k] >= wGoal).length;
+  const act = S.supps.filter(s => s.on).map(s => s.id);
+  const sDays = Object.keys(S.suppLog || {}).filter(k => k.startsWith(`${y}-${String(mo + 1).padStart(2, '0')}`) && act.every(id => S.suppLog[k].includes(id))).length;
+  const vol = ms.reduce((a, s) => a + volume(s), 0);
+  const prs = (typeof allPRs === 'function' ? allPRs().prs : []).filter(p => p.date >= from && p.date < to).length;
+  const name = now.toLocaleDateString('ro-RO', { month: 'long' });
+  return { name, list: [
+    { ic: LI.target, t: 'Toate antrenamentele', d: `${plan} antrenamente în ${name}`, v: ms.length, g: plan },
+    { ic: LI.drop, t: 'Hidratat', d: '20 de zile cu toate paharele', v: wDays, g: 20 },
+    { ic: LI.pill, t: 'Disciplină', d: '25 de zile cu toate suplimentele', v: sDays, g: 25 },
+    { ic: LI.zap, t: '50 de tone', d: 'volum total în luna asta', v: Math.round(vol / 100) / 10, g: 50, unit: 't' },
+    { ic: LI.trophy, t: 'Recordman', d: '3 recorduri personale noi', v: prs, g: 3 }
+  ] };
+}
+function challengeRail() {
+  const { name, list } = challenges(), done = list.filter(c => c.v >= c.g).length, C = 2 * Math.PI * 22;
+  return `<section class="sec"><div class="sec-head"><h2>Provocările lui ${name}</h2><span class="count num">${done}/${list.length}</span></div>
+    <div class="ch-rail">${list.map((c, i) => { const k = Math.min(1, c.v / c.g), ok = k >= 1; return `<div class="ch ${ok ? 'ok' : ''}" style="--i:${i}">
+      <div class="ch-ring"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="22" class="cr-bg"/><circle cx="26" cy="26" r="22" class="cr-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - k)).toFixed(1)}" style="--c0:${C.toFixed(1)}"/></svg><span>${ok ? ICON.check : c.ic}</span></div>
+      <b>${c.t}</b><small>${c.d}</small><div class="ch-v"><b class="num">${fmt(c.v)}${c.unit || ''}</b><span>/ ${c.g}${c.unit || ''}</span></div></div>`; }).join('')}</div></section>`;
+}
+
+/* ================= Așezarea pe ecranul Azi ================= */
+{
+  const _va = viewAzi;
+  viewAzi = function () {
+    let h = _va();
+    const tp = planFor(new Date()), dayId = (S.active && S.active.day) || (tp && tp.id);
+    const guides = dayId ? `<div class="gcards">${guideCard('warm', dayId)}${guideCard('stretch', dayId)}</div>` : '';
+    if (guides) {
+      const h2 = h.replace(/(<button class="btn btn-main" data-start="[^"]*">[^<]*<\/button>)/, `${guides}$1`);
+      h = h2 !== h ? h2 : h.replace('<div class="tips-h">', `<div class="gcards">${guideCard('stretch', dayId)}</div><div class="tips-h">`);
+    }
+    const dn = dinamoCard(), ch = challengeRail();
+    const i = h.indexOf('<section class="sec"><div class="sec-head"><h2>Suplimente azi');
+    return i < 0 ? h + dn + ch : h.slice(0, i) + dn + h.slice(i).replace(/(<section class="quote)/, ch + '$1');
+  };
+  const _vp = viewProfil;
+  viewProfil = function () { return _vp().replace('<section class="sec"><h2>Realizări</h2>', challengeRail() + '<section class="sec"><h2>Realizări</h2>'); };
+  VIEWS.profil = viewProfil;
+}
+/* stretching propus după antrenament, în cardul de final */
+new MutationObserver(() => {
+  const d = document.querySelector('.done-card [data-pr-close]');
+  if (d && !document.querySelector('.done-card [data-guide]')) { const s = S.sessions[S.sessions.length - 1]; d.insertAdjacentHTML('beforebegin', `<button class="btn btn-ghost done-str" data-guide="stretch" data-day="${s ? s.day : 'A'}">${LI.sparkles}<span>Stretching 5 minute</span></button>`); }
+}).observe(document.body, { childList: true, subtree: true });
 
 /* ---------- Demo pentru investitori: date de exemplu + prezentarea de la prima pornire ---------- */
 (function () {
