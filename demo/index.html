@@ -1477,6 +1477,16 @@ svg.scrubbing .sc { opacity: 1; }
 /* animații 3D: imaginea umple caseta, pe fundal alb */
 img.rig.exm { display: block; object-fit: contain; background: #fff !important; padding: 2px; }
 .ex-detail img.rig.exm.big { width: 100%; height: auto; aspect-ratio: 1; border-radius: 20px; box-shadow: inset 0 0 0 1px var(--line); }
+/* ilustrații animate: două poziții, trecere lină între ele */
+span.rig.exa { position: relative; display: block; overflow: hidden; background: #e3f2fb !important; }
+span.rig.exa img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+span.rig.exa .ex-p { animation: expose 2.6s ease-in-out infinite; animation-delay: var(--d, 0s); }
+@keyframes expose { 0%, 30% { opacity: 0; } 45%, 80% { opacity: 1; } 95%, 100% { opacity: 0; } }
+span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20px; }
+.ex-detail span.rig.exa.big { max-width: 360px; justify-self: center; }
+.credits { margin: 8px 0 0; font: 500 11.5px var(--sys); color: var(--faint); text-align: center; }
+.credits a { color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { span.rig.exa .ex-p { animation: none; opacity: 0; } }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -3008,6 +3018,7 @@ function viewProfil() {
   <section class="sec"><h2>Realizări</h2>${achGrid()}</section>
   ${typeof emblemSec === 'function' ? emblemSec() : ''}
   ${typeof backupSec === 'function' ? backupSec() : ''}
+  <p class="credits">Ilustrațiile exercițiilor: Exercise data by <a href="https://repdb.co" target="_blank" rel="noopener">RepDB (repdb.co)</a></p>
   ${IS_DEMO ? `<section class="sec"><h2>Prezentare</h2><div class="notice"><p>Reia prezentarea de la început, cu crearea avatarului.</p><button class="btn btn-ghost" data-onb-reset>Reia prezentarea</button></div></section>` : ''}`;
 }
 
@@ -3476,15 +3487,21 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-shar
   document.addEventListener('pointerup', () => setTimeout(end, 1400), { passive: true });
 }
 
-/* ================= Animații 3D de exerciții (ExerciseDB) ================= */
-/* id-ul exercițiului din aplicație -> id-ul animației din pachet; se completează când vin toate fișierele */
-const MEDIA = window.FORTA_MEDIA || { bench: '0025' };
+/* ================= Ilustrații animate de exerciții (RepDB, gratuit cu atribuire) ================= */
+const MEDIA = window.FORTA_MEDIA || {};
+const ILLU = { incline: 'incline-db-press', chestpress: 'chest-press-machine', pecdeck: 'pec-deck', rope: 'tricep-pushdown', vbar: 'v-bar-tricep-pushdown',
+  pulldown: 'lat-pulldown', supine: 'reverse-grip-lat-pulldown', dbrow: 'single-arm-db-row', cablerow: 'seated-cable-row', straightarm: 'straight-arm-pulldown',
+  zwide: 'ez-bar-curl', znarrow: 'close-grip-ez-bar-curl', hammer: 'hammer-curl', squat: 'squat', rdl: 'romanian-deadlift', legpress: 'leg-press',
+  legcurl: 'leg-curl', dbpress: 'seated-db-press', lateral: 'lateral-raise', facepull: 'face-pull' };
 {
   const _svg = Rig.svg;
+  let k = 0;
   Rig.svg = function (id, cls) {
-    const m = MEDIA[id]; if (!m) return _svg(id, cls);
-    const big = /big/.test(cls || '');
-    return `<img class="rig exm ${cls || ''}" data-rig-img="${id}" src="${window.ASSET || ''}ex/${m}-${big ? 720 : 360}.gif" alt="Animație ${esc(EX[id].name)}" loading="lazy" decoding="async">`;
+    const A = window.ASSET || '';
+    if (MEDIA[id]) return `<img class="rig exm ${cls || ''}" src="${A}ex/${MEDIA[id]}-${/big/.test(cls || '') ? 720 : 360}.gif" alt="Animație ${esc(EX[id].name)}" loading="lazy" decoding="async">`;
+    const f = ILLU[id]; if (!f) return _svg(id, cls);
+    const d = ((k++ % 7) * .37).toFixed(2);
+    return `<span class="rig exa ${cls || ''}" role="img" aria-label="Animație ${esc(EX[id].name)}" style="--d:-${d}s"><img src="${A}exr/${f}-start.webp" alt="" decoding="async"><img class="ex-p" src="${A}exr/${f}-peak.webp" alt="" decoding="async"></span>`;
   };
 }
 
