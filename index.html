@@ -1558,6 +1558,13 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 /* antet doar cu numele */
 .brand .b2 { margin-left: 0 !important; font-size: 1.75em !important; }
 .brand { justify-content: flex-start; }
+/* numărul de pe tricou, ca semn al aplicației */
+.brand .b2 { margin-left: auto !important; font-size: 1.55em !important; }
+.brand .b27 { font-size: 2.1em !important; line-height: .8 !important; color: transparent !important; -webkit-text-stroke: 2px var(--accent);
+  text-shadow: none !important; position: relative; padding-right: .05em; }
+.brand .b27::after { content: '27'; position: absolute; left: 3px; top: 3px; color: var(--accent); -webkit-text-stroke: 0; z-index: -1;
+  text-shadow: 0 1px 0 #c10e19, 0 2px 0 #a30c15, 0 3px 0 #850a11, 0 5px 5px rgba(70,6,12,.35); }
+.brand { isolation: isolate; align-items: center !important; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -1567,7 +1574,7 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 </div>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
-  <header class="top"><div class="brand"><img id="hbadge" class="hbadge" alt="" hidden><span class="b2"><span class="b2a">Cristian</span> <span class="b2b">Demian</span></span></div></header>
+  <header class="top"><div class="brand"><img id="hbadge" class="hbadge" alt="" hidden><span class="b1 b27" aria-label="27">27</span><span class="b2"><span class="b2a">Cristian</span> <span class="b2b">Demian</span></span></div></header>
   <main id="view"></main>
 </div>
 <nav class="nav" id="nav" aria-label="Navigare"></nav>
