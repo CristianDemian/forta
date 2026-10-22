@@ -1530,6 +1530,31 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 #view.intro .vr-bar b, .rv-in .vr-bar b { animation: growx 1.1s cubic-bezier(.2, 1, .3, 1) both; animation-delay: calc(.3s + var(--i) * .06s); }
 @media (prefers-color-scheme: dark) { .vr-img { background: radial-gradient(circle at 50% 40%, #f4f2f2, #d6d1d2); } }
 .vrow.hi .vr-bar b { background: linear-gradient(90deg, #fbbf24, #f59e0b); box-shadow: 0 0 10px rgba(245,158,11,.5); }
+
+/* antet: numele la fel de mare ca Forța, litere 3D */
+.brand { font-size: 19px; }
+.brand .b1, .brand .b2 { font: 800 1.55em/1 var(--display) !important; letter-spacing: .01em !important; }
+.brand .b2 { display: inline-flex; gap: .22em; margin-left: auto; }
+.brand .b1, .brand .b2a { color: var(--accent) !important;
+  text-shadow: 0 1px 0 #c10e19, 0 2px 0 #a30c15, 0 3px 0 #850a11, 0 4px 0 #67080d, 0 6px 5px rgba(70,6,12,.35), 0 10px 12px rgba(60,10,16,.18); }
+.brand .b2b { color: #1a1416 !important;
+  text-shadow: 0 1px 0 #3a3034, 0 2px 0 #2a2226, 0 3px 0 #120e10, 0 4px 0 #000, 0 6px 5px rgba(0,0,0,.3), 0 10px 12px rgba(0,0,0,.15); }
+@media (prefers-color-scheme: dark) {
+  .brand .b2b { color: #f7f2f2 !important; text-shadow: 0 1px 0 #cfc7c9, 0 2px 0 #a99ea2, 0 3px 0 #7d7276, 0 4px 0 #554a4e, 0 6px 6px rgba(0,0,0,.6); }
+}
+
+/* meniul de jos: mai vizibil */
+.nav { background: rgba(255,255,255,.94) !important; border: 1px solid rgba(26,20,22,.08) !important;
+  box-shadow: inset 0 1px 0 #fff, 0 2px 4px rgba(26,20,22,.06), 0 18px 36px -12px rgba(26,20,22,.38) !important; }
+.nav button { color: #4a4044 !important; font-weight: 600 !important; }
+.nav button svg { stroke-width: 2.1; }
+.nav button[aria-current="page"] { color: var(--accent) !important; }
+@media (prefers-color-scheme: dark) {
+  .nav { background: rgba(34,27,30,.94) !important; border-color: rgba(255,255,255,.1) !important; }
+  .nav button { color: #d3c9cd !important; }
+  .nav button[aria-current="page"] { color: #ff4a55 !important; }
+}
+.brand { padding: 2px 0 12px; margin-bottom: -10px; align-items: baseline !important; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -1539,7 +1564,7 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 </div>
 <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app">
-  <header class="top"><div class="brand"><img id="hbadge" class="hbadge" alt="" hidden><span class="b1">Forța</span><span class="b2">Cristian Demian</span></div></header>
+  <header class="top"><div class="brand"><img id="hbadge" class="hbadge" alt="" hidden><span class="b1">Forța</span><span class="b2"><span class="b2a">Cristian</span> <span class="b2b">Demian</span></span></div></header>
   <main id="view"></main>
 </div>
 <nav class="nav" id="nav" aria-label="Navigare"></nav>
