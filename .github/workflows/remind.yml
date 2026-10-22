@@ -45,9 +45,11 @@ jobs:
           git config user.name "forta-bot"
           git config user.email "forta-bot@users.noreply.github.com"
           end=$((SECONDS + 20640))
+          lastm=-99999
           while [ $SECONDS -lt $end ]; do
             git pull -q --rebase origin date || git rebase --abort || true
             node ../scripts/remind.mjs . || true
+            if [ $((SECONDS - lastm)) -ge 10800 ]; then node ../scripts/matches.mjs . || true; lastm=$SECONDS; fi
             if [ -n "$(git status --porcelain)" ]; then
               git add -A && git commit -qm "Mementouri trimise" && (git push -q origin HEAD:date || (git pull -q --rebase origin date && git push -q origin HEAD:date)) || true
             fi
