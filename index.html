@@ -477,6 +477,19 @@ button.hist-row:active { transform: scale(.98); }
 .cues li::before { position: absolute; left: 0; top: 0; }
 .notice .cues { margin: 2px 0; }
 .notice .cues li { font-size: 14.5px; color: var(--fg); }
+
+/* ---------- Apă ---------- */
+.water { background: linear-gradient(135deg, color-mix(in srgb, #3aa0ff 16%, var(--surface)), var(--surface)); border-radius: var(--r); padding: 14px; display: grid; gap: 10px; margin-bottom: 8px; border: 1px solid color-mix(in srgb, #3aa0ff 30%, transparent); }
+.water-top { display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: center; }
+.water-top .drop { font-size: 26px; text-align: center; }
+.water-top strong { display: block; font-weight: 600; }
+.water-top em { font-style: normal; color: var(--muted); font-size: 13px; }
+.water-dots { display: flex; flex-wrap: wrap; gap: 6px; }
+.water-dots i { width: 16px; height: 22px; border-radius: 4px 4px 7px 7px; border: 1.5px solid color-mix(in srgb, #3aa0ff 60%, var(--line)); }
+.water-dots i.on { background: linear-gradient(180deg, #8fd0ff, #3aa0ff); border-color: #3aa0ff; box-shadow: 0 0 10px -3px #3aa0ff; }
+.water-btns { display: grid; grid-template-columns: 56px 1fr; gap: 8px; }
+.water-btns .btn-main { background: linear-gradient(100deg, #1f6fd1, #3aa0ff 50%, #1f6fd1); box-shadow: 0 8px 26px -10px #3aa0ff; }
+.water-btns .btn-ghost { font-size: 24px; padding: 0; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -802,7 +815,11 @@ Object.assign(EX.pulldown, { name: 'Tracțiuni la scripete cu priză largă' });
 Object.assign(EX.straightarm, { name: 'Tracțiuni la scripete din picioare' });
 
 const DEFAULT_SUPPS = [
-  { id: 's1', name: 'Creatină monohidrat', dose: '5 g, cu apă', time: '09:00', on: true },
+  { id: 'cr1', name: 'Creatină (1 din 5)', dose: '1 tabletă, cu apă', time: '08:00', on: true },
+  { id: 'cr2', name: 'Creatină (2 din 5)', dose: '1 tabletă, cu apă', time: '11:00', on: true },
+  { id: 'cr3', name: 'Creatină (3 din 5)', dose: '1 tabletă, cu apă', time: '14:00', on: true },
+  { id: 'cr4', name: 'Creatină (4 din 5)', dose: '1 tabletă, cu apă', time: '17:00', on: true },
+  { id: 'cr5', name: 'Creatină (5 din 5)', dose: '1 tabletă, cu apă', time: '20:00', on: true },
   { id: 's2', name: 'Centrum Men', dose: '1 tabletă, la micul dejun', time: '09:00', on: true },
   { id: 's3', name: 'Omega 3', dose: '2 capsule, la prânz', time: '13:30', on: false, tip: 'Nu e inclus în Centrum. Ajută recuperarea și articulațiile.' },
   { id: 's4', name: 'Magneziu bisglicinat', dose: '300 mg, înainte de somn', time: '22:00', on: false, tip: 'Centrum are doar puțin magneziu. Ajută somnul și crampele.' }
@@ -1082,7 +1099,8 @@ const Push = (() => {
     return r;
   }
   function payload() {
-    return { sub: P.sub, tz: 'Europe/Bucharest', supps: S.supps.filter(s => s.on).map(s => ({ id: s.id, name: s.name, dose: s.dose, time: s.time })) };
+    return { sub: P.sub, tz: 'Europe/Bucharest', supps: S.supps.filter(s => s.on).map(s => ({ id: s.id, name: s.name, dose: s.dose, time: s.time }))
+      .concat(waterTimes().map(t => ({ id: 'apa' + t.replace(':', ''), name: 'Apă', dose: '1 pahar', time: t, water: true }))) };
   }
   async function encrypt(obj) {
     const pub = await crypto.subtle.importKey('spki', Uint8Array.from(atob(CFG.rsa), c => c.charCodeAt(0)), { name: 'RSA-OAEP', hash: 'SHA-256' }, false, ['encrypt']);
@@ -1178,12 +1196,27 @@ const ICON = {
 
 /* ---------- Date salvate pe telefon ---------- */
 const KEY = 'forta-v1';
-function fresh() { return { sessions: [], body: [], supps: JSON.parse(JSON.stringify(DEFAULT_SUPPS)), suppLog: {}, skips: {}, active: null }; }
+function fresh() { return { sessions: [], body: [], supps: JSON.parse(JSON.stringify(DEFAULT_SUPPS)), suppLog: {}, skips: {}, water: { on: true, from: '08:00', to: '22:00', log: {} }, active: null }; }
 function load() {
   try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(fresh(), JSON.parse(raw)); } catch (e) { }
-  return fresh();
+  return Object.assign(fresh(), { mig: 2 });
 }
 let S = load();
+/* o singură dată: creatina împărțită în 5 tablete și mementoul pentru apă */
+if ((S.mig || 0) < 2) {
+  const had = S.supps.filter(s => /creatin/i.test(s.name));
+  S.supps = S.supps.filter(s => !/creatin/i.test(s.name));
+  ['08:00', '11:00', '14:00', '17:00', '20:00'].forEach((t, i) => S.supps.push({ id: 'cr' + (i + 1), name: `Creatină (${i + 1} din 5)`, dose: '1 tabletă, cu apă', time: t, on: true }));
+  S.water = S.water || { on: true, from: '08:00', to: '22:00', log: {} };
+  S.mig = 2; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { }
+}
+S.water = S.water || { on: true, from: '08:00', to: '22:00', log: {} };
+function waterTimes() {
+  const w = S.water; if (!w || !w.on) return [];
+  const [fh] = w.from.split(':').map(Number), [th] = w.to.split(':').map(Number), out = [];
+  for (let h = fh; h <= th; h++) out.push(`${pad(h)}:00`);
+  return out;
+}
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { } if (window.onSaved) window.onSaved(); }
 
 /* ---------- Logică antrenament ---------- */
@@ -1289,11 +1322,18 @@ addEventListener('resize', fitBrand);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBrand);
 
 /* ---------- Ecran: Azi ---------- */
+function waterCard() {
+  const w = S.water; if (!w || !w.on) return '';
+  const goal = waterTimes().length, n = w.log[dayKey()] || 0;
+  return `<div class="water"><div class="water-top"><span class="drop">💧</span><span><strong>Apă: ${n} din ${goal} pahare</strong><em>Un pahar în fiecare oră, ${esc(w.from)}-${esc(w.to)}</em></span></div>
+    <div class="water-dots">${Array.from({ length: goal }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</div>
+    <div class="water-btns"><button class="btn btn-ghost" data-water="-1" aria-label="Scade un pahar">−</button><button class="btn btn-main" data-water="1">+ Am băut un pahar</button></div></div>`;
+}
 function suppChecklist() {
   const list = S.supps.filter(s => s.on).sort((a, b) => a.time.localeCompare(b.time));
-  if (!list.length) return `<p class="empty">Nu ai suplimente active. Le adaugi din fila Suplimente.</p>`;
+  if (!list.length) return waterCard() + `<p class="empty">Nu ai suplimente active. Le adaugi din fila Suplimente.</p>`;
   const taken = S.suppLog[dayKey()] || [];
-  return `<div class="checklist">${list.map(s => `<button class="check ${taken.includes(s.id) ? 'taken' : ''}" data-take="${s.id}" aria-pressed="${taken.includes(s.id)}">
+  return waterCard() + `<div class="checklist">${list.map(s => `<button class="check ${taken.includes(s.id) ? 'taken' : ''}" data-take="${s.id}" aria-pressed="${taken.includes(s.id)}">
     <time>${esc(s.time)}</time><span><strong>${esc(s.name)}</strong><em>${esc(s.dose)}</em></span><span class="tick">${ICON.check}</span></button>`).join('')}</div>`;
 }
 let showOthers = false;
@@ -1451,6 +1491,14 @@ function viewSupl() {
   return `
   <section class="sec"><div class="sec-head"><h2>Azi</h2><span class="count num">${(S.suppLog[dayKey()] || []).length}/${S.supps.filter(s => s.on).length}</span></div>${suppChecklist()}</section>
   <section class="sec"><h2>Notificări</h2>${Push.card()}</section>
+  <section class="sec"><h2>Apă</h2>
+    <div class="supp ${S.water.on ? '' : 'off'}">
+      <div class="supp-top"><span><strong>💧 Memento pentru apă</strong><small>Un pahar în fiecare oră, cu notificare</small></span>
+        <button class="switch" role="switch" aria-checked="${S.water.on}" aria-label="Memento apă" data-water-toggle></button></div>
+      <div class="supp-ctl"><label class="daymeta" for="w-from">De la</label><input type="time" id="w-from" step="3600" value="${esc(S.water.from)}" data-wtime="from">
+        <label class="daymeta" for="w-to">până la</label><input type="time" id="w-to" step="3600" value="${esc(S.water.to)}" data-wtime="to"></div>
+    </div>
+  </section>
   <section class="sec"><h2>Lista ta</h2>
     ${list.map(s => `<div class="supp ${s.on ? '' : 'off'}">
       <div class="supp-top"><span><strong>${esc(s.name)}</strong><small>${esc(s.dose)}</small></span>
@@ -1736,6 +1784,13 @@ document.addEventListener('click', e => {
     return;
   }
   if ('badgeDel' in ds) { BADGE = ''; try { localStorage.removeItem('forta-badge'); } catch (er) { } render(); return; }
+  if (ds.water) {
+    const k = dayKey(), w = S.water; w.log[k] = Math.max(0, (w.log[k] || 0) + (+ds.water));
+    for (const key of Object.keys(w.log)) if (key < dayKey(new Date(Date.now() - 60 * DAYMS))) delete w.log[key];
+    save(); render(); if (+ds.water > 0) { const el = document.querySelector('.water-dots i.on:last-of-type') || document.querySelector('.water .drop'); FX.burst(document.querySelector('.water .drop'), 14); }
+    return;
+  }
+  if ('waterToggle' in ds) { S.water.on = !S.water.on; save(); render(); return; }
   if (ds.push) { Push.action(ds.push); return; }
 });
 document.addEventListener('input', e => {
@@ -1743,6 +1798,7 @@ document.addEventListener('input', e => {
   if (f) { const row = e.target.closest('.set'); S.active.sets[row.dataset.ex][+row.dataset.i][f] = e.target.value.trim(); save(); }
 });
 document.addEventListener('change', e => {
+  if (e.target.dataset.wtime && e.target.value) { S.water[e.target.dataset.wtime] = e.target.value.slice(0, 2) + ':00'; save(); render(); toast('Intervalul pentru apă a fost actualizat.'); return; }
   if (e.target.id === 'badge-file' && e.target.files[0]) {
     const img = new Image(), url = URL.createObjectURL(e.target.files[0]);
     img.onload = () => {

@@ -39,8 +39,13 @@ if (test) {
   }
   for (const time of Object.keys(due).sort()) {
     const list = due[time];
-    const title = list.length === 1 ? `E ora pentru ${list[0].s.name}` : `Suplimentele de la ${time}`;
-    const body = list.map(x => `${x.s.name}: ${x.s.dose}`).join('\n');
+    const supp = list.filter(x => !x.s.water), water = list.some(x => x.s.water);
+    let title, body;
+    if (!supp.length) { title = '💧 Bea un pahar cu apă'; body = `Paharul de la ${time}. Hidratarea ajută forța și recuperarea.`; }
+    else {
+      title = supp.length === 1 ? `E ora pentru ${supp[0].s.name}` : `Suplimentele de la ${time}`;
+      body = supp.map(x => `${x.s.name}: ${x.s.dose}`).join('\n') + (water ? '\n💧 Și un pahar cu apă.' : '');
+    }
     if (await send(title, body, 'supl-' + time)) sent.push(...list.map(x => x.key));
   }
   state.sent = { [today]: sent };
