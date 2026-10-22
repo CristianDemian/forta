@@ -1,7 +1,9 @@
 name: Mementouri suplimente
+# O rulare stă pornită ~5h45m și verifică ora în fiecare minut, apoi își pornește singură următoarea.
+# Programarea de mai jos e doar plasă de siguranță, în caz că lanțul se rupe.
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/15 * * * *'
   workflow_dispatch:
     inputs:
       test:
@@ -10,13 +12,14 @@ on:
         default: '0'
 permissions:
   contents: write
+  actions: write
 concurrency:
-  group: remind
+  group: ${{ github.event.inputs.test == '1' && format('test-{0}', github.run_id) || 'remind-loop' }}
   cancel-in-progress: false
 jobs:
   remind:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 355
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
@@ -27,15 +30,31 @@ jobs:
         with:
           node-version: 20
       - run: npm install --no-audit --no-fund
-      - run: node scripts/remind.mjs data
+      - name: Test
+        if: github.event.inputs.test == '1'
+        run: node scripts/remind.mjs data
         env:
           FORTA_KEYS: ${{ secrets.FORTA_KEYS }}
-          TEST: ${{ github.event.inputs.test }}
-      - name: Salvează ce s-a trimis
+          TEST: '1'
+      - name: Verifică în fiecare minut
+        if: github.event.inputs.test != '1'
+        env:
+          FORTA_KEYS: ${{ secrets.FORTA_KEYS }}
         working-directory: data
         run: |
-          if [ -n "$(git status --porcelain)" ]; then
-            git config user.name "forta-bot"
-            git config user.email "forta-bot@users.noreply.github.com"
-            git add -A && git commit -m "Mementouri trimise" && git push
-          fi
+          git config user.name "forta-bot"
+          git config user.email "forta-bot@users.noreply.github.com"
+          end=$((SECONDS + 20640))
+          while [ $SECONDS -lt $end ]; do
+            git pull -q --rebase origin date || git rebase --abort || true
+            node ../scripts/remind.mjs . || true
+            if [ -n "$(git status --porcelain)" ]; then
+              git add -A && git commit -qm "Mementouri trimise" && (git push -q origin HEAD:date || (git pull -q --rebase origin date && git push -q origin HEAD:date)) || true
+            fi
+            sleep $((62 - 10#$(date +%S)))
+          done
+      - name: Pornește următoarea rulare
+        if: always() && github.event.inputs.test != '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run remind.yml --ref main -f test=0 -R ${{ github.repository }}

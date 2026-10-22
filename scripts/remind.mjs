@@ -1,4 +1,4 @@
-// Trimite mementourile pentru suplimente. Rulează pe GitHub la fiecare 10 minute.
+// Trimite mementourile pentru suplimente. Rulează pe GitHub în fiecare minut.
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import webpush from 'web-push';
@@ -35,7 +35,7 @@ if (test) {
   const due = {};
   for (const s of cfg.supps || []) {
     const [h, m] = s.time.split(':').map(Number), t = h * 60 + m, key = `${s.id}@${s.time}`;
-    if (t <= nowMin && nowMin - t <= 180 && !sent.includes(key)) (due[s.time] = due[s.time] || []).push({ s, key });
+    if (t <= nowMin && nowMin - t <= 30 && !sent.includes(key)) (due[s.time] = due[s.time] || []).push({ s, key });
   }
   for (const time of Object.keys(due).sort()) {
     const list = due[time];
