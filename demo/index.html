@@ -699,8 +699,8 @@ main { gap: 30px; }
 .stage.st-rest .st-title { font-size: clamp(110px, 34vw, 160px); }
 .st-date { position: absolute; z-index: 2; top: 16px; left: max(16px, env(safe-area-inset-left, 0px)); display: flex; align-items: center; gap: 8px; }
 .st-date b { font-size: 46px; line-height: .8; color: var(--ink); }
-.st-date span { font: 600 12px/1.25 var(--sys); color: var(--muted); }
-.st-date span::first-letter { text-transform: uppercase; }
+.st-date > span { font: 600 12px/1.25 var(--sys); color: var(--muted); }
+.st-date > span::first-letter { text-transform: uppercase; }
 .st-live { position: absolute; z-index: 2; top: 14px; right: 16px; display: flex; align-items: center; gap: 7px; padding: 7px 11px; border-radius: 999px; background: var(--ink); color: #fff; font: 600 12px var(--sys); }
 .st-live i { width: 7px; height: 7px; border-radius: 50%; background: #ff3b47; animation: livepulse 1.4s ease-in-out infinite; }
 @keyframes livepulse { 50% { opacity: .25; } }
@@ -911,9 +911,99 @@ main { perspective: 1200px; }
 /* cifrele din tabelul de scor: urcă și ele */
 #view.intro .board > div { animation: rise3 .7s cubic-bezier(.2, .85, .25, 1) both; }
 #view.intro .board > div:nth-child(1) { animation-delay: .7s; } #view.intro .board > div:nth-child(2) { animation-delay: .8s; } #view.intro .board > div:nth-child(3) { animation-delay: .9s; }
-#view.intro .st-date b { animation: letterdrop .9s .1s cubic-bezier(.2, 1.3, .35, 1) both; display: inline-block; }
 
 @media (prefers-reduced-motion: reduce) { .st-l i::after { animation: none; display: none; } .st-title.wave .st-l i, .st-title.boom .st-l i, .ttl i { animation: none !important; } }
+
+/* ================= v6: spectacol ================= */
+/* panglici cu text care curg prin spatele lui Mini-Cristian */
+.st-rib { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.rib { position: absolute; left: -20%; width: 140%; display: flex; white-space: nowrap; font: 800 64px/1 var(--display); letter-spacing: .01em; }
+.rib span { flex: none; padding-right: .3em; animation: ribflow 38s linear infinite; }
+.rib.r1 { top: 30%; transform: rotate(-9deg); color: transparent; -webkit-text-stroke: 1.5px rgba(216,16,28,.32); }
+.rib.r2 { top: 52%; transform: rotate(6deg); color: rgba(26,20,22,.06); font-size: 44px; }
+.rib.r2 span { animation-direction: reverse; animation-duration: 30s; }
+@keyframes ribflow { to { transform: translateX(-100%); } }
+#view.intro .st-rib { animation: ribin 1.4s .1s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes ribin { from { opacity: 0; transform: scale(1.3); } }
+
+/* scânteile de pe scenă */
+.st-fx { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; }
+
+/* lumina de scenă: un reflector care respiră în spatele titlului */
+.stage::before { content: ''; position: absolute; z-index: 0; left: 50%; bottom: 6%; width: 130%; height: 46%; transform: translateX(-50%);
+  background: radial-gradient(50% 50% at 50% 60%, rgba(216,16,28,.16), transparent 70%); animation: spot 5s ease-in-out infinite; pointer-events: none; }
+@keyframes spot { 50% { opacity: .55; transform: translateX(-50%) scale(1.08); } }
+
+/* derularea: titlul se desface și se estompează, avatarul se apropie */
+.st-l { letter-spacing: calc(var(--sy, 0) * .035px); transition: letter-spacing .2s; }
+.st-title { opacity: calc(1 - var(--sy, 0) / 520); filter: blur(calc(var(--sy, 0) * .012px)); }
+.st-l i { transition: translate .35s cubic-bezier(.2, 1.5, .4, 1); }
+.st-l i { text-shadow: 0 1px 0 #c10e19, 0 2px 0 #b20d17, 0 3px 0 #a30c15, 0 4px 0 #940b13, 0 5px 0 #850a11, 0 6px 0 #76090f, 0 7px 0 #67080d,
+    0 9px 6px rgba(70, 6, 12, .35), 0 20px 18px rgba(60, 10, 16, .22), 0 34px 34px rgba(60, 10, 16, .14); }
+
+/* cutremur */
+.stage.shake { animation: shake .5s cubic-bezier(.36, .07, .19, .97); }
+@keyframes shake { 15% { transform: translate(-6px, 2px) rotate(-.6deg); } 30% { transform: translate(6px, -2px) rotate(.6deg); } 45% { transform: translate(-4px, 1px); } 60% { transform: translate(3px, 0); } 80% { transform: translate(-1px, 0); } }
+
+/* contor de tip odometru */
+.odo { display: inline-flex; line-height: 1 !important; height: 1em; overflow: hidden; vertical-align: top; }
+.odo .reel { display: block; height: 1em; overflow: hidden; }
+.odo .reel > span { display: flex; flex-direction: column; line-height: 1; word-spacing: 100vw; white-space: normal; width: 1ch; text-align: center; font: inherit !important; color: inherit !important;
+  transform: translateY(calc(var(--d) * -1em)); }
+#view.intro .odo .reel > span { animation: reel 1.5s cubic-bezier(.2, .9, .2, 1.02) both; animation-delay: calc(.75s + var(--k) * .12s); }
+@keyframes reel { from { transform: translateY(0); filter: blur(2px); } 80% { filter: blur(0); } }
+.board .odo { font-size: 46px; color: var(--ink); }
+.st-date .odo { font-size: 50px; color: var(--ink); }
+#view.intro .st-date .odo .reel > span { animation-delay: calc(.2s + var(--k) * .12s); }
+
+/* apa: nivelul real din pahar, cu valuri */
+.water { position: relative; overflow: hidden; isolation: isolate; }
+.water > :not(.liquid) { position: relative; z-index: 1; }
+.liquid { position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--lv, 0) * 100%); min-height: 10px; z-index: 0; transition: height 1.2s cubic-bezier(.2, .9, .2, 1); pointer-events: none; }
+.liquid i { position: absolute; inset: 14px 0 0; background: linear-gradient(180deg, rgba(31,138,224,.16), rgba(31,138,224,.26)); }
+.liquid .wv { position: absolute; left: 0; width: 200%; height: 16px; top: 0; fill: rgba(31,138,224,.16); animation: wave 6s linear infinite; }
+.liquid .wv2 { fill: rgba(31,138,224,.12); top: 2px; animation-duration: 9s; animation-direction: reverse; }
+@keyframes wave { to { transform: translateX(-50%); } }
+#view.intro .liquid { animation: fillup 1.8s .6s cubic-bezier(.2, .9, .2, 1) both; }
+@keyframes fillup { from { height: 10px; } }
+.water .drop { animation: dropbob 3s ease-in-out infinite; }
+@keyframes dropbob { 50% { transform: translateY(-3px) rotate(-6deg); } }
+
+/* butonul principal: inel de energie care pulsează */
+.st-card .btn-main { animation: ctapulse 2.6s 2s ease-in-out infinite; }
+@keyframes ctapulse { 50% { box-shadow: inset 0 1px 0 rgba(255,255,255,.35), inset 0 -3px 0 rgba(90,0,8,.35), 0 3px 0 #8e0912, 0 16px 34px -8px rgba(216,16,28,1), 0 0 0 8px rgba(216,16,28,.12) !important; } }
+
+/* flacăra seriei pâlpâie, ziua de azi are un inel care se rotește */
+.streak svg { animation: flicker 1.6s ease-in-out infinite; transform-origin: 50% 90%; }
+@keyframes flicker { 25% { transform: scale(1.08, .94) rotate(-4deg); } 50% { transform: scale(.95, 1.08) rotate(3deg); } 75% { transform: scale(1.04, .97) rotate(-2deg); } }
+.wd.is-today span { position: relative; }
+.wd.is-today span::after { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 1.5px dashed var(--accent); animation: spin 9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* inelele de progres strălucesc */
+.ring3 { animation: ringglow 3.5s ease-in-out infinite; }
+@keyframes ringglow { 50% { filter: drop-shadow(0 6px 14px rgba(216,16,28,.32)) drop-shadow(0 1px 0 rgba(255,255,255,.9)); } }
+
+/* insignele câștigate: folie holografică */
+.ach-i.ok { position: relative; overflow: hidden; isolation: isolate; }
+.ach-i.ok::before { content: ''; position: absolute; inset: -50%; z-index: -1; opacity: .5; mix-blend-mode: multiply;
+  background: conic-gradient(from 0deg, #ffe3e5, #fff6d6, #dff7ea, #dcecff, #f1e1ff, #ffe3e5); animation: holo 7s linear infinite; }
+.ach-i.ok::after { content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.8) 45%, transparent 60%) -150% 0 / 250% 100% no-repeat; animation: foil 4s ease-in-out infinite; }
+.ach-i.ok:nth-child(3n+2)::after { animation-delay: .6s; } .ach-i.ok:nth-child(3n)::after { animation-delay: 1.2s; }
+@keyframes holo { to { transform: rotate(360deg); } }
+@keyframes foil { 0%, 55% { background-position: 150% 0; } 100% { background-position: -150% 0; } }
+.ach-i.ok .ach-ic { animation: medal 4s ease-in-out infinite; }
+@keyframes medal { 50% { transform: rotateY(180deg); } }
+
+/* avatarul din profil: inel de energie care se rotește */
+.prof-av { background: conic-gradient(from 0deg, var(--accent), #ff8a92, #fff, var(--accent), var(--red-deep), var(--accent)) !important; animation: spin 6s linear infinite; box-shadow: 0 16px 36px -14px rgba(216,16,28,.6) !important; }
+.prof-av > .buddy.avatar { inset: 4px; border-radius: 50%; overflow: hidden; background: var(--bg); animation: spin 6s linear infinite reverse; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rib span, .stage::before, .liquid .wv, .water .drop, .st-card .btn-main, .streak svg, .wd.is-today span::after, .ring3, .ach-i.ok::before, .ach-i.ok::after, .ach-i.ok .ach-ic, .prof-av, .prof-av > .buddy.avatar { animation: none !important; }
+}
+.st-l2 i { text-shadow: 0 1px 0 #0d0a0b, 0 2px 0 #070506, 0 3px 0 #000, 0 4px 0 #000, 0 8px 6px rgba(0,0,0,.28), 0 18px 18px rgba(0,0,0,.16) !important; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -1715,7 +1805,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBrand);
 function waterCard() {
   const w = S.water; if (!w || !w.on) return '';
   const goal = waterTimes().length, n = w.log[dayKey()] || 0;
-  return `<div class="water"><div class="water-top"><span class="drop">${LI.drop}</span><span><strong>Apă: ${n} din ${goal} pahare</strong><em>Un pahar în fiecare oră, ${esc(w.from)}-${esc(w.to)}</em></span></div>
+  return `<div class="water" style="--lv:${Math.min(1, goal ? n / goal : 0).toFixed(3)}"><div class="liquid" aria-hidden="true"><svg class="wv wv1" viewBox="0 0 800 40" preserveAspectRatio="none"><path d="M0 20 Q100 0 200 20 T400 20 T600 20 T800 20 V40 H0Z"/></svg><svg class="wv wv2" viewBox="0 0 800 40" preserveAspectRatio="none"><path d="M0 20 Q100 38 200 20 T400 20 T600 20 T800 20 V40 H0Z"/></svg><i></i></div><div class="water-top"><span class="drop">${LI.drop}</span><span><strong>Apă: ${n} din ${goal} pahare</strong><em>Un pahar în fiecare oră, ${esc(w.from)}-${esc(w.to)}</em></span></div>
     <div class="water-dots">${Array.from({ length: goal }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</div>
     <div class="water-btns"><button class="btn btn-ghost" data-water="-1" aria-label="Scade un pahar">−</button><button class="btn btn-main" data-water="1">+ Am băut un pahar</button></div></div>`;
 }
@@ -1735,9 +1825,17 @@ function quoteCard() {
     <div class="q-face q-back"><span class="q-mark">“</span><p>${esc(txt)}</p><div class="q-who"><b>${esc(who)}</b><small>${esc(src)}</small></div></div>
   </button></section>`;
 }
+function odo(n) {
+  const s = String(n);
+  return `<b class="num odo" aria-label="${s}">${[...s].map((c, i) => /\d/.test(c) ? `<span class="reel" style="--d:${c};--k:${i}"><span>0 1 2 3 4 5 6 7 8 9</span></span>` : `<span>${c}</span>`).join('')}</b>`;
+}
+function ribbons(words) {
+  const t = (words + ' · ').repeat(6);
+  return `<div class="st-rib" aria-hidden="true"><div class="rib r1"><span>${t}</span><span>${t}</span></div><div class="rib r2"><span>${t}</span><span>${t}</span></div></div>`;
+}
 function stageDate() {
   const d = new Date();
-  return `<div class="st-date"><b class="num">${d.getDate()}</b><span>${d.toLocaleDateString('ro-RO', { weekday: 'long' })}<br>${d.toLocaleDateString('ro-RO', { month: 'long' })}</span></div>`;
+  return `<div class="st-date">${odo(d.getDate())}<span>${d.toLocaleDateString('ro-RO', { weekday: 'long' })}<br>${d.toLocaleDateString('ro-RO', { month: 'long' })}</span></div>`;
 }
 function stageTitle(words) {
   return `<h1 class="st-title" aria-label="${esc(words.join(' '))}">${words.map((w, i) => `<span class="st-l${i ? ' st-l2' : ''}">${esc(w)}</span>`).join('')}</h1>`;
@@ -1747,11 +1845,11 @@ function workoutHero(nd, eyebrow) {
   const nSets = nd.ex.reduce((a, id) => a + EX[id].sets, 0);
   const mins = Math.round(nd.ex.reduce((a, id) => a + EX[id].sets * (EX[id].rest + 45), 0) / 60 / 5) * 5;
   const parts = nd.name.split(/\s*\+\s*/), words = parts.length > 1 ? [parts[0], '+ ' + parts.slice(1).join(' + ')] : [nd.name];
-  return `<section class="stage">${stageDate()}${S.active ? '<div class="st-live"><i></i>În desfășurare</div>' : ''}
-    ${Buddy.flex.replace('class="buddy ', 'class="buddy st-av ')}${stageTitle(words)}</section>
+  return `<section class="stage">${ribbons('Forța ' + nd.name + ' Cristian 27')}${stageDate()}${S.active ? '<div class="st-live"><i></i>În desfășurare</div>' : ''}
+    ${Buddy.flex.replace('class="buddy ', 'class="buddy st-av ')}${stageTitle(words)}<canvas class="st-fx" aria-hidden="true"></canvas></section>
   <section class="st-card">
     <p class="st-lead">${S.active ? 'Antrenamentul e pornit. Continuă de unde ai rămas.' : `Azi lucrezi ${esc(nd.name.toLowerCase())}.${lastOfDay ? ` Ultima dată ${relDays(lastOfDay.date)}.` : ''}`}</p>
-    <div class="board"><div><b class="num" data-count>${nd.ex.length}</b><small>exerciții</small></div><div><b class="num" data-count>${nSets}</b><small>serii</small></div><div><b class="num" data-count>${mins}</b><small>minute</small></div></div>
+    <div class="board"><div>${odo(nd.ex.length)}<small>exerciții</small></div><div>${odo(nSets)}<small>serii</small></div><div>${odo(mins)}<small>minute</small></div></div>
     <div class="rigs-row">${nd.ex.slice(0, 3).map((id, i) => Rig.svg(id).replace('data-rig', `data-off="${i * 500}" data-rig`)).join('')}</div>
     <button class="btn btn-main" data-start="${nd.id}">${S.active ? 'Continuă antrenamentul' : 'Începe antrenamentul'}</button>
     ${S.active ? '' : `<div class="chips">${DAYS.filter(d => d.id !== nd.id).map(d => `<button class="chip" data-start="${d.id}">${d.label}: ${esc(d.name)}</button>`).join('')}</div>`}
@@ -1760,8 +1858,8 @@ function workoutHero(nd, eyebrow) {
 }
 function restHero(doneToday, skipped) {
   const { p, i } = nextPlan();
-  return `<section class="stage st-rest">${stageDate()}
-    ${Buddy.svg.replace('class="buddy ', 'class="buddy st-av ')}${stageTitle([doneToday ? 'Bifat' : 'Odihnă'])}</section>
+  return `<section class="stage st-rest">${ribbons('Forța Odihnă Recuperare Cristian 27')}${stageDate()}
+    ${Buddy.svg.replace('class="buddy ', 'class="buddy st-av ')}${stageTitle([doneToday ? 'Bifat' : 'Odihnă'])}<canvas class="st-fx" aria-hidden="true"></canvas></section>
   <section class="st-card">
     <p class="st-lead">${skipped ? `Ai ales odihnă azi în loc de ${esc(skipped.name)}. E în regulă, și pauza face parte din progres.` : doneToday ? 'Antrenamentul de azi e gata. Bravo, Cristian!' : 'Azi mușchii cresc. Mini-Cristian se antrenează în locul tău.'}</p>
     <div class="next-up"><small>Următorul antrenament</small><b>${p.label}: ${esc(p.name)}</b><span>${i === 1 ? 'mâine' : `în ${i} zile`}</span></div>
@@ -2567,6 +2665,73 @@ finishWorkout = function () {
     document.documentElement.classList.toggle('sysgap', gap > 20);
   }
   fit(); addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 300));
+})();
+
+/* ---------- Scena vie: scântei, litere magnetice, cutremur la atingere ---------- */
+(function () {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const P = [], DPR = Math.min(2, devicePixelRatio || 1);
+  let cv = null, cx = null, W = 0, H = 0, last = 0, on = true;
+  function attach() {
+    const c = document.querySelector('.stage .st-fx');
+    if (c === cv && c) return;
+    cv = c; cx = c ? c.getContext('2d') : null; P.length = 0; size();
+  }
+  function size() { if (!cv) return; const r = cv.getBoundingClientRect(); W = r.width; H = r.height; cv.width = W * DPR; cv.height = H * DPR; }
+  function spawn(x, y, burst) {
+    const red = Math.random() < .7;
+    P.push({ x, y, vx: (Math.random() - .5) * (burst ? 3.2 : .35), vy: burst ? -(1.5 + Math.random() * 3.5) : -(.25 + Math.random() * .6),
+      r: burst ? 1.2 + Math.random() * 2.6 : .8 + Math.random() * 2.2, life: 0, max: burst ? 50 + Math.random() * 40 : 220 + Math.random() * 200,
+      c: red ? [216 + Math.random() * 39 | 0, 16 + Math.random() * 40 | 0, 28] : [255, 255, 255], g: burst ? .06 : 0, w: Math.random() * 6.28 });
+  }
+  function tick(t) {
+    requestAnimationFrame(tick);
+    if (!on || !cv || !cv.isConnected) { if (cv && !cv.isConnected) attach(); return; }
+    const dt = Math.min(3, (t - last) / 16.7 || 1); last = t;
+    if (P.length < 46 && Math.random() < .35 * dt) spawn(W * (.15 + Math.random() * .7), H * (.55 + Math.random() * .45));
+    cx.setTransform(DPR, 0, 0, DPR, 0, 0); cx.clearRect(0, 0, W, H);
+    for (let i = P.length - 1; i >= 0; i--) {
+      const p = P[i]; p.life += dt; p.w += .04 * dt;
+      p.vy += p.g * dt; p.x += (p.vx + Math.sin(p.w) * .25) * dt; p.y += p.vy * dt;
+      const k = p.life / p.max; if (k >= 1 || p.y < -10) { P.splice(i, 1); continue; }
+      const a = (k < .15 ? k / .15 : 1 - (k - .15) / .85) * (p.c[0] === 255 ? .9 : .75);
+      cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 6.283);
+      cx.fillStyle = `rgba(${p.c[0]},${p.c[1]},${p.c[2]},${a.toFixed(3)})`;
+      cx.shadowColor = `rgba(255,40,50,${(a * .8).toFixed(3)})`; cx.shadowBlur = p.c[0] === 255 ? 6 : 10; cx.fill();
+    }
+  }
+  requestAnimationFrame(tick);
+  document.addEventListener('visibilitychange', () => { on = !document.hidden; });
+  addEventListener('resize', size);
+  new MutationObserver(attach).observe(document.getElementById('view'), { childList: true });
+  attach();
+
+  /* litere magnetice: se dau la o parte din calea degetului */
+  let letters = [], lt = null;
+  function magnet(e) {
+    const st = e.target.closest && e.target.closest('.stage'); if (!st) return;
+    const r = cv && cv.getBoundingClientRect();
+    if (cv && Math.random() < .6) spawn(e.clientX - r.left, e.clientY - r.top, true);
+    const title = st.querySelector('.st-title'); if (!title) return;
+    if (lt !== title) { lt = title; letters = [...title.querySelectorAll('.st-l i')]; }
+    for (const i of letters) {
+      const b = i.getBoundingClientRect(), dx = b.left + b.width / 2 - e.clientX, dy = b.top + b.height / 2 - e.clientY, d = Math.hypot(dx, dy) || 1;
+      const f = Math.max(0, 1 - d / 160) * 26;
+      i.style.translate = `${(dx / d * f).toFixed(1)}px ${(dy / d * f).toFixed(1)}px`;
+      i.style.setProperty('--lift', (f / 26).toFixed(2));
+    }
+  }
+  function release() { letters.forEach(i => { i.style.translate = ''; i.style.removeProperty('--lift'); }); }
+  document.addEventListener('pointermove', magnet, { passive: true });
+  document.addEventListener('pointerdown', magnet, { passive: true });
+  ['pointerup', 'pointercancel'].forEach(t => document.addEventListener(t, release, { passive: true }));
+
+  /* atingere pe titlu: scenă care se cutremură și o explozie de scântei */
+  document.addEventListener('click', e => {
+    const t = e.target.closest && e.target.closest('.st-title'); if (!t) return;
+    const st = t.closest('.stage'); st.classList.remove('shake'); void st.offsetWidth; st.classList.add('shake');
+    if (cv) { const r = cv.getBoundingClientRect(); for (let k = 0; k < 40; k++) spawn(e.clientX - r.left + (Math.random() - .5) * 120, e.clientY - r.top + (Math.random() - .5) * 40, true); }
+  });
 })();
 
 /* ---------- Demo pentru investitori: date de exemplu + prezentarea de la prima pornire ---------- */
