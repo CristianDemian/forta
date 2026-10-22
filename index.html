@@ -522,10 +522,44 @@ html, body { overflow-x: clip; }
 .rest-day { padding-top: 22px; }
 
 /* ---------- Ecran fix: nu se mișcă lateral și nu se selectează textul la apăsare lungă ---------- */
-html, body { overflow-x: hidden; overscroll-behavior-x: none; }
+html, body { overflow-x: clip; overscroll-behavior-x: none; }
 body { touch-action: pan-y; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 input, textarea { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
 .ex-pick, .chips { touch-action: pan-x pan-y; }
+
+/* ---------- Aspect modern: fundal pe tot ecranul, meniu plutitor, iconițe noi ---------- */
+html { background: var(--bg); min-height: 100%; }
+body { min-height: 100%; }
+.app { padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); }
+.nav { left: max(12px, env(safe-area-inset-left, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding: 0 !important;
+  border-radius: 26px; border: 1px solid rgba(255,255,255,.09); background: rgba(34,16,20,.62); backdrop-filter: blur(22px) saturate(1.5); -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  box-shadow: 0 18px 40px -12px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.06); }
+.nav-in { position: relative; padding: 6px; max-width: 560px; }
+.nav-pill { position: absolute; top: 6px; bottom: 6px; left: 6px; width: calc((100% - 12px) / 4); border-radius: 20px;
+  background: linear-gradient(160deg, var(--red-hi), var(--accent) 55%, var(--red-deep)); box-shadow: 0 8px 22px -8px var(--accent), inset 0 1px 0 rgba(255,255,255,.25);
+  transform: translateX(calc(var(--i, 0) * 100%)); transition: transform .45s cubic-bezier(.3, 1.3, .4, 1); }
+.nav button { position: relative; z-index: 1; padding: 9px 0 8px; gap: 2px; color: rgba(255,246,244,.62); font-size: 11px; letter-spacing: .02em; transition: color .25s; }
+.nav button[aria-current="page"] { color: #fff; }
+.nav button[aria-current="page"]::before { display: none; }
+.nav button[aria-current="page"] svg { transform: translateY(-1px) scale(1.08); filter: none; }
+.nav svg { width: 23px; height: 23px; }
+.nav button .ripple { display: none; }
+.toast { bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+.rest { bottom: calc(86px + env(safe-area-inset-bottom, 0px)); padding-bottom: 0; }
+.workout .rest, #rest { }
+/* iconițe în carduri */
+.water-top .drop { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 12px; background: linear-gradient(160deg, #8fd0ff, #3aa0ff); color: #fff; box-shadow: 0 6px 16px -6px #3aa0ff; }
+.water-top .drop svg { width: 20px; height: 20px; }
+.q-gift { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 16px; background: rgba(255,255,255,.18); }
+.q-gift svg { width: 26px; height: 26px; }
+.skip-btn { gap: 10px; } .skip-btn svg { width: 20px; height: 20px; }
+.ic-row { display: inline-flex !important; align-items: center; gap: 8px; } .ic-row svg { width: 18px; height: 18px; color: #3aa0ff; }
+/* carduri mai moderne: margini fine luminoase, colțuri mai rotunde */
+.stat, .check, .supp, .ex-item, .hist-row, .chart-card, .notice, .wex, .add-form { border-radius: 18px; border: 1px solid rgba(255,255,255,.06); background-image: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,0)); }
+.btn { border-radius: 16px; }
+.btn-ghost { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); }
+.chip { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); }
+.tick { border-color: rgba(255,255,255,.18); }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -1348,11 +1382,20 @@ const relDays = t => { const d = Math.round((new Date(dayKey()) - new Date(dayKe
 const fmtDate = t => new Date(t).toLocaleDateString('ro-RO', { day: 'numeric', month: 'short' });
 
 /* ---------- Navigare ---------- */
+const LI = {
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  dumbbell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg>',
+  chart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>',
+  pill: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>',
+  moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>',
+  drop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>',
+  gift: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>'
+};
 const TABS = [
-  { id: 'azi', label: 'Azi', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg>' },
-  { id: 'program', label: 'Program', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2.5 12h2M19.5 12h2M6.5 7.5v9M17.5 7.5v9M4.5 9.5v5M19.5 9.5v5M6.5 12h11"/></svg>' },
-  { id: 'progres', label: 'Progres', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16M5 15l4.5-4.5 3.5 3L19 7"/><path d="M15 7h4v4"/></svg>' },
-  { id: 'supl', label: 'Suplimente', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="8.5" width="17" height="7" rx="3.5" transform="rotate(-35 12 12)"/><path d="M9.9 9l4.2 6"/></svg>' }
+  { id: 'azi', label: 'Azi', icon: LI.home },
+  { id: 'program', label: 'Program', icon: LI.dumbbell },
+  { id: 'progres', label: 'Progres', icon: LI.chart },
+  { id: 'supl', label: 'Suplimente', icon: LI.pill }
 ];
 let tab = 'azi';
 try { tab = localStorage.getItem('forta-tab') || 'azi'; } catch (e) { }
@@ -1360,8 +1403,12 @@ if (/^#(azi|program|progres|supl)$/.test(location.hash)) tab = location.hash.sli
 const openEx = new Set();
 let pickEx = null;
 
+let navPrev = null;
 function renderNav() {
-  $('#nav').innerHTML = `<div class="nav-in">${TABS.map(t => `<button data-tab="${t.id}" ${t.id === tab ? 'aria-current="page"' : ''}>${t.icon}<span>${t.label}</span></button>`).join('')}</div>`;
+  const idx = TABS.findIndex(t => t.id === tab), from = navPrev == null ? idx : navPrev;
+  $('#nav').innerHTML = `<div class="nav-in" style="--i:${from}"><i class="nav-pill" aria-hidden="true"></i>${TABS.map(t => `<button data-tab="${t.id}" ${t.id === tab ? 'aria-current="page"' : ''}>${t.icon}<span>${t.label}</span></button>`).join('')}</div>`;
+  if (from !== idx) requestAnimationFrame(() => requestAnimationFrame(() => { const n = $('.nav-in'); if (n) n.style.setProperty('--i', idx); }));
+  navPrev = idx;
 }
 function render() {
   renderNav();
@@ -1421,7 +1468,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBrand);
 function waterCard() {
   const w = S.water; if (!w || !w.on) return '';
   const goal = waterTimes().length, n = w.log[dayKey()] || 0;
-  return `<div class="water"><div class="water-top"><span class="drop">💧</span><span><strong>Apă: ${n} din ${goal} pahare</strong><em>Un pahar în fiecare oră, ${esc(w.from)}-${esc(w.to)}</em></span></div>
+  return `<div class="water"><div class="water-top"><span class="drop">${LI.drop}</span><span><strong>Apă: ${n} din ${goal} pahare</strong><em>Un pahar în fiecare oră, ${esc(w.from)}-${esc(w.to)}</em></span></div>
     <div class="water-dots">${Array.from({ length: goal }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</div>
     <div class="water-btns"><button class="btn btn-ghost" data-water="-1" aria-label="Scade un pahar">−</button><button class="btn btn-main" data-water="1">+ Am băut un pahar</button></div></div>`;
 }
@@ -1437,7 +1484,7 @@ function quoteCard() {
   const [txt, who, src] = quoteOfDay();
   let open = false; try { open = localStorage.getItem('forta-quote') === dayKey(); } catch (e) { }
   return `<section class="quote ${open ? 'open' : ''}"><button class="q-inner" data-quote aria-label="${open ? 'Citatul zilei' : 'Descoperă citatul zilei'}">
-    <div class="q-face q-front"><span class="q-gift">🎁</span><b>Citatul zilei</b><small>Atinge ca să descoperi surpriza de azi</small></div>
+    <div class="q-face q-front"><span class="q-gift">${LI.gift}</span><b>Citatul zilei</b><small>Atinge ca să descoperi surpriza de azi</small></div>
     <div class="q-face q-back"><span class="q-mark">“</span><p>${esc(txt)}</p><div class="q-who"><b>${esc(who)}</b><small>${esc(src)}</small></div></div>
   </button></section>`;
 }
@@ -1451,7 +1498,7 @@ function workoutHero(nd, eyebrow) {
     <div class="rigs-row">${nd.ex.slice(0, 3).map((id, i) => Rig.svg(id).replace('data-rig', `data-off="${i * 500}" data-rig`)).join('')}</div>
     <button class="btn btn-main" data-start="${nd.id}">${S.active ? 'Continuă antrenamentul' : 'Începe antrenamentul'}</button>
     ${S.active ? '' : `<div class="chips">${DAYS.filter(d => d.id !== nd.id).map(d => `<button class="chip" data-start="${d.id}">${d.label}: ${esc(d.name)}</button>`).join('')}</div>`}
-    ${!S.active && planFor(new Date()) === nd ? `<button class="btn btn-ghost skip-btn" data-skip>😴 Azi mă odihnesc</button>` : ''}
+    ${!S.active && planFor(new Date()) === nd ? `<button class="btn btn-ghost skip-btn" data-skip>${LI.moon}<span>Azi mă odihnesc</span></button>` : ''}
   </section>`;
 }
 function restHero(doneToday, skipped) {
@@ -1596,7 +1643,7 @@ function viewSupl() {
   <section class="sec"><h2>Notificări</h2>${Push.card()}</section>
   <section class="sec"><h2>Apă</h2>
     <div class="supp ${S.water.on ? '' : 'off'}">
-      <div class="supp-top"><span><strong>💧 Memento pentru apă</strong><small>Un pahar în fiecare oră, cu notificare</small></span>
+      <div class="supp-top"><span><strong class="ic-row">${LI.drop}Memento pentru apă</strong><small>Un pahar în fiecare oră, cu notificare</small></span>
         <button class="switch" role="switch" aria-checked="${S.water.on}" aria-label="Memento apă" data-water-toggle></button></div>
       <div class="supp-ctl"><label class="daymeta" for="w-from">De la</label><input type="time" id="w-from" step="3600" value="${esc(S.water.from)}" data-wtime="from">
         <label class="daymeta" for="w-to">până la</label><input type="time" id="w-to" step="3600" value="${esc(S.water.to)}" data-wtime="to"></div>
