@@ -1110,6 +1110,166 @@ main { perspective: 1200px; }
 .wd:not(.done) .wbar { top: 44px !important; height: 6px !important; }
 .wd.plan:not(.done) .wbar { top: 26px !important; height: 24px !important; }
 .wd { padding-top: 60px !important; }
+
+/* ================= v8: toate paginile ================= */
+/* placa neagră, reutilizabilă */
+.phero, .mmap, .day-title, .q-back { --plate: radial-gradient(120% 90% at 0% 0%, #3a2328 0%, #1d1517 45%, #120d0f 100%); }
+
+/* ---------- Apa: o sticlă care se umple ---------- */
+.hyd { position: relative; display: grid; grid-template-columns: 92px 1fr; gap: 16px; align-items: center; padding: 16px 16px 16px 12px; margin-bottom: 12px; border-radius: var(--r-md); overflow: hidden; isolation: isolate;
+  background: radial-gradient(120% 140% at 0% 100%, #dff0ff 0%, #f6fbff 45%, #fff 100%);
+  box-shadow: inset 0 1px 0 #fff, 0 1px 1px rgba(13,79,138,.05), 0 6px 12px -6px rgba(13,79,138,.12), 0 26px 40px -26px rgba(13,79,138,.4); }
+.hyd::before { content: ''; position: absolute; z-index: -1; width: 180px; height: 180px; left: -60px; bottom: -80px; border-radius: 50%; background: radial-gradient(circle, rgba(31,138,224,.28), transparent 65%); animation: spot 5s ease-in-out infinite; }
+.bottle { width: 92px; height: 150px; display: grid; place-items: center; filter: drop-shadow(0 14px 14px rgba(13,79,138,.25)); }
+.bottle svg { width: 80px; height: 150px; overflow: visible; }
+.b-back { fill: rgba(255,255,255,.65); }
+.b-glass { fill: none; stroke: rgba(13,79,138,.35); stroke-width: 1.6; }
+.b-shine { stroke: rgba(255,255,255,.9); stroke-width: 3.5; stroke-linecap: round; fill: none; }
+.b-cap { fill: #0d4f8a; }
+.b-fill { transform: translateY(calc(14px + (1 - var(--lv, 0)) * 92px)); transition: transform 1.3s cubic-bezier(.2, 1.2, .3, 1); }
+#view.intro .b-fill { animation: bfill 1.8s .5s cubic-bezier(.2, 1, .3, 1) both; }
+@keyframes bfill { from { transform: translateY(110px); } }
+.b-wave { fill: url(#bwat); }
+.b-wave.w2 { fill: #8fd0ff; opacity: .7; animation: bwave 3.2s linear infinite reverse; }
+.b-wave.w1 { animation: bwave 2.4s linear infinite; }
+@keyframes bwave { to { transform: translateX(30px); } }
+.bub { fill: rgba(255,255,255,.85); animation: bub 3s ease-in infinite; }
+.bub.b2 { animation-delay: 1s; } .bub.b3 { animation-delay: 2s; }
+@keyframes bub { from { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } to { transform: translateY(-70px); opacity: 0; } }
+.hyd-body { display: grid; gap: 6px; min-width: 0; }
+.hyd-l { font: 600 13px var(--sys); color: #2a6aa3; }
+.hyd-n { display: flex; align-items: baseline; gap: 8px; }
+.hyd-n b { font: 800 60px/.82 var(--display); color: #0d4f8a; }
+.hyd-n span { font: 600 14px var(--sys); color: #4f7ea8; }
+.hyd-bar { height: 6px; border-radius: 3px; background: rgba(31,138,224,.14); overflow: hidden; }
+.hyd-bar i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, #5cb8ff, var(--water)); box-shadow: 0 0 10px rgba(31,138,224,.6); transition: width 1s cubic-bezier(.2, 1, .3, 1); }
+#view.intro .hyd-bar i { animation: growx 1.4s .6s cubic-bezier(.2, 1, .3, 1) both; transform-origin: 0 50%; }
+.hyd-s { font: 500 12.5px/1.35 var(--sys); color: #4f7ea8; }
+.hyd-btns { display: grid; grid-template-columns: 44px 1fr; gap: 8px; margin-top: 4px; }
+.hyd .wbtn { height: 44px; }
+.hyd .wbtn.plus { display: flex; align-items: center; justify-content: center; gap: 8px; font: 650 14.5px var(--sys); }
+.hyd .wbtn.plus svg { width: 16px; height: 16px; }
+
+/* ---------- Următoarea doză: rândul ei iese în față ---------- */
+.checklist.tl .check.next { margin: 6px 10px; padding: 14px 12px 14px 6px !important; border-radius: 16px; background: linear-gradient(120deg, #fff1f2, #fff) !important;
+  box-shadow: inset 0 0 0 1.5px rgba(216,16,28,.22), 0 12px 22px -14px rgba(216,16,28,.55) !important; grid-template-columns: 46px 1fr 28px !important; }
+.checklist.tl .check.next time { color: var(--accent) !important; font-size: 22px !important; }
+.checklist.tl .check.next::before { background: var(--accent) !important; box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--accent) !important; left: 60px !important; }
+.check .when { display: block; margin-top: 4px; font: 600 12px var(--sys); color: var(--accent); }
+.check.next .tick { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(216,16,28,.1); animation: latepulse 1.8s ease-in-out infinite; }
+
+/* ---------- Program: fiecare zi e o carte de antrenament ---------- */
+.day-block { gap: 0 !important; border-radius: var(--r-lg); background: var(--surface); overflow: hidden;
+  box-shadow: inset 0 1px 0 #fff, 0 1px 1px rgba(40,18,22,.04), 0 6px 12px -6px rgba(40,18,22,.10), 0 30px 44px -26px rgba(60,20,26,.4); }
+.day-block + .day-block { margin-top: 18px !important; }
+.day-title { position: relative; overflow: hidden; isolation: isolate; display: grid !important; grid-template-columns: 1fr auto; grid-template-rows: auto auto; gap: 6px 12px; align-items: end; padding: 20px 18px 18px; background: var(--plate); color: #fff; }
+.day-title::before { content: ''; position: absolute; z-index: -1; width: 240px; height: 240px; right: -60px; top: -110px; border-radius: 50%; background: radial-gradient(circle, rgba(216,16,28,.5), transparent 65%); }
+.dt-num { position: absolute; z-index: -1; right: 14px; bottom: -26px; font: 800 150px/1 var(--display) !important; color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,.14); }
+.day-title h3 { color: #fff !important; font-size: 38px !important; grid-column: 1; }
+.day-title h3 span { color: #ff5560 !important; }
+.dt-meta { grid-column: 1; font: 500 12.5px var(--sys); color: rgba(255,255,255,.55); }
+.day-title .btn-ghost { grid-column: 2; grid-row: 1 / span 2; align-self: center; background: linear-gradient(180deg, #ef2532, var(--accent) 55%, #c00d18) !important; color: #fff !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 2px 0 #7a0710, 0 10px 20px -8px rgba(216,16,28,.9) !important; min-height: 42px !important; padding: 0 18px !important; }
+.day-block .ex-list { border-radius: 0 !important; box-shadow: none !important; background: transparent; }
+.ex-list .ex-row { padding-block: 12px; }
+.ex-list .ex-row .rig { width: 58px !important; height: 58px !important; background: linear-gradient(180deg, #f7f4f3, #efebea) !important; box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(0,0,0,.04); }
+.ex-list .ex-row strong { font-weight: 600; }
+
+/* ---------- Progres ---------- */
+.phero { position: relative; overflow: hidden; isolation: isolate; display: grid; gap: 10px; padding: 20px 18px 16px; border-radius: var(--r-lg); background: var(--plate); color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 30px 50px -24px rgba(40,8,14,.7); }
+.phero::before { content: ''; position: absolute; z-index: -1; width: 300px; height: 300px; left: -100px; top: -140px; border-radius: 50%; background: radial-gradient(circle, rgba(216,16,28,.5), transparent 65%); animation: spot 6s ease-in-out infinite; }
+.ph-l { font: 600 13px var(--sys); color: rgba(255,255,255,.55); }
+.ph-n { display: flex; align-items: baseline; gap: 10px; }
+.ph-n b { font: 800 76px/.8 var(--display); color: #fff; text-shadow: 0 0 30px rgba(255,60,70,.35); }
+.ph-n span { font: 600 15px var(--sys); color: rgba(255,255,255,.7); }
+.ph-meta { display: flex; gap: 16px; flex-wrap: wrap; font: 500 13px var(--sys); color: rgba(255,255,255,.6); }
+.ph-meta b { font: 800 18px var(--display); color: #fff; margin-right: 3px; }
+.ph-meta .up b { color: #4be08a; } .ph-meta .down b { color: #ff6b74; }
+.ph-bars { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; align-items: end; height: 110px; margin-top: 6px; }
+.phb { display: grid; gap: 6px; justify-items: center; align-content: end; height: 100%; }
+.phb i { width: 100%; max-width: 26px; height: calc(var(--h) * 84px + 4px); border-radius: 8px 8px 4px 4px; background: linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,.1)); transform-origin: 50% 100%; }
+.phb.now i { background: linear-gradient(180deg, #ff4a55, var(--accent)); box-shadow: 0 0 18px rgba(255,40,50,.6), inset 0 1px 0 rgba(255,255,255,.4); }
+.phb small { font: 600 10.5px var(--sys); color: rgba(255,255,255,.4); }
+.phb.now small { color: #ff6b74; }
+#view.intro .phb i, .rv-in .phb i { animation: barup 1s cubic-bezier(.2, 1.3, .4, 1) both; animation-delay: calc(.4s + var(--i) * .06s); }
+
+.mmap { background: var(--plate) !important; color: #fff; --surface-3: #3b2f33; --surface-2: #2b2226; box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 30px 50px -24px rgba(40,8,14,.7) !important; border: 0 !important; border-radius: var(--r-lg) !important; }
+.mmap .body { filter: drop-shadow(0 0 14px rgba(216,16,28,.35)); }
+.mm-bodies figcaption { color: rgba(255,255,255,.45) !important; text-transform: none !important; letter-spacing: 0 !important; font-size: 12px !important; }
+.mm-row { color: rgba(255,255,255,.85); }
+.mm-row i { background: rgba(255,255,255,.08) !important; height: 8px !important; border-radius: 4px !important; }
+.mm-row i b { box-shadow: 0 0 10px rgba(255,40,50,.6); border-radius: 4px !important; }
+.mm-row em { color: #fff !important; font: 800 16px var(--display) !important; }
+.mm-note { color: rgba(255,255,255,.4) !important; }
+
+.pr-rail { display: grid; grid-auto-flow: column; grid-auto-columns: 62%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 4px max(16px, env(safe-area-inset-left, 0px)) 18px; scrollbar-width: none; }
+.pr-rail::-webkit-scrollbar { display: none; }
+.pr-tile { scroll-snap-align: start; position: relative; overflow: hidden; isolation: isolate; display: grid; gap: 4px; padding: 16px; border-radius: var(--r-md); color: #fff;
+  background: radial-gradient(130% 120% at 100% 0%, #ff4651, var(--accent) 45%, #7c0911); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 3px 0 #6d070e, 0 20px 30px -16px rgba(216,16,28,.8); }
+.pr-tile::after { content: ''; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.35) 45%, transparent 60%) -150% 0 / 250% 100% no-repeat; animation: foil 5s calc(var(--i) * .5s) ease-in-out infinite; pointer-events: none; }
+.pr-ic { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; background: rgba(255,255,255,.18); margin-bottom: 6px; }
+.pr-ic svg { width: 18px; height: 18px; }
+.pr-tile small { font: 600 11.5px var(--sys); color: rgba(255,255,255,.7); }
+.pr-tile strong { font: 600 14px/1.25 var(--sys); min-height: 2.5em; }
+.pr-kg { display: flex; align-items: baseline; gap: 6px; }
+.pr-kg b { font: 800 44px/.85 var(--display); }
+.pr-kg span { font: 600 13px var(--sys); color: rgba(255,255,255,.8); }
+.pr-tile em { justify-self: start; font: 700 12px var(--sys); font-style: normal; padding: 4px 9px; border-radius: 999px; background: rgba(255,255,255,.2); margin-top: 4px; }
+
+.ex-pick { gap: 8px; margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 2px max(16px, env(safe-area-inset-left, 0px)) 6px; }
+.ex-pick .chip { min-height: 38px; padding: 0 14px; border: 0 !important; background: var(--surface) !important; box-shadow: inset 0 1px 0 #fff, 0 4px 10px -6px rgba(40,18,22,.3); font-weight: 600; color: var(--muted); }
+.ex-pick .chip[aria-pressed="true"] { background: var(--ink) !important; color: #fff !important; box-shadow: 0 8px 16px -8px rgba(0,0,0,.6); }
+.chart-card { border: 0 !important; border-radius: var(--r-md) !important; padding: 18px !important; box-shadow: inset 0 1px 0 #fff, 0 6px 12px -6px rgba(40,18,22,.10), 0 26px 40px -26px rgba(60,20,26,.35) !important; }
+.chart-head b { font: 800 44px/.85 var(--display) !important; color: var(--ink); }
+.chart .lineA { stroke-width: 3 !important; filter: drop-shadow(0 4px 6px rgba(216,16,28,.45)); }
+.chart .areaA { opacity: .18 !important; }
+.chart .dot-ring { stroke-width: 3; filter: drop-shadow(0 0 6px rgba(216,16,28,.7)); }
+.chart .endlbl { font: 800 15px var(--display) !important; }
+.delta-up { font: 700 12px var(--sys); padding: 5px 10px; border-radius: 999px; background: #e6f8ee; color: #128a4a; }
+.delta-down { font: 700 12px var(--sys); padding: 5px 10px; border-radius: 999px; background: #ffecec; color: var(--accent); }
+
+.hist { border-radius: var(--r-md); background: var(--surface); overflow: hidden; box-shadow: inset 0 1px 0 #fff, 0 6px 12px -6px rgba(40,18,22,.10), 0 26px 40px -26px rgba(60,20,26,.35); }
+.hist .hist-row { border-radius: 0 !important; border: 0 !important; background: transparent !important; grid-template-columns: 50px 1fr 18px !important; padding: 12px 14px !important; }
+.hist .hist-row + .hist-row { border-top: 1px solid var(--line) !important; }
+.badge.hd { width: 50px !important; height: 50px !important; border-radius: 14px !important; display: grid !important; place-content: center; gap: 1px; background: #f6f3f2 !important; color: var(--ink) !important; }
+.badge.hd b { font: 800 22px/.9 var(--display); text-align: center; }
+.badge.hd small { font: 600 10.5px var(--sys); color: var(--muted); text-align: center; }
+.hist-row > span:nth-child(2) { display: grid; gap: 3px; }
+.hvol { display: block; height: 4px; border-radius: 2px; background: #f1ecea; position: relative; overflow: hidden; }
+.hvol::after { content: ''; position: absolute; inset: 0; width: calc(var(--v) * 100%); border-radius: 2px; background: linear-gradient(90deg, #ff4a55, var(--accent)); }
+.field, .row-input input { border: 0 !important; background: #f6f3f2 !important; border-radius: 14px !important; min-height: 48px; }
+.row-input .btn-ghost { background: var(--ink) !important; color: #fff !important; border: 0 !important; border-radius: 14px !important; }
+
+/* ---------- Suplimente ---------- */
+.supp { border: 0 !important; border-radius: var(--r-md) !important; padding: 14px 16px !important; box-shadow: inset 0 1px 0 #fff, 0 6px 12px -6px rgba(40,18,22,.10), 0 22px 34px -24px rgba(60,20,26,.35) !important; }
+.supp-top { grid-template-columns: 44px 1fr auto !important; gap: 12px !important; }
+.supp-top > span:first-child:not(.s-ic) { grid-column: 1 / 3; }
+.s-ic { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; color: #fff;
+  background: linear-gradient(160deg, hsl(var(--hue) 90% 62%), hsl(var(--hue) 80% 44%)); box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 8px 14px -8px hsl(var(--hue) 80% 40%); }
+.s-ic svg { width: 20px; height: 20px; }
+.supp-top strong { font: 800 21px/1 var(--display) !important; color: var(--ink); }
+.supp.off { opacity: .55; }
+.supp.off .s-ic { filter: grayscale(1); }
+.switch { width: 52px !important; height: 32px !important; background: #e7e1df !important; box-shadow: inset 0 1px 3px rgba(0,0,0,.12); }
+.switch::after { width: 26px !important; height: 26px !important; box-shadow: 0 3px 8px rgba(0,0,0,.22), 0 0 0 .5px rgba(0,0,0,.04) !important; transition: transform .35s cubic-bezier(.3, 1.5, .5, 1) !important; }
+.switch[aria-checked="true"] { background: linear-gradient(180deg, #ef2532, var(--accent)) !important; box-shadow: inset 0 1px 2px rgba(90,0,8,.4), 0 6px 12px -6px rgba(216,16,28,.8); }
+.switch[aria-checked="true"]::after { transform: translateX(20px) !important; }
+.supp-ctl input[type="time"] { border: 0 !important; background: #f6f3f2 !important; border-radius: 12px !important; font: 800 20px var(--display) !important; padding: 6px 10px; color: var(--ink); }
+.supp-ctl .del { color: var(--muted); font: 600 13px var(--sys); }
+.notice { border: 0 !important; border-radius: var(--r-md) !important; background: var(--plate, #1d1517) !important; background: radial-gradient(120% 90% at 0% 0%, #3a2328 0%, #1d1517 45%, #120d0f 100%) !important; color: #fff; padding: 16px !important;
+  box-shadow: 0 26px 40px -24px rgba(40,8,14,.7) !important; }
+.notice p, .notice small { color: rgba(255,255,255,.7) !important; }
+.notice strong { color: #fff; }
+.notice .state-dot { background: #4be08a !important; box-shadow: 0 0 0 4px rgba(75,224,138,.2), 0 0 10px #4be08a; }
+.notice .btn-ghost { background: rgba(255,255,255,.1) !important; color: #fff !important; border: 0 !important; }
+.add-form { border: 0 !important; border-radius: var(--r-md) !important; padding: 16px !important; box-shadow: inset 0 1px 0 #fff, 0 6px 12px -6px rgba(40,18,22,.10), 0 26px 40px -26px rgba(60,20,26,.35) !important; }
+.checklist.tl .check.next { width: calc(100% - 16px) !important; margin: 6px 8px !important; }
+.ex-list .ex-row { grid-template-columns: 58px 1fr 18px !important; gap: 14px !important; padding-left: 14px !important; }
+.rv { transform: translateY(44px) scale(.97) !important; }
+.rv.rv-in { transform: none !important; }
+@keyframes rise3 { from { opacity: 0; transform: perspective(2400px) translateY(34px) rotateX(5deg) scale(.97); } }
+.badge.hd small { text-transform: none !important; letter-spacing: 0 !important; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -2016,38 +2176,38 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBrand);
 /* ---------- Ecran: Azi ---------- */
 function waterCard() {
   const w = S.water; if (!w || !w.on) return '';
-  const goal = waterTimes().length, n = w.log[dayKey()] || 0, ml = n * 250;
-  return `<div class="water tile" style="--lv:${Math.min(1, goal ? n / goal : 0).toFixed(3)}"><div class="liquid" aria-hidden="true"><svg class="wv wv1" viewBox="0 0 800 40" preserveAspectRatio="none"><path d="M0 20 Q100 0 200 20 T400 20 T600 20 T800 20 V40 H0Z"/></svg><svg class="wv wv2" viewBox="0 0 800 40" preserveAspectRatio="none"><path d="M0 20 Q100 38 200 20 T400 20 T600 20 T800 20 V40 H0Z"/></svg><i></i></div>
-    <div class="t-head"><span class="drop">${LI.drop}</span><small>Apă</small></div>
-    <div class="t-big"><b class="num">${n}</b><span>/${goal}</span></div>
-    <small class="t-sub">${fmt(ml / 1000, 2)} l din ${fmt(goal * .25, 2)} l</small>
-    <div class="water-btns"><button class="wbtn" data-water="-1" aria-label="Scade un pahar">−</button><button class="wbtn plus" data-water="1" aria-label="Am băut un pahar">+</button></div></div>`;
-}
-function nextSuppTile(list, taken) {
-  const now = new Date(), nm = now.getHours() * 60 + now.getMinutes();
-  const left = list.filter(s => !taken.includes(s.id));
-  if (!left.length) return `<div class="tile next-s done"><div class="t-head"><span class="pill-ic">${ICON.check}</span><small>Suplimente</small></div><div class="t-big"><b>Gata</b></div><small class="t-sub">Ai luat tot ce era azi.</small></div>`;
-  const s = left.find(x => { const [h, m] = x.time.split(':').map(Number); return h * 60 + m >= nm - 30; }) || left[0];
-  const [h, m] = s.time.split(':').map(Number), d = h * 60 + m - nm;
-  const when = d <= 0 ? (d < -30 ? 'întârziat' : 'acum') : d < 60 ? `în ${d} min` : `în ${Math.floor(d / 60)} h ${d % 60 ? (d % 60) + ' min' : ''}`;
-  return `<div class="tile next-s ${d <= 0 ? 'due' : ''}"><div class="t-head"><span class="pill-ic">${LI.pill || ICON.check}</span><small>Urmează</small></div>
-    <div class="t-big"><b class="num">${esc(s.time)}</b></div><small class="t-sub"><strong>${esc(s.name)}</strong><br>${when}</small>
-    <button class="t-act" data-take="${s.id}">Am luat</button></div>`;
+  const times = waterTimes(), goal = times.length, n = w.log[dayKey()] || 0, lv = Math.min(1, goal ? n / goal : 0);
+  const now = new Date(), hm = `${pad(now.getHours())}:${pad(now.getMinutes())}`, nxt = times.find(t => t > hm);
+  const B = 'M23 3h14v10c0 3 13 9 13 24v62a9 9 0 0 1-9 9H19a9 9 0 0 1-9-9V37c0-15 13-21 13-24Z';
+  return `<div class="hyd" style="--lv:${lv.toFixed(3)}">
+    <div class="bottle" aria-hidden="true"><svg viewBox="0 0 60 112"><defs><clipPath id="bclip"><path d="${B}"/></clipPath>
+      <linearGradient id="bwat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5cb8ff"/><stop offset="1" stop-color="#1470c4"/></linearGradient></defs>
+      <path class="b-back" d="${B}"/>
+      <g clip-path="url(#bclip)"><g class="b-fill"><path class="b-wave w2" d="M-60 6 Q-45 0 -30 6 T0 6 T30 6 T60 6 T90 6 T120 6 V140 H-60Z"/><path class="b-wave w1" d="M-60 6 Q-45 12 -30 6 T0 6 T30 6 T60 6 T90 6 T120 6 V140 H-60Z"/>
+        <circle class="bub b1" cx="22" cy="90" r="1.8"/><circle class="bub b2" cx="34" cy="96" r="1.2"/><circle class="bub b3" cx="40" cy="86" r="1.5"/></g></g>
+      <path class="b-glass" d="${B}"/><path class="b-shine" d="M16 44 V92"/><rect class="b-cap" x="21" y="0" width="18" height="7" rx="2.5"/></svg></div>
+    <div class="hyd-body"><small class="hyd-l">Apă azi</small>
+      <div class="hyd-n"><b class="num">${n}</b><span>din ${goal} pahare</span></div>
+      <div class="hyd-bar"><i style="width:${(lv * 100).toFixed(1)}%"></i></div>
+      <small class="hyd-s">${fmt(n * .25, 2)} l din ${fmt(goal * .25, 2)} l${nxt ? `, următorul la ${nxt}` : ''}</small>
+      <div class="hyd-btns"><button class="wbtn" data-water="-1" aria-label="Scade un pahar">−</button><button class="wbtn plus" data-water="1">${LI.drop}<span>Am băut un pahar</span></button></div></div></div>`;
 }
 function suppChecklist() {
   const list = S.supps.filter(s => s.on).sort((a, b) => a.time.localeCompare(b.time));
   if (!list.length) return waterCard() + `<p class="empty">Nu ai suplimente active. Le adaugi din fila Suplimente.</p>`;
   const taken = S.suppLog[dayKey()] || [];
   const now = new Date(), nm = now.getHours() * 60 + now.getMinutes();
-  let nowPlaced = false;
+  let nowPlaced = false, nextMarked = false;
   const rows = list.map(s => {
     const [h, m] = s.time.split(':').map(Number), t = h * 60 + m, ok = taken.includes(s.id);
-    let marker = '';
+    let marker = '', isNext = false;
+    if (!ok && !nextMarked && t >= nm - 30) { nextMarked = true; isNext = true; }
     if (!nowPlaced && t > nm) { nowPlaced = true; marker = `<div class="tl-now" aria-hidden="true"><span>Acum ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}</span></div>`; }
-    return marker + `<button class="check ${ok ? 'taken' : t < nm - 30 ? 'late' : ''}" data-take="${s.id}" aria-pressed="${ok}">
-    <time>${esc(s.time)}</time><span><strong>${esc(s.name)}</strong><em>${esc(s.dose)}${!ok && t < nm - 30 ? ' · nebifat' : ''}</em></span><span class="tick">${ICON.check}</span></button>`;
+    const d = t - nm, when = d <= 0 ? 'acum' : d < 60 ? `în ${d} min` : `în ${Math.floor(d / 60)} h${d % 60 ? ' ' + (d % 60) + ' min' : ''}`;
+    return marker + `<button class="check ${ok ? 'taken' : t < nm - 30 ? 'late' : ''} ${isNext ? 'next' : ''}" data-take="${s.id}" aria-pressed="${ok}">
+    <time>${esc(s.time)}</time><span><strong>${esc(s.name)}</strong><em>${esc(s.dose)}${!ok && t < nm - 30 ? ', nebifat' : ''}</em>${isNext ? `<span class="when">${when}, atinge când o iei</span>` : ''}</span><span class="tick">${ICON.check}</span></button>`;
   }).join('');
-  return `<div class="bento">${waterCard()}${nextSuppTile(list, taken)}</div><div class="checklist tl">${rows}${nowPlaced ? '' : `<div class="tl-now end" aria-hidden="true"><span>Acum</span></div>`}</div>`;
+  return `${waterCard()}<div class="checklist tl">${rows}${nowPlaced ? '' : `<div class="tl-now end" aria-hidden="true"><span>Acum</span></div>`}</div>`;
 }
 let showOthers = false;
 function quoteCard() {
@@ -2143,7 +2303,7 @@ function exDetail(id) {
 function viewProgram() {
   return `<section class="sec"><p class="daymeta" style="margin:0">Trei antrenamente pe săptămână: luni, miercuri și vineri. În restul zilelor, odihnă. Apasă pe un exercițiu ca să vezi animația și execuția.</p></section>` +
     DAYS.map(d => `<section class="day-block">
-    <div class="day-title"><h3><span>${d.label}</span>${esc(d.name)}</h3><button class="btn btn-ghost" data-start="${d.id}">Începe</button></div>
+    <div class="day-title"><div class="dt-num num" aria-hidden="true">${DAYS.indexOf(d) + 1}</div><h3><span>${d.label}</span>${esc(d.name)}</h3><small class="dt-meta">${d.ex.length} exerciții, ${d.ex.reduce((x, id) => x + EX[id].sets, 0)} serii, cam ${Math.round(d.ex.reduce((x, id) => x + EX[id].sets * (EX[id].rest + 45), 0) / 60 / 5) * 5} min</small><button class="btn btn-ghost" data-start="${d.id}">Începe</button></div>
     <div class="ex-list">${d.ex.map(id => `<div class="ex-item ${openEx.has(id) ? 'open' : ''}"><button class="ex-row" data-open="${id}" aria-expanded="${openEx.has(id)}">${Rig.svg(id)}<span><strong>${esc(EX[id].name)}</strong><small>${exTarget(EX[id])}</small></span>${ICON.chev}</button>${openEx.has(id) ? exDetail(id) : ''}</div>`).join('')}</div>
   </section>`).join('');
 }
@@ -2204,7 +2364,8 @@ function viewProgres() {
     ${hist.length ? `<div class="hist">${hist.map(s => {
       const d = DAYS.find(x => x.id === s.day);
       const nsets = Object.values(s.ex).reduce((a, x) => a + x.length, 0);
-      return `<button class="hist-row" data-sess="${s.id}"><span class="badge">${d.label.slice(0, 2)}</span><span><strong>${esc(d.name)}</strong><small>${new Date(s.date).toLocaleDateString('ro-RO', { weekday: 'short', day: 'numeric', month: 'short' })} · ${nsets} serii · ${fmt(volume(s), 0)} kg · ${Math.round((s.dur || 0) / 60000)} min</small></span>${ICON.chev}</button>`;
+      const dt = new Date(s.date);
+      return `<button class="hist-row" data-sess="${s.id}"><span class="badge hd"><b class="num">${dt.getDate()}</b><small>${dt.toLocaleDateString('ro-RO', { month: 'short' }).replace('.', '')}</small></span><span><strong>${esc(d.name)}</strong><small>${nsets} serii, ${fmt(volume(s) / 1000, 1)} t, ${Math.round((s.dur || 0) / 60000)} min</small><i class="hvol" style="--v:${Math.min(1, volume(s) / 14000).toFixed(2)}"></i></span>${ICON.chev}</button>`;
     }).join('')}</div>` : `<p class="empty">Antrenamentele terminate apar aici. Apasă pe unul ca să vezi fiecare exercițiu, greutățile și progresul.</p>`}
   </section>
 `;
@@ -2242,8 +2403,8 @@ function viewSupl() {
     </div>
   </section>
   <section class="sec"><h2>Lista ta</h2>
-    ${list.map(s => `<div class="supp ${s.on ? '' : 'off'}">
-      <div class="supp-top"><span><strong>${esc(s.name)}</strong><small>${esc(s.dose)}</small></span>
+    ${list.map((s, k) => `<div class="supp ${s.on ? '' : 'off'}">
+      <div class="supp-top"><span class="s-ic" style="--hue:${[356, 18, 200, 140, 280, 40][[...s.name].reduce((x, c) => x + c.charCodeAt(0), 0) % 6]}">${LI.pill}</span><span><strong>${esc(s.name)}</strong><small>${esc(s.dose)}</small></span>
         <button class="switch" role="switch" aria-checked="${s.on}" aria-label="Activ: ${esc(s.name)}" data-toggle="${s.id}"></button></div>
       ${s.tip && !s.on ? `<div class="supp-tip">Recomandat: ${esc(s.tip)}</div>` : ''}
       <div class="supp-ctl"><label class="daymeta" for="t-${s.id}">Ora</label><input type="time" id="t-${s.id}" value="${esc(s.time)}" data-time="${s.id}"><span style="flex:1"></span><button class="del" data-del-supp="${s.id}">Șterge</button></div>
@@ -2527,7 +2688,7 @@ document.addEventListener('click', e => {
   if (ds.water) {
     const k = dayKey(), w = S.water; w.log[k] = Math.max(0, (w.log[k] || 0) + (+ds.water));
     for (const key of Object.keys(w.log)) if (key < dayKey(new Date(Date.now() - 60 * DAYMS))) delete w.log[key];
-    save(); render(); if (+ds.water > 0) { const el = document.querySelector('.water-dots i.on:last-of-type') || document.querySelector('.water .drop'); FX.pop(document.querySelector('.water .drop')); }
+    save(); render(); if (+ds.water > 0) { const el = document.querySelector('.water-dots i.on:last-of-type') || document.querySelector('.water .drop'); FX.pop(document.querySelector('.bottle')); }
     return;
   }
   if ('waterToggle' in ds) { S.water.on = !S.water.on; save(); render(); return; }
@@ -2729,7 +2890,7 @@ function prSection() {
   const { prs, best } = allPRs();
   const recent = prs.slice(-5).reverse();
   if (!recent.length) return '';
-  return `<section class="sec"><h2>Recorduri recente</h2><div class="hist">${recent.map(p => `<div class="hist-row pr-row"><span class="badge pr-b">${LI.trophy}</span><span><strong>${esc(EX[p.id].name)}</strong><small>${fmt(p.kg)} kg × ${p.reps} · ${fmtDate(p.date)}</small></span><em class="pr-g">+${fmt(p.gain)} kg</em></div>`).join('')}</div></section>`;
+  return `<section class="sec"><h2>Recorduri recente</h2><div class="pr-rail">${recent.map((p, i) => `<div class="pr-tile" style="--i:${i}"><span class="pr-ic">${LI.trophy}</span><small>${fmtDate(p.date)}</small><strong>${esc(EX[p.id].name)}</strong><div class="pr-kg"><b class="num">${fmt(p.kg)}</b><span>kg × ${p.reps}</span></div><em>+${fmt(p.gain)} kg</em></div>`).join('')}</div></section>`;
 }
 
 /* ---------- Extinderea ecranelor existente ---------- */
@@ -2738,8 +2899,18 @@ viewAzi = function () {
   const h = _viewAzi();
   return h.replace('<!--rings-->', ringsCard());
 };
+function progHero() {
+  const ws = weekStart(), weeks = [];
+  for (let k = 7; k >= 0; k--) weeks.push(S.sessions.filter(s => s.date >= ws - k * 7 * DAYMS && s.date < ws - (k - 1) * 7 * DAYMS).reduce((a, s) => a + volume(s), 0));
+  const tot = weeks.reduce((a, b) => a + b, 0), mx = Math.max(...weeks, 1), n = S.sessions.filter(s => s.date >= ws - 7 * 7 * DAYMS).length;
+  const first = weeks.find(v => v > 0) || 0, lastFull = weeks[6] || 0, gain = first ? Math.round((lastFull / first - 1) * 100) : 0;
+  return `<section class="phero"><small class="ph-l">Ultimele 8 săptămâni</small>
+    <div class="ph-n"><b class="num" data-count>${fmt(tot / 1000, 1)}</b><span>tone ridicate</span></div>
+    <div class="ph-meta"><span><b class="num">${n}</b> antrenamente</span>${gain ? `<span class="${gain >= 0 ? 'up' : 'down'}"><b class="num">${gain > 0 ? '+' : ''}${gain}%</b> volum pe săptămână</span>` : ''}</div>
+    <div class="ph-bars">${weeks.map((v, i) => `<div class="phb ${i === 7 ? 'now' : ''}" style="--h:${(v / mx).toFixed(3)};--i:${i}"><i></i><small>${i === 7 ? 'acum' : `−${7 - i}`}</small></div>`).join('')}</div></section>`;
+}
 viewProgres = function () {
-  return `<section class="sec"><h2>Mușchi lucrați</h2>${bodyMap()}</section>` + prSection() + _viewProgres();
+  return progHero() + `<section class="sec"><h2>Mușchi lucrați</h2>${bodyMap()}</section>` + prSection() + _viewProgres();
 };
 VIEWS.profil = viewProfil;
 
