@@ -1840,6 +1840,8 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .grip button { padding: 8px 14px; border-radius: 999px; background: var(--soft); color: var(--ink); font: 650 13.5px var(--sys); transition: background .2s, color .2s, transform .3s cubic-bezier(.3, 1.6, .5, 1); }
 .grip button.on { background: var(--accent); color: #fff; box-shadow: 0 6px 14px -6px rgba(216,16,28,.8); transform: scale(1.04); }
 .grip small { flex-basis: 100%; font: 500 11.5px var(--sys); color: var(--faint); }
+.w-fin { display: grid; gap: 8px; margin-top: 8px; }
+.w-fin h3 { margin: 0; font: 800 22px var(--display); color: var(--ink); }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -4380,11 +4382,11 @@ function challengeRail() {
   const _va = viewAzi;
   viewAzi = function () {
     let h = _va();
-    const tp = planFor(new Date()), dayId = (S.active && S.active.day) || (tp && tp.id);
+    const tp = planFor(new Date()), dayId = (S.active && S.active.day) || (tp && tp.id) || (nextPlan().p || DAYS[0]).id;
     const guides = dayId ? `<div class="gcards">${guideCard('warm', dayId)}${guideCard('core', dayId)}${guideCard('stretch', dayId)}</div>` : '';
     if (guides) {
       const h2 = h.replace(/(<button class="btn btn-main" data-start="[^"]*">[^<]*<\/button>)/, `${guides}$1`);
-      h = h2 !== h ? h2 : h.replace('<div class="tips-h">', `<div class="gcards">${guideCard('stretch', dayId)}</div><div class="tips-h">`);
+      h = h2 !== h ? h2 : h.replace('<div class="tips-h">', `<div class="gcards">${guideCard('core', dayId)}${guideCard('stretch', dayId)}</div><div class="tips-h">`);
     }
     const dn = dinamoCard(), ch = challengeRail();
     const i = h.indexOf('<section class="sec"><div class="sec-head"><h2>Suplimente azi');
@@ -4449,6 +4451,16 @@ const gymBox = id => GYM[id] ? `<div class="gym"><span class="gym-ic">${LI.wrenc
   };
 }
 MOVES['incline-treadmill-walk'][1] = 'Pe banda Technogym: apeși butonul verde de pornire, apoi „+” la viteză până la 5,5-6 km/h și „+” la înclinare până la 3-5%. Mers alert, fără să te ții de mânere.';
+
+/* abdomen și ardere, direct la finalul listei de exerciții din antrenament */
+{
+  const _rw5 = renderWorkout;
+  renderWorkout = function () {
+    _rw5(); if (!S.active) return;
+    const f = document.querySelector('#workout .w-foot'); if (!f || document.querySelector('#workout .w-fin')) return;
+    f.insertAdjacentHTML('beforebegin', `<div class="w-fin"><h3>La final</h3><div class="gcards">${guideCard('core', S.active.day)}${guideCard('stretch', S.active.day)}</div></div>`);
+  };
+}
 
 /* ---------- Scorul de formă, vremea pentru drumul la sală, reamintiri de antrenament ---------- */
 
