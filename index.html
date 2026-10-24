@@ -1893,6 +1893,21 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .fd-sum { display: flex; justify-content: space-between; font: 600 13px var(--sys); color: var(--muted); } .fd-sum b { font: 800 20px var(--display); color: var(--ink); }
 .fd-steps { margin: 0; padding-left: 20px; display: grid; gap: 6px; font: 500 13.5px/1.4 var(--sys); color: var(--ink); } .fd-steps a { color: var(--accent); font-weight: 700; }
 @media (prefers-color-scheme: dark) { .food { background: linear-gradient(160deg, #1f1714, #241a14); } .fr-bg, .fd-p i { stroke: #3a2a20; background: #3a2a20; } }
+.fd-ring.over .fr-fg { stroke: var(--accent); } .fd-ring.over b { color: var(--accent); }
+.fd-warn { padding: 10px 12px; border-radius: 12px; background: rgba(216,16,28,.08); color: var(--accent); font: 600 12.5px/1.4 var(--sys); }
+.fd-goal { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 16px; background: var(--soft); text-align: left; }
+.fg-w { display: grid; justify-items: center; } .fg-w b { font: 800 26px/1 var(--display); color: var(--ink); } .fg-w small { font: 600 10.5px var(--sys); color: var(--muted); }
+.fg-w.t b { color: #16a34a; }
+.fg-bar { display: grid; gap: 5px; } .fg-bar i { height: 8px; border-radius: 4px; background: linear-gradient(90deg, #4ade80, #16a34a); box-shadow: 0 0 8px rgba(34,197,94,.5); min-width: 8px; }
+.fg-bar { background: none; } .fg-bar::before { content: ''; } .fg-bar small { font: 600 11.5px var(--sys); color: var(--muted); }
+.fg-bar { position: relative; } .fg-bar i { position: relative; z-index: 1; }
+.fg-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .fg-form label { display: grid; gap: 4px; } .fg-form small { font: 600 12px var(--sys); color: var(--muted); }
+.fg-form input { font: 800 26px var(--display) !important; text-align: center; }
+.fg-pace { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.fg-pace button { display: grid; gap: 2px; padding: 10px 6px; border-radius: 14px; background: var(--soft); text-align: center; }
+.fg-pace b { font: 800 18px var(--display); color: var(--ink); } .fg-pace small { font: 600 11.5px var(--sys); color: var(--muted); } .fg-pace em { font: 500 10.5px var(--sys); font-style: normal; color: var(--faint); }
+.fg-pace button.on { background: var(--ink); } .fg-pace button.on b, .fg-pace button.on small, .fg-pace button.on em { color: #fff; }
+.fg-tr { display: block; height: 8px; border-radius: 4px; background: rgba(34,197,94,.15); overflow: hidden; } .fg-tr i { display: block; height: 100%; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -3029,7 +3044,7 @@ function restHero(doneToday, skipped) {
   const low = groups.filter(m => rec[m].pct < 100).sort((a, b) => rec[a].pct - rec[b].pct).slice(0, 3);
   const C = 2 * Math.PI * 34, rc = avg >= 90 ? '#22c55e' : avg >= 65 ? '#a3d93a' : avg >= 40 ? '#f5a524' : '#e11d2a';
   const mins = Math.round(p.ex.reduce((x, id) => x + EX[id].sets * (EX[id].rest + 45), 0) / 60 / 5) * 5;
-  const tips = [[RI.sleep, 'Somn', '7-9 ore', '#7c5cff'], [RI.food, 'Proteine', `${fmt(1.8 * ((S.body.length && S.body[S.body.length - 1].kg) || 80) / 1, 0)} g azi`, '#f59e0b'], [RI.walk, 'Plimbare', '30 de minute', '#22c55e'], [RI.stretch, 'Stretching', '10 minute', '#0ea5e9']];
+  const tips = [[RI.sleep, 'Somn', '7-9 ore', '#7c5cff'], [RI.food, 'Proteine', `${typeof protGoal === 'function' ? protGoal() : 150} g azi`, '#f59e0b'], [RI.walk, 'Plimbare', '30 de minute', '#22c55e'], [RI.stretch, 'Stretching', '10 minute', '#0ea5e9']];
   return `<section class="stage st-rest">
     ${Buddy.svg.replace('class="buddy ', 'class="buddy st-av ')}${stageTitle([doneToday ? 'Bifat' : 'Odihnă'])}<canvas class="st-fx" aria-hidden="true"></canvas></section>
   <section class="st-card rest-card">
@@ -3679,7 +3694,7 @@ function viewProfil() {
   return `<section class="prof">
     <div class="prof-av">${Buddy.flex.replace('class="buddy ', 'class="buddy avatar ')}</div>
     <h1><span class="fn">Cristian</span> <b class="ln">DEMIAN</b></h1>
-    <p class="daymeta">${first ? `Se antrenează din ${new Date(first.date).toLocaleDateString('ro-RO', { month: 'long', year: 'numeric' })}` : 'Primul antrenament te așteaptă'} · Obiectiv: masă musculară</p>
+    <p class="daymeta">${first ? `Se antrenează din ${new Date(first.date).toLocaleDateString('ro-RO', { month: 'long', year: 'numeric' })}` : 'Primul antrenament te așteaptă'} · Obiectiv: slăbit, ${typeof S.goal === 'object' ? `${fmt(S.goal.start)} → ${fmt(S.goal.target)} kg` : ''}</p>
   </section>
   <section class="pstats">
     <div class="stat"><b class="num" data-count>${t.n}</b><small>antrenamente</small></div>
@@ -4530,7 +4545,7 @@ const TIPS = {
     ['Cafeaua până la 14:00', 'Cofeina rămâne în corp 6-8 ore și strică somnul adânc, chiar dacă adormi.'],
     ['Magneziu seara', 'Dacă îl ai pe listă, ia-l înainte de culcare. Ajută relaxarea musculară.']]],
   proteine: ['Proteine', '#f59e0b', [
-    ['Ținta ta: ~1,8 g pe kg', 'Împarte-o în 4 mese de 30-40 g, nu toată deodată.'],
+    ['Ținta ta: ~2 g pe kg din greutatea țintă', 'La slăbit, proteinele mari îți păstrează mușchii. Împarte-le în 4 mese de 35-45 g.'],
     ['Mic dejun', '3 ouă + 100 g brânză de vaci (≈ 35 g) sau iaurt grecesc cu ovăz (≈ 25 g).'],
     ['Prânz', '200 g piept de pui sau curcan cu orez sau cartofi (≈ 45 g).'],
     ['Gustare', 'Un shake de proteine (≈ 25 g) sau o conservă de ton (≈ 25 g).'],
@@ -4787,22 +4802,46 @@ function swapVariant(from, to) {
 const FKEY = 'forta-gemini';
 const fkey = () => { try { return localStorage.getItem(FKEY) || ''; } catch (e) { return ''; } };
 S.food = S.food || {};
-const kcalGoal = () => { const w = (S.body.length && S.body[S.body.length - 1].kg) || 80; return Math.round(w * 33 / 50) * 50; };
-const protGoal = () => Math.round(((S.body.length && S.body[S.body.length - 1].kg) || 80) * 1.8);
+/* obiectivul tău: slăbit de la 90 la 82 kg, ritm 0,5 kg pe săptămână */
+if (!S.goal) {
+  S.goal = { target: 82, pace: 0.5, start: 90, since: dayKey() };
+  const last = S.body.length ? S.body[S.body.length - 1] : null;
+  if (!last || Math.abs(last.kg - 90) > 0.05) S.body.push({ t: Date.now(), kg: 90 });
+  save();
+}
+const curW = () => (S.body.length && S.body[S.body.length - 1].kg) || S.goal.start;
+/* întreținere ≈ 31 kcal/kg la 3 antrenamente pe săptămână; 1 kg de grăsime ≈ 7.700 kcal */
+const maintKcal = () => Math.round(curW() * 31 / 10) * 10;
+const deficit = () => curW() <= S.goal.target ? 0 : Math.round(S.goal.pace * 7700 / 7 / 10) * 10;
+const kcalGoal = () => Math.max(1600, Math.round((maintKcal() - deficit()) / 10) * 10);
+const protGoal = () => Math.round(S.goal.target * 2);
+function goalEta() { const left = curW() - S.goal.target; if (left <= 0) return null; const wk = left / S.goal.pace, d = new Date(Date.now() + wk * 7 * DAYMS); return { wk: Math.ceil(wk), d }; }
 function foodToday() { return S.food[dayKey()] || []; }
 function foodCard() {
   const meals = foodToday(), k = meals.reduce((a, m) => a + m.kcal, 0), p = meals.reduce((a, m) => a + m.p, 0), kg = kcalGoal(), pg = protGoal();
-  const C = 2 * Math.PI * 30;
+  const C = 2 * Math.PI * 30, left = kg - k, over = left < 0, eta = goalEta(), lost = Math.max(0, S.goal.start - curW()), tot = Math.max(0.1, S.goal.start - S.goal.target);
   return `<section class="food">
     <div class="fd-top">
-      <div class="fd-ring"><svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" class="fr-bg"/><circle cx="36" cy="36" r="30" class="fr-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - Math.min(1, k / kg))).toFixed(1)}"/></svg><span><b class="num">${k}</b><small>kcal</small></span></div>
-      <div class="fd-t"><small>Ce mănânci azi</small><b>${k ? `${k} din ${kg} kcal` : 'Fotografiază prima masă'}</b>
-        <div class="fd-p"><i><em style="width:${Math.min(100, p / pg * 100).toFixed(0)}%"></em></i><span>Proteine <b class="num">${Math.round(p)}</b>/${pg} g</span></div></div>
+      <div class="fd-ring ${over ? 'over' : ''}"><svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" class="fr-bg"/><circle cx="36" cy="36" r="30" class="fr-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - Math.min(1, k / kg))).toFixed(1)}"/></svg><span><b class="num">${Math.abs(left)}</b><small>${over ? 'peste' : 'rămase'}</small></span></div>
+      <div class="fd-t"><small>Calorii azi, pentru slăbit</small><b>${k} din ${kg} kcal</b>
+        <div class="fd-p"><i><em style="width:${Math.min(100, p / pg * 100).toFixed(0)}%"></em></i><span>Proteine <b class="num">${Math.round(p)}</b>/${pg} g, ca să slăbești fără să pierzi mușchi</span></div></div>
     </div>
+    ${over ? `<div class="fd-warn">Ai trecut cu ${-left} kcal de limita de azi. Nu e grav o zi, compensează cu o plimbare de ${Math.round(-left / 5)} de minute.</div>` : ''}
+    <button class="fd-goal" data-fd-goal><span class="fg-w"><b class="num">${fmt(curW())}</b><small>kg acum</small></span><span class="fg-bar"><span class="fg-tr"><i style="width:${Math.min(100, lost / tot * 100).toFixed(0)}%"></i></span><small>${lost > 0 ? `−${fmt(lost)} kg din ${fmt(tot)} kg` : `${fmt(tot)} kg de slăbit`}${eta ? `, ținta în ~${eta.wk} săptămâni` : ''}</small></span><span class="fg-w t"><b class="num">${fmt(S.goal.target)}</b><small>ținta</small></span></button>
     <label class="fd-cam" for="food-cam">${LI.camera}<span>Fotografiază ce mănânci</span></label>
     <input type="file" id="food-cam" accept="image/*" capture="environment" hidden>
     ${meals.length ? `<div class="fd-list">${meals.map((m, i) => `<div class="fd-m">${m.img ? `<img src="${m.img}" alt="">` : '<span class="fd-ph"></span>'}<span><b>${esc(m.name)}</b><small>${m.time} · ${m.g} g · P ${Math.round(m.p)} g</small></span><em class="num">${m.kcal}</em><button class="fd-del" data-food-del="${i}" aria-label="Șterge">×</button></div>`).join('')}</div>` : ''}
   </section>`;
+}
+function goalSheet() {
+  const g = S.goal, eta = goalEta();
+  sheet(`<div class="pl-head"><div><small>Obiectivul tău</small><h3>Slăbit</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>
+    <div class="fg-form"><label><small>Greutatea de azi</small><input class="field num" id="fg-now" inputmode="decimal" value="${fmt(curW())}"></label><label><small>Vreau să ajung la</small><input class="field num" id="fg-tgt" inputmode="decimal" value="${fmt(g.target)}"></label></div>
+    <small class="tip-note">Ritmul de slăbit</small>
+    <div class="fg-pace">${[[0.25, 'Lent', 'mai ușor de ținut'], [0.5, 'Normal', 'recomandat'], [0.75, 'Rapid', 'mai greu, riști mușchi']].map(([v, n, d]) => `<button class="${g.pace === v ? 'on' : ''}" data-fg-pace="${v}"><b>${n}</b><small>${fmt(v, 2)} kg/săpt.</small><em>${d}</em></button>`).join('')}</div>
+    <div class="fd-sum"><span>Întreținere ≈ <b class="num">${maintKcal()}</b></span><span>Ținta zilnică <b class="num">${kcalGoal()} kcal</b></span></div>
+    <p class="tip-lead">${eta ? `Ajungi la ${fmt(g.target)} kg în aproximativ ${eta.wk} săptămâni, pe la ${eta.d.toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' })}. ` : 'Ai atins ținta! '}Calculul pornește de la greutatea ta și 3 antrenamente pe săptămână. Cântărește-te o dată pe săptămână, dimineața, iar ținta zilnică se reface singură.</p>
+    <button class="btn btn-main" data-fg-save>Salvează</button>`);
 }
 function shrink(file, max = 768) {
   return new Promise((ok, no) => { const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => {
@@ -4877,6 +4916,15 @@ document.addEventListener('click', async e => {
     list.push({ time: `${pad(n.getHours())}:${pad(n.getMinutes())}`, name: FD.items.map(x => x.name).join(', '), g: FD.items.reduce((a, x) => a + x.g, 0), kcal: FD.items.reduce((a, x) => a + x.kcal, 0), p: FD.items.reduce((a, x) => a + x.p, 0), img: thumb });
     for (const k of Object.keys(S.food)) if (k < dayKey(new Date(Date.now() - 30 * DAYMS))) delete S.food[k];
     save(); closePlates(); FD = null; render(); toast('Masa a fost adăugată.');
+  }
+  if (t.closest('[data-fd-goal]')) goalSheet();
+  const pc = t.closest('[data-fg-pace]'); if (pc) { document.querySelectorAll('[data-fg-pace]').forEach(b => b.classList.toggle('on', b === pc)); S.goal._p = +pc.dataset.fgPace; }
+  if (t.closest('[data-fg-save]')) {
+    const now = parseNum($('#fg-now').value), tg = parseNum($('#fg-tgt').value);
+    if (!now || !tg || now < 30 || tg < 30) { toast('Scrie greutățile în kg, de exemplu 90 și 82.'); return; }
+    if (Math.abs(now - curW()) > 0.05) S.body.push({ t: Date.now(), kg: now });
+    S.goal.target = tg; if (S.goal._p) S.goal.pace = S.goal._p; delete S.goal._p; if (now > S.goal.start) S.goal.start = now;
+    save(); closePlates(); render(); toast(`Ținta nouă: ${kcalGoal()} kcal pe zi.`);
   }
   const d = t.closest('[data-food-del]'); if (d) { foodToday().splice(+d.dataset.foodDel, 1); save(); render(); }
 });
