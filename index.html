@@ -1939,6 +1939,7 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .ss-sync { align-self: stretch; width: 58px; border: 0; border-left: 1px solid rgba(34,197,94,.25); background: rgba(34,197,94,.1); color: #16a34a; font: 800 24px var(--sys); display: grid; place-items: center; }
 .ss-sync.spin::after { content: ''; width: 22px; height: 22px; border-radius: 50%; border: 3px solid rgba(34,197,94,.3); border-top-color: #16a34a; animation: ssspin .8s linear infinite; }
 @keyframes ssspin { to { transform: rotate(360deg); } }
+.steps-strip { grid-template-columns: 1fr; } .ss-main { padding-right: 14px; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -5052,7 +5053,7 @@ pullHealth(); setInterval(pullHealth, 5 * 60000);
 document.addEventListener('visibilitychange', () => { if (document.hidden) return; if (hWait) burst(); else pullHealth(); });
 function stepsStrip() {
   const h = hToday(), st = h ? h.steps : 0, goal = 8000, pc = Math.min(100, st / goal * 100), b = healthBurn();
-  return `<div class="steps-strip"><button class="ss-main" data-steps><span class="ss-ic">👟</span><span class="ss-m"><span class="ss-t"><b class="num">${st.toLocaleString('ro-RO')}</b> pași azi${h ? `, ${fmt(h.km, 1)} km` : ''}</span><span class="ss-bar"><i style="width:${pc.toFixed(0)}%"></i></span><small>${h ? (b ? `+${b} kcal la buget` : 'Peste 5.000 de pași se adaugă calorii la buget') + (hWait ? ', se actualizează...' : h.t ? `, actualizat la ${esc(h.t)}` : '') : 'Pașii vin din aplicația Sănătate, prin scurtătură'}</small></span></button><button class="ss-sync ${hWait ? 'spin' : ''}" data-steps-sync aria-label="Actualizează pașii">${hWait ? '' : '↻'}</button></div>`;
+  return `<div class="steps-strip"><button class="ss-main" data-steps><span class="ss-ic">👟</span><span class="ss-m"><span class="ss-t"><b class="num">${st.toLocaleString('ro-RO')}</b> pași azi${h ? `, ${fmt(h.km, 1)} km` : ''}</span><span class="ss-bar"><i style="width:${pc.toFixed(0)}%"></i></span><small>${h ? (b ? `+${b} kcal la buget` : 'Peste 5.000 de pași se adaugă calorii la buget') + (hWait ? ', se actualizează...' : h.t ? `, actualizat la ${esc(h.t)}` : '') : 'Pașii vin din aplicația Sănătate, prin scurtătură'}</small></span></button></div>`;
 }
 if (typeof foodCard === 'function') { const _fc = foodCard; foodCard = function () { return _fc() + stepsStrip(); }; }
 document.addEventListener('click', e => { if (!e.target.closest) return; if (e.target.closest('[data-steps-sync]')) { if (!hWait) syncSteps(); return; } if (e.target.closest('[data-steps]')) { pullHealth(); walkSheet(); } });
