@@ -4557,15 +4557,26 @@ const TIPS = {
     ['Respirație', '5 minute de respirație lentă: 4 secunde inspiri, 6 secunde expiri. Scade tensiunea.']]]
 };
 function parkFallback() { return [['Parcul Herăstrău (Regele Mihai I)', 'Turul lacului are aproape 6 km.'], ['Parcul IOR', 'Lac și alei lungi, bun pentru 30-40 de minute.'], ['Parcul Tineretului', 'Alei largi, circuit de aproximativ 3 km.'], ['Grădina Cișmigiu', 'Turul complet durează cam 20 de minute, bun dacă ești prin centru.']]; }
+let LOCERR = '';
+const withTimeout = (pr, ms) => Promise.race([pr, new Promise((_, no) => setTimeout(() => no(new Error('timeout')), ms))]);
 async function nearbyParks() {
-  const pos = await new Promise((ok, no) => { if (!navigator.geolocation) return no(); navigator.geolocation.getCurrentPosition(p => ok(p.coords), no, { timeout: 8000, maximumAge: 600000 }); });
-  const q = `[out:json][timeout:15];(way["leisure"="park"]["name"](around:3000,${pos.latitude},${pos.longitude});relation["leisure"="park"]["name"](around:3000,${pos.latitude},${pos.longitude}););out center 30;`;
-  const r = await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: 'data=' + encodeURIComponent(q) });
-  const j = await r.json(), R = 6371, rad = x => x * Math.PI / 180;
+  LOCERR = '';
+  const pos = await withTimeout(new Promise((ok, no) => {
+    if (!navigator.geolocation) return no(new Error('nogeo'));
+    navigator.geolocation.getCurrentPosition(p => ok(p.coords), e => no(new Error(e && e.code === 1 ? 'denied' : 'nopos')), { timeout: 9000, maximumAge: 900000, enableHighAccuracy: false });
+  }), 12000).catch(e => { LOCERR = e.message; throw e; });
+  const q = `[out:json][timeout:10];(way["leisure"="park"]["name"](around:3000,${pos.latitude},${pos.longitude});relation["leisure"="park"]["name"](around:3000,${pos.latitude},${pos.longitude}););out center 30;`;
+  let j = null;
+  for (const host of ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter']) {
+    try { const c = new AbortController(), t = setTimeout(() => c.abort(), 9000); const r = await fetch(host, { method: 'POST', body: 'data=' + encodeURIComponent(q), signal: c.signal }); clearTimeout(t); if (r.ok) { j = await r.json(); break; } } catch (e) { }
+  }
+  const me = { lat: pos.latitude, lon: pos.longitude }, R = 6371, rad = x => x * Math.PI / 180;
   const d = (a, b) => { const dl = rad(b.lat - a.lat), dn = rad(b.lon - a.lon), h = Math.sin(dl / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dn / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
-  const me = { lat: pos.latitude, lon: pos.longitude }, seen = new Set();
-  return j.elements.map(e => ({ name: e.tags.name, lat: (e.center || e).lat, lon: (e.center || e).lon })).filter(p => p.lat && !seen.has(p.name) && seen.add(p.name))
+  if (!j) { LOCERR = 'nomap'; return { me, parks: [] }; }
+  const seen = new Set();
+  const parks = j.elements.map(e => ({ name: e.tags.name, lat: (e.center || e).lat, lon: (e.center || e).lon })).filter(p => p.lat && !seen.has(p.name) && seen.add(p.name))
     .map(p => Object.assign(p, { km: d(me, p) })).sort((a, b) => a.km - b.km).slice(0, 4);
+  return { me, parks };
 }
 function tipSheet(k) {
   const [title, col, items] = TIPS[k];
@@ -4574,11 +4585,18 @@ function tipSheet(k) {
     : `<p class="tip-lead">30 de minute în ritm lejer, cam 3.000-4.000 de pași. Ajută circulația și recuperarea fără să obosească mușchii.</p><div id="parks"><div class="tip-i"><b>Caut parcuri lângă tine...</b><small>Dacă telefonul întreabă, permite accesul la locație.</small></div></div>`;
   m.innerHTML = `<div class="pl-card tip-sheet" style="--c:${col}"><div class="pl-grab"></div><div class="pl-head"><div><small>Azi, pentru recuperare</small><h3>${title}</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>${body}</div>`;
   m.hidden = false; requestAnimationFrame(() => m.classList.add('open'));
-  if (!items) nearbyParks().then(ps => {
-    const el = document.getElementById('parks'); if (!el) return;
-    if (!ps.length) throw 0;
-    el.innerHTML = ps.map(p => `<a class="tip-i park" href="https://maps.apple.com/?daddr=${p.lat},${p.lon}&dirflg=w" target="_blank" rel="noopener"><b>${esc(p.name)}</b><small>${p.km < 1 ? Math.round(p.km * 1000) + ' m' : fmt(p.km, 1) + ' km'} de tine, cam ${Math.max(2, Math.round(p.km / 5 * 60))} min pe jos</small><span>↗</span></a>`).join('');
-  }).catch(() => { const el = document.getElementById('parks'); if (el) el.innerHTML = '<small class="tip-note">Nu am primit locația, așa că îți propun parcuri din București:</small>' + parkFallback().map(([n, d]) => `<a class="tip-i park" href="https://maps.apple.com/?q=${encodeURIComponent(n + ', București')}" target="_blank" rel="noopener"><b>${n}</b><small>${d}</small><span>↗</span></a>`).join(''); });
+  if (!items) {
+    const el0 = document.getElementById('parks');
+    const fallback = msg => { const el = document.getElementById('parks'); if (!el) return; el.innerHTML = `<small class="tip-note">${msg}</small>` + parkFallback().map(([n, d]) => `<a class="tip-i park" href="https://maps.apple.com/?q=${encodeURIComponent(n + ', București')}" target="_blank" rel="noopener"><b>${n}</b><small>${d}</small><span>↗</span></a>`).join(''); };
+    nearbyParks().then(({ me, parks }) => {
+      const el = document.getElementById('parks'); if (!el) return;
+      const near = `<a class="tip-i park" href="https://maps.apple.com/?q=park&sll=${me.lat},${me.lon}&z=14" target="_blank" rel="noopener"><b>Vezi toate parcurile din jur pe hartă</b><small>Se deschide în Hărți, în jurul tău</small><span>↗</span></a>`;
+      if (!parks.length) { el.innerHTML = `<small class="tip-note">Am găsit locația ta, dar nu am putut încărca lista de parcuri acum.</small>` + near; return; }
+      el.innerHTML = parks.map(p => `<a class="tip-i park" href="https://maps.apple.com/?daddr=${p.lat},${p.lon}&dirflg=w" target="_blank" rel="noopener"><b>${esc(p.name)}</b><small>${p.km < 1 ? Math.round(p.km * 1000) + ' m' : fmt(p.km, 1) + ' km'} de tine, cam ${Math.max(2, Math.round(p.km / 5 * 60))} min pe jos</small><span>↗</span></a>`).join('') + near;
+    }).catch(() => fallback(LOCERR === 'denied'
+      ? 'Telefonul nu dă voie aplicației să vadă locația. Pornește-o din Configurări → Confidențialitate → Servicii de localizare → Site-uri Safari → „În timpul utilizării”. Până atunci, parcuri din București:'
+      : 'Nu am primit locația la timp. Verifică dacă Serviciile de localizare sunt pornite. Până atunci, parcuri din București:'));
+  }
 }
 document.addEventListener('click', e => {
   const t = e.target.closest && e.target.closest('.tips .tip'); if (!t) return;
