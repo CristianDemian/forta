@@ -1934,6 +1934,11 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .ss-m small { font: 500 11.5px var(--sys); opacity: .65; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ss-g { font: 800 15px var(--display); opacity: .5; }
 @media (prefers-color-scheme: dark) { .ss-bar { background: rgba(255,255,255,.1); } .ss-t b { color: #4ade80; } }
 :root[data-theme="dark"] .ss-bar { background: rgba(255,255,255,.1); } :root[data-theme="dark"] .ss-t b { color: #4ade80; }
+.steps-strip { grid-template-columns: 1fr auto; padding: 0; overflow: hidden; }
+.ss-main { display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: center; padding: 12px 4px 12px 14px; border: 0; background: none; color: inherit; font: inherit; text-align: left; min-width: 0; }
+.ss-sync { align-self: stretch; width: 58px; border: 0; border-left: 1px solid rgba(34,197,94,.25); background: rgba(34,197,94,.1); color: #16a34a; font: 800 24px var(--sys); display: grid; place-items: center; }
+.ss-sync.spin::after { content: ''; width: 22px; height: 22px; border-radius: 50%; border: 3px solid rgba(34,197,94,.3); border-top-color: #16a34a; animation: ssspin .8s linear infinite; }
+@keyframes ssspin { to { transform: rotate(360deg); } }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -5023,22 +5028,34 @@ const hToday = () => S.health[dayKey()];
 /* întreținerea (31 kcal/kg) acoperă deja mișcarea obișnuită, așa că se adaugă doar ce trece de 5.000 de pași */
 function healthBurn() { const h = hToday(); if (!h || !h.steps) return 0; return walkKcal(h.km * Math.max(0, h.steps - 5000) / h.steps); }
 const walkBurnToday = () => Math.max(walkOnlyBurn(), healthBurn());
+/* cu cheia GitHub din aplicație citim direct din API (fără întârzierea de ~5 min a raw.githubusercontent) */
+function ghTok() { try { return (JSON.parse(localStorage.getItem('forta-push') || '{}').token) || ''; } catch (e) { return ''; } }
 async function pullHealth() {
   try {
-    const r = await fetch('https://raw.githubusercontent.com/CristianDemian/forta/date/steps.json?t=' + Math.floor(Date.now() / 60000), { cache: 'no-store' }); if (!r.ok) return;
+    const tk = ghTok(), r = tk ? await fetch('https://api.github.com/repos/CristianDemian/forta/contents/steps.json?ref=date&t=' + Date.now(), { cache: 'no-store', headers: { Authorization: 'Bearer ' + tk, Accept: 'application/vnd.github.raw+json' } })
+      : await fetch('https://raw.githubusercontent.com/CristianDemian/forta/date/steps.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return false;
     const j = await r.json(), before = JSON.stringify(hToday() || {});
     for (const [k, v] of Object.entries(j)) S.health[k] = { steps: Math.round(+v.steps || 0), km: Math.round((+v.km || 0) * 100) / 100, t: v.t || '' };
     for (const k of Object.keys(S.health)) if (k < dayKey(new Date(Date.now() - 60 * DAYMS))) delete S.health[k];
-    save(); if (JSON.stringify(hToday() || {}) !== before && typeof render === 'function') render();
-  } catch (e) { }
+    save(); const ch = JSON.stringify(hToday() || {}) !== before; if (ch && typeof render === 'function') render(); return ch;
+  } catch (e) { return false; }
 }
-pullHealth(); setInterval(pullHealth, 5 * 60000); document.addEventListener('visibilitychange', () => { if (!document.hidden) pullHealth(); });
+/* butonul Actualizează: pornește scurtătura din Scurtături, apoi la întoarcere verifică la 5 secunde, cel mult 90 de secunde */
+let hWait = 0;
+function syncSteps() { hWait = Date.now(); render(); location.href = 'shortcuts://run-shortcut?name=' + encodeURIComponent('Pași Forța'); }
+async function burst() {
+  while (hWait && Date.now() - hWait < 90000) { if (await pullHealth()) break; await new Promise(r => setTimeout(r, 5000)); }
+  if (hWait) { hWait = 0; render(); }
+}
+pullHealth(); setInterval(pullHealth, 5 * 60000);
+document.addEventListener('visibilitychange', () => { if (document.hidden) return; if (hWait) burst(); else pullHealth(); });
 function stepsStrip() {
   const h = hToday(), st = h ? h.steps : 0, goal = 8000, pc = Math.min(100, st / goal * 100), b = healthBurn();
-  return `<button class="steps-strip" data-steps><span class="ss-ic">👟</span><span class="ss-m"><span class="ss-t"><b class="num">${st.toLocaleString('ro-RO')}</b> pași azi${h ? `, ${fmt(h.km, 1)} km` : ''}</span><span class="ss-bar"><i style="width:${pc.toFixed(0)}%"></i></span><small>${h ? (b ? `+${b} kcal la buget` : 'Peste 5.000 de pași se adaugă calorii la buget') + (h.t ? `, actualizat la ${esc(h.t)}` : '') : 'Pașii vin din aplicația Sănătate, prin scurtătură'}</small></span><span class="ss-g">${goal / 1000}k</span></button>`;
+  return `<div class="steps-strip"><button class="ss-main" data-steps><span class="ss-ic">👟</span><span class="ss-m"><span class="ss-t"><b class="num">${st.toLocaleString('ro-RO')}</b> pași azi${h ? `, ${fmt(h.km, 1)} km` : ''}</span><span class="ss-bar"><i style="width:${pc.toFixed(0)}%"></i></span><small>${h ? (b ? `+${b} kcal la buget` : 'Peste 5.000 de pași se adaugă calorii la buget') + (hWait ? ', se actualizează...' : h.t ? `, actualizat la ${esc(h.t)}` : '') : 'Pașii vin din aplicația Sănătate, prin scurtătură'}</small></span></button><button class="ss-sync ${hWait ? 'spin' : ''}" data-steps-sync aria-label="Actualizează pașii">${hWait ? '' : '↻'}</button></div>`;
 }
 if (typeof foodCard === 'function') { const _fc = foodCard; foodCard = function () { return _fc() + stepsStrip(); }; }
-document.addEventListener('click', e => { if (e.target.closest && e.target.closest('[data-steps]')) { pullHealth(); walkSheet(); } });
+document.addEventListener('click', e => { if (!e.target.closest) return; if (e.target.closest('[data-steps-sync]')) { if (!hWait) syncSteps(); return; } if (e.target.closest('[data-steps]')) { pullHealth(); walkSheet(); } });
 
 function walkSheet() {
   let m = document.getElementById('walk'); if (!m) { m = document.createElement('div'); m.id = 'walk'; m.className = 'guide walk'; document.body.appendChild(m); }
