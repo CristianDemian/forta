@@ -4636,10 +4636,10 @@ function tipSheet(k) {
   const [title, col, items] = TIPS[k];
   let m = document.getElementById('plates'); if (!m) { m = document.createElement('div'); m.id = 'plates'; m.className = 'plates'; document.body.appendChild(m); }
   const body = items ? items.map(([t, d, a]) => a && a.startsWith('yt:') ? `<button class="tip-i act yt" data-yt="${a.slice(3)}" data-yt-t="${esc(t.replace('Video: ', ''))}"><b>▶ ${t.replace('Video: ', '')}</b><small>${d}</small><span>▶</span></button>` : a === 'guide' ? `<button class="tip-i act" data-guide="stretch" data-day="${(nextPlan().p || DAYS[0]).id}"><b>${t}</b><small>${d}</small><span>▶</span></button>` : `<div class="tip-i"><b>${t}</b><small>${d}</small></div>`).join('')
-    : `<p class="tip-lead">30 de minute în ritm lejer, cam 3.000-4.000 de pași. Ajută circulația și recuperarea fără să obosească mușchii.</p><div id="parks"><small class="tip-note">Parcuri lângă tine</small><div class="tip-i"><b>Caut parcuri și trasee lângă tine...</b><small>Dacă telefonul întreabă, permite accesul la locație.</small></div></div>`;
+    : `<p class="tip-lead">30 de minute în ritm lejer, cam 3.000-4.000 de pași. Ajută circulația și recuperarea fără să obosească mușchii.</p>${typeof stepsStrip === 'function' ? stepsStrip() : ''}<div id="parks" hidden><small class="tip-note">Parcuri lângă tine</small><div class="tip-i"><b>Caut parcuri și trasee lângă tine...</b><small>Dacă telefonul întreabă, permite accesul la locație.</small></div></div>`;
   m.innerHTML = `<div class="pl-card tip-sheet" style="--c:${col}"><div class="pl-grab"></div><div class="pl-head"><div><small>Azi, pentru recuperare</small><h3>${title}</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>${body}</div>`;
   m.hidden = false; requestAnimationFrame(() => m.classList.add('open'));
-  if (!items) {
+  if (false) {
     const el0 = document.getElementById('parks');
     const fallback = msg => { const el = document.getElementById('parks'); if (!el) return; el.innerHTML = `<small class="tip-note">${msg}</small>` + parkFallback().map(([n, d]) => `<a class="tip-i park" href="https://maps.apple.com/?q=${encodeURIComponent(n + ', București')}" target="_blank" rel="noopener"><b>${n}</b><small>${d}</small><span>↗</span></a>`).join('') + cityWalksHtml(); };
     nearbyParks().then(({ me, parks }) => {
@@ -5053,10 +5053,10 @@ pullHealth(); setInterval(pullHealth, 5 * 60000);
 document.addEventListener('visibilitychange', () => { if (document.hidden) return; if (hWait) burst(); else pullHealth(); });
 function stepsStrip() {
   const h = hToday(), st = h ? h.steps : 0, goal = 8000, pc = Math.min(100, st / goal * 100), b = healthBurn();
-  return `<div class="steps-strip"><button class="ss-main" data-steps><span class="ss-ic">👟</span><span class="ss-m"><span class="ss-t"><b class="num">${st.toLocaleString('ro-RO')}</b> pași azi${h ? `, ${fmt(h.km, 1)} km` : ''}</span><span class="ss-bar"><i style="width:${pc.toFixed(0)}%"></i></span><small>${h ? (h.t ? `Actualizat la ${esc(h.t)}` : 'Actualizat azi') + (b ? `, +${b} kcal la buget` : '') : 'Pașii vin din aplicația Sănătate, prin scurtătură'}</small></span></button></div>`;
+  return `<div class="steps-strip"><div class="ss-main"><span class="ss-ic">👟</span><span class="ss-m"><span class="ss-t"><b class="num">${st.toLocaleString('ro-RO')}</b> pași azi${h ? `, ${fmt(h.km, 1)} km` : ''}</span><span class="ss-bar"><i style="width:${pc.toFixed(0)}%"></i></span><small>${h ? (h.t ? `Actualizat la ${esc(h.t)}` : 'Actualizat azi') + (b ? `, +${b} kcal la buget` : '') : 'Pașii vin din aplicația Sănătate, prin scurtătură'}</small></span></div></div>`;
 }
 if (typeof foodCard === 'function') { const _fc = foodCard; foodCard = function () { return _fc() + stepsStrip(); }; }
-document.addEventListener('click', e => { if (!e.target.closest) return; if (e.target.closest('[data-steps-sync]')) { if (!hWait) syncSteps(); return; } if (e.target.closest('[data-steps]')) { pullHealth(); tipSheet('plimbare'); } });
+document.addEventListener('click', e => { if (!e.target.closest) return; if (e.target.closest('[data-steps-sync]')) { if (!hWait) syncSteps(); return; }  });
 
 function walkSheet() {
   let m = document.getElementById('walk'); if (!m) { m = document.createElement('div'); m.id = 'walk'; m.className = 'guide walk'; document.body.appendChild(m); }
