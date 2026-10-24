@@ -1911,6 +1911,22 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .yt-box { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #000; box-shadow: 0 20px 40px -20px rgba(0,0,0,.6); }
 .yt-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .tip-sheet .tip-i.yt { background: linear-gradient(120deg, #ff3b30, #d8101c); } .tip-sheet .tip-i.yt b, .tip-sheet .tip-i.yt small, .tip-sheet .tip-i.yt span { color: #fff; }
+/* plimbare cu start */
+.walk { background: radial-gradient(120% 80% at 50% 0%, #17402a, #0c1a12 60%, #070d09) !important; }
+.wk-ring { position: relative; width: min(70vw, 260px); aspect-ratio: 1; margin: 6px auto 0; display: grid; place-items: center; }
+.wk-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.wr-bg { fill: none; stroke: rgba(255,255,255,.1); stroke-width: 12; } .wr-fg { fill: none; stroke: #4ade80; stroke-width: 12; stroke-linecap: round; filter: drop-shadow(0 0 8px #22c55e); transition: stroke-dashoffset .8s; }
+.wk-ring.run .wr-fg { animation: ringglow 2s ease-in-out infinite; }
+.wk-ring > div { display: grid; justify-items: center; } .wk-ring b { font: 800 64px/1 var(--display); } .wk-ring small { font: 600 13px var(--sys); color: rgba(255,255,255,.6); }
+.wk-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; } .wk-stats > div { display: grid; justify-items: center; padding: 10px 4px; border-radius: 16px; background: rgba(255,255,255,.07); }
+.wk-stats b { font: 800 24px/1 var(--display); } .wk-stats small { font: 600 11px var(--sys); color: rgba(255,255,255,.55); }
+.wk-btns { grid-template-columns: 1fr 1fr !important; } .wk-btns .wk-go { grid-column: 1 / -1; min-height: 60px; font-size: 18px; background: linear-gradient(180deg, #4ade80, #16a34a) !important; box-shadow: 0 3px 0 #0f6b30, 0 16px 30px -12px rgba(34,197,94,.9) !important; }
+.wk-btns .btn-ghost { background: rgba(255,255,255,.1) !important; color: #fff !important; border: 0 !important; min-height: 54px; border-radius: 16px; }
+.wk-hist { display: grid; gap: 6px; text-align: left; } .wk-hist small { font: 600 12px var(--sys); color: rgba(255,255,255,.55); }
+.wk-hist > div { display: grid; grid-template-columns: 50px 1fr 1fr auto; gap: 8px; align-items: center; padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,.06); font: 500 13px var(--sys); }
+.wk-hist b { font: 800 17px var(--display); } .wk-hist em { font: 800 16px var(--display); font-style: normal; color: #4ade80; }
+.wk-ideas { color: #86efac !important; justify-self: center; }
+.wk-btns .btn { font: 700 17px var(--sys) !important; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -4562,6 +4578,24 @@ const TIPS = {
     ['Rola de masaj', '1-2 minute pe coapse, fese și spate, dacă ai una acasă.'],
     ['Respirație', '5 minute de respirație lentă: 4 secunde inspiri, 6 secunde expiri. Scade tensiunea.']]]
 };
+const CITY_WALKS = [
+  ['Calea Victoriei', 'De la Piața Victoriei până la Piața Națiunilor Unite, pe lângă Ateneu și Palatul Regal. Aproximativ 2,7 km, 35 min.', 'Piața Victoriei, București', 'Piața Națiunilor Unite, București', ''],
+  ['Centrul Vechi în buclă', 'Universitate, Lipscani, Hanul lui Manuc și înapoi. Aproximativ 2,5 km, 30 min.', 'Piața Universității, București', 'Piața Universității, București', 'Strada Lipscani, București|Hanul lui Manuc, București'],
+  ['Bulevardul Unirii', 'De la Piața Unirii până la Palatul Parlamentului și înapoi, pe lângă fântâni. Aproximativ 3,2 km, 40 min.', 'Piața Unirii, București', 'Piața Unirii, București', 'Piața Constituției, București'],
+  ['Turul lacului Herăstrău', 'Bucla completă în jurul lacului, prin Parcul Regele Mihai I. Aproximativ 6 km, 75 min.', 'Arcul de Triumf, București', 'Arcul de Triumf, București', 'Parcul Herăstrău Debarcader, București|Piața Charles de Gaulle, București'],
+  ['Carol și Tineretului', 'Din Parcul Carol până în Parcul Tineretului și înapoi. Aproximativ 4 km, 50 min.', 'Parcul Carol, București', 'Parcul Carol, București', 'Parcul Tineretului, București']
+];
+const gmaps = (o, d, w) => `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(o)}&destination=${encodeURIComponent(d)}${w ? '&waypoints=' + encodeURIComponent(w) : ''}&travelmode=walking`;
+function cityWalksHtml() { return `<small class="tip-note">Trasee prin oraș</small>` + CITY_WALKS.map(([n, d, o, de, w]) => `<a class="tip-i park" href="${gmaps(o, de, w)}" target="_blank" rel="noopener"><b>${n}</b><small>${d}</small><span>↗</span></a>`).join(''); }
+/* bucle pe jos generate din locul unde ești: trei puncte în jurul tău, trasee de 20, 30 și 45 de minute */
+function loopsHtml(me) {
+  const rot = (Date.now() / 86400000 | 0) % 6 * 0.5;
+  return `<small class="tip-note">Bucle pe jos din locul unde ești</small>` + [[20, 1.6], [30, 2.5], [45, 3.7]].map(([min, km], i) => {
+    const R = km / (5.2 * 1.3), pts = [0, 1, 2].map(k => { const a = rot + i * 1.1 + k * 2 * Math.PI / 3; return [me.lat + R / 111 * Math.cos(a), me.lon + R / (111 * Math.cos(me.lat * Math.PI / 180)) * Math.sin(a)]; });
+    const o = `${me.lat},${me.lon}`, w = pts.slice(0, 2).map(p => p.map(x => x.toFixed(5)).join(',')).join('|');
+    return `<a class="tip-i park" href="${gmaps(o, o, w)}" target="_blank" rel="noopener"><b>Buclă de ${min} de minute</b><small>Aproximativ ${fmt(km, 1)} km, pornești și te întorci acasă. Traseul exact ți-l face Google Maps.</small><span>↗</span></a>`;
+  }).join('');
+}
 function parkFallback() { return [['Parcul Herăstrău (Regele Mihai I)', 'Turul lacului are aproape 6 km.'], ['Parcul IOR', 'Lac și alei lungi, bun pentru 30-40 de minute.'], ['Parcul Tineretului', 'Alei largi, circuit de aproximativ 3 km.'], ['Grădina Cișmigiu', 'Turul complet durează cam 20 de minute, bun dacă ești prin centru.']]; }
 let LOCERR = '';
 const withTimeout = (pr, ms) => Promise.race([pr, new Promise((_, no) => setTimeout(() => no(new Error('timeout')), ms))]);
@@ -4588,17 +4622,17 @@ function tipSheet(k) {
   const [title, col, items] = TIPS[k];
   let m = document.getElementById('plates'); if (!m) { m = document.createElement('div'); m.id = 'plates'; m.className = 'plates'; document.body.appendChild(m); }
   const body = items ? items.map(([t, d, a]) => a && a.startsWith('yt:') ? `<button class="tip-i act yt" data-yt="${a.slice(3)}" data-yt-t="${esc(t.replace('Video: ', ''))}"><b>▶ ${t.replace('Video: ', '')}</b><small>${d}</small><span>▶</span></button>` : a === 'guide' ? `<button class="tip-i act" data-guide="stretch" data-day="${(nextPlan().p || DAYS[0]).id}"><b>${t}</b><small>${d}</small><span>▶</span></button>` : `<div class="tip-i"><b>${t}</b><small>${d}</small></div>`).join('')
-    : `<p class="tip-lead">30 de minute în ritm lejer, cam 3.000-4.000 de pași. Ajută circulația și recuperarea fără să obosească mușchii.</p><div id="parks"><div class="tip-i"><b>Caut parcuri lângă tine...</b><small>Dacă telefonul întreabă, permite accesul la locație.</small></div></div>`;
+    : `<p class="tip-lead">30 de minute în ritm lejer, cam 3.000-4.000 de pași. Ajută circulația și recuperarea fără să obosească mușchii.</p><div id="parks"><small class="tip-note">Parcuri lângă tine</small><div class="tip-i"><b>Caut parcuri și trasee lângă tine...</b><small>Dacă telefonul întreabă, permite accesul la locație.</small></div></div>`;
   m.innerHTML = `<div class="pl-card tip-sheet" style="--c:${col}"><div class="pl-grab"></div><div class="pl-head"><div><small>Azi, pentru recuperare</small><h3>${title}</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>${body}</div>`;
   m.hidden = false; requestAnimationFrame(() => m.classList.add('open'));
   if (!items) {
     const el0 = document.getElementById('parks');
-    const fallback = msg => { const el = document.getElementById('parks'); if (!el) return; el.innerHTML = `<small class="tip-note">${msg}</small>` + parkFallback().map(([n, d]) => `<a class="tip-i park" href="https://maps.apple.com/?q=${encodeURIComponent(n + ', București')}" target="_blank" rel="noopener"><b>${n}</b><small>${d}</small><span>↗</span></a>`).join(''); };
+    const fallback = msg => { const el = document.getElementById('parks'); if (!el) return; el.innerHTML = `<small class="tip-note">${msg}</small>` + parkFallback().map(([n, d]) => `<a class="tip-i park" href="https://maps.apple.com/?q=${encodeURIComponent(n + ', București')}" target="_blank" rel="noopener"><b>${n}</b><small>${d}</small><span>↗</span></a>`).join('') + cityWalksHtml(); };
     nearbyParks().then(({ me, parks }) => {
       const el = document.getElementById('parks'); if (!el) return;
       const near = `<a class="tip-i park" href="https://maps.apple.com/?q=park&sll=${me.lat},${me.lon}&z=14" target="_blank" rel="noopener"><b>Vezi toate parcurile din jur pe hartă</b><small>Se deschide în Hărți, în jurul tău</small><span>↗</span></a>`;
-      if (!parks.length) { el.innerHTML = `<small class="tip-note">Am găsit locația ta, dar nu am putut încărca lista de parcuri acum.</small>` + near; return; }
-      el.innerHTML = parks.map(p => `<a class="tip-i park" href="https://maps.apple.com/?daddr=${p.lat},${p.lon}&dirflg=w" target="_blank" rel="noopener"><b>${esc(p.name)}</b><small>${p.km < 1 ? Math.round(p.km * 1000) + ' m' : fmt(p.km, 1) + ' km'} de tine, cam ${Math.max(2, Math.round(p.km / 5 * 60))} min pe jos</small><span>↗</span></a>`).join('') + near;
+      if (!parks.length) { el.innerHTML = loopsHtml(me) + `<small class="tip-note">Parcuri</small>` + near + cityWalksHtml(); return; }
+      el.innerHTML = parks.map(p => `<a class="tip-i park" href="https://maps.apple.com/?daddr=${p.lat},${p.lon}&dirflg=w" target="_blank" rel="noopener"><b>${esc(p.name)}</b><small>${p.km < 1 ? Math.round(p.km * 1000) + ' m' : fmt(p.km, 1) + ' km'} de tine, cam ${Math.max(2, Math.round(p.km / 5 * 60))} min pe jos</small><span>↗</span></a>`).join('') + near + loopsHtml(me) + cityWalksHtml();
     }).catch(() => fallback(LOCERR === 'denied'
       ? 'Telefonul nu dă voie aplicației să vadă locația. Pornește-o din Configurări → Confidențialitate → Servicii de localizare → Site-uri Safari → „În timpul utilizării”. Până atunci, parcuri din București:'
       : 'Nu am primit locația la timp. Verifică dacă Serviciile de localizare sunt pornite. Până atunci, parcuri din București:'));
@@ -4848,7 +4882,7 @@ const curW = () => (S.body.length && S.body[S.body.length - 1].kg) || S.goal.sta
 /* întreținere ≈ 31 kcal/kg la 3 antrenamente pe săptămână; 1 kg de grăsime ≈ 7.700 kcal */
 const maintKcal = () => Math.round(curW() * 31 / 10) * 10;
 const deficit = () => curW() <= S.goal.target ? 0 : Math.round(S.goal.pace * 7700 / 7 / 10) * 10;
-const kcalGoal = () => Math.max(1600, Math.round((maintKcal() - deficit()) / 10) * 10);
+const kcalGoal = () => Math.max(1600, Math.round((maintKcal() - deficit()) / 10) * 10) + (typeof walkBurnToday === 'function' ? walkBurnToday() : 0);
 const protGoal = () => Math.round(S.goal.target * 2);
 function goalEta() { const left = curW() - S.goal.target; if (left <= 0) return null; const wk = left / S.goal.pace, d = new Date(Date.now() + wk * 7 * DAYMS); return { wk: Math.ceil(wk), d }; }
 function foodToday() { return S.food[dayKey()] || []; }
@@ -4858,7 +4892,7 @@ function foodCard() {
   return `<section class="food">
     <div class="fd-top">
       <div class="fd-ring ${over ? 'over' : ''}"><svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" class="fr-bg"/><circle cx="36" cy="36" r="30" class="fr-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - Math.min(1, k / kg))).toFixed(1)}"/></svg><span><b class="num">${Math.abs(left)}</b><small>${over ? 'peste' : 'rămase'}</small></span></div>
-      <div class="fd-t"><small>Calorii azi, pentru slăbit</small><b>${k} din ${kg} kcal</b>
+      <div class="fd-t"><small>Calorii azi, pentru slăbit${typeof walkBurnToday === 'function' && walkBurnToday() ? `, +${walkBurnToday()} din plimbare` : ''}</small><b>${k} din ${kg} kcal</b>
         <div class="fd-p"><i><em style="width:${Math.min(100, p / pg * 100).toFixed(0)}%"></em></i><span>Proteine <b class="num">${Math.round(p)}</b>/${pg} g, ca să slăbești fără să pierzi mușchi</span></div></div>
     </div>
     ${over ? `<div class="fd-warn">Ai trecut cu ${-left} kcal de limita de azi. Nu e grav o zi, compensează cu o plimbare de ${Math.round(-left / 5)} de minute.</div>` : ''}
@@ -4967,6 +5001,85 @@ document.addEventListener('click', async e => {
   const _va = viewAzi;
   viewAzi = function () { const h = _va(), i = ['<section class="wx', '<section class="score', '<section class="rings'].map(x => h.indexOf(x)).filter(x => x >= 0).sort((a, b) => a - b)[0] ?? -1; return i < 0 ? foodCard() + h : h.slice(0, i) + foodCard() + h.slice(i); };
 }
+
+/* ---------- Plimbare cu start: distanță (GPS), pași (senzorul de mișcare), calorii ---------- */
+S.walks = S.walks || {};
+let WK = null;
+const walkKcal = km => Math.round(km * ((S.body.length && S.body[S.body.length - 1].kg) || 90) * 0.5);
+function hav(a, b) { const R = 6371000, r = x => x * Math.PI / 180, dl = r(b.lat - a.lat), dn = r(b.lon - a.lon), h = Math.sin(dl / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dn / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
+const walksToday = () => S.walks[dayKey()] || [];
+const walkBurnToday = () => walksToday().reduce((a, w) => a + w.kcal, 0);
+
+function walkSheet() {
+  let m = document.getElementById('walk'); if (!m) { m = document.createElement('div'); m.id = 'walk'; m.className = 'guide walk'; document.body.appendChild(m); }
+  m.hidden = false; requestAnimationFrame(() => m.classList.add('open')); drawWalk();
+}
+function drawWalk() {
+  const m = document.getElementById('walk'); if (!m) return;
+  const run = WK && WK.run, w = WK || { ms: 0, m: 0, steps: 0 }, el = w.ms + (run ? Date.now() - w.t0 : 0), km = w.m / 1000;
+  const steps = Math.max(w.steps, w.motion ? 0 : Math.round(w.m / 0.75)), pace = km > 0.05 ? el / 60000 / km : 0, goal = 6000, C = 2 * Math.PI * 92;
+  const today = walksToday();
+  m.innerHTML = `<div class="gd-in wk-in">
+    <div class="gd-head"><div><small>Plimbare</small></div><span></span><button class="pl-x gd-x" data-wk="close" aria-label="Închide">×</button></div>
+    <div class="wk-ring ${run ? 'run' : ''}"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="92" class="wr-bg"/><circle cx="100" cy="100" r="92" class="wr-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - Math.min(1, steps / goal))).toFixed(1)}"/></svg>
+      <div><b class="num">${steps.toLocaleString('ro-RO')}</b><small>pași${w.motion ? '' : ' (estimați)'}</small></div></div>
+    <div class="wk-stats"><div><b class="num">${fmt(km, 2)}</b><small>km</small></div><div><b class="num">${fmtTime(el / 1000)}</b><small>timp</small></div><div><b class="num">${pace ? Math.floor(pace) + ':' + String(Math.round(pace % 1 * 60)).padStart(2, '0') : '–'}</b><small>min/km</small></div><div><b class="num">${walkKcal(km)}</b><small>kcal</small></div></div>
+    ${w.gpsErr ? `<p class="gd-cue">${esc(w.gpsErr)}</p>` : run ? '<p class="gd-cue">Ține aplicația deschisă cu telefonul în buzunar. Ecranul rămâne aprins, dar se întunecă singur.</p>' : '<p class="gd-cue">Ținta pentru recuperare: 30 de minute, cam 3.500-4.000 de pași.</p>'}
+    <div class="gd-btns wk-btns">${!WK ? '<button class="btn btn-main wk-go" data-wk="start">▶ Start</button>' : run ? '<button class="btn btn-ghost" data-wk="pause">Pauză</button><button class="btn btn-main" data-wk="stop">Gata, salvează</button>' : '<button class="btn btn-main" data-wk="resume">Continuă</button><button class="btn btn-ghost" data-wk="stop">Gata, salvează</button>'}</div>
+    ${today.length && !WK ? `<div class="wk-hist"><small>Azi</small>${today.map(x => `<div><span>${x.time}</span><b class="num">${fmt(x.km, 2)} km</b><span>${x.steps.toLocaleString('ro-RO')} pași</span><em class="num">${x.kcal} kcal</em></div>`).join('')}</div>` : ''}
+    ${!WK ? '<button class="link wk-ideas" data-wk="ideas">Idei de trasee și parcuri</button>' : ''}
+  </div>`;
+}
+/* pași din accelerometru: vârfuri ale accelerației, cel puțin 0,3 s între ele */
+let lp = 9.8, last = 0, above = false;
+function onMotion(e) {
+  if (!WK || !WK.run) return; const a = e.accelerationIncludingGravity; if (!a) return;
+  const mag = Math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z); lp = lp * 0.9 + mag * 0.1; const d = mag - lp, t = performance.now();
+  WK.motion = true;
+  if (d > 1.2 && !above && t - last > 300) { above = true; last = t; WK.steps++; } else if (d < 0.3) above = false;
+}
+function onPos(p) {
+  if (!WK || !WK.run) return; const c = p.coords; WK.gpsErr = '';
+  if (c.accuracy > 35) return;
+  const pt = { lat: c.latitude, lon: c.longitude };
+  if (WK.lastPt) { const d = hav(WK.lastPt, pt); if (d < 3 || d > 80) { if (d > 80) WK.lastPt = pt; return; } WK.m += d; }
+  WK.lastPt = pt;
+}
+async function startWalk() {
+  WK = { run: true, t0: Date.now(), ms: 0, m: 0, steps: 0, motion: false };
+  try { if (window.DeviceMotionEvent && DeviceMotionEvent.requestPermission) await DeviceMotionEvent.requestPermission(); } catch (e) { }
+  addEventListener('devicemotion', onMotion);
+  if (navigator.geolocation) WK.watch = navigator.geolocation.watchPosition(onPos, e => { if (WK) { WK.gpsErr = e.code === 1 ? 'Locația e blocată, așa că nu pot măsura distanța. Pornește-o din Configurări → Confidențialitate → Servicii de localizare → Site-uri Safari. Pașii îi număr în continuare.' : 'Caut semnalul GPS...'; drawWalk(); } }, { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 });
+  try { WK.lock = await navigator.wakeLock.request('screen'); } catch (e) { }
+  WK.tick = setInterval(drawWalk, 1000); drawWalk();
+}
+function stopWalk(saveIt) {
+  if (!WK) return; clearInterval(WK.tick); removeEventListener('devicemotion', onMotion);
+  if (WK.watch != null) navigator.geolocation.clearWatch(WK.watch); try { WK.lock && WK.lock.release(); } catch (e) { }
+  const el = WK.ms + (WK.run ? Date.now() - WK.t0 : 0), km = WK.m / 1000, steps = Math.max(WK.steps, WK.motion ? 0 : Math.round(WK.m / 0.75));
+  if (saveIt && (km > 0.05 || steps > 50)) {
+    const n = new Date(); (S.walks[dayKey()] = S.walks[dayKey()] || []).push({ time: `${pad(n.getHours())}:${pad(n.getMinutes())}`, km: Math.round(km * 100) / 100, steps, min: Math.round(el / 60000), kcal: walkKcal(km) });
+    for (const k of Object.keys(S.walks)) if (k < dayKey(new Date(Date.now() - 60 * DAYMS))) delete S.walks[k];
+    save(); toast(`Plimbare salvată: ${fmt(km, 2)} km, ${steps.toLocaleString('ro-RO')} pași, ${walkKcal(km)} kcal.`); if (FX.celebrate) FX.celebrate();
+  }
+  WK = null; drawWalk();
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-wk]'); if (!b) return;
+  const a = b.dataset.wk;
+  if (a === 'start') startWalk();
+  if (a === 'pause' && WK) { WK.ms += Date.now() - WK.t0; WK.run = false; WK.lastPt = null; drawWalk(); }
+  if (a === 'resume' && WK) { WK.t0 = Date.now(); WK.run = true; drawWalk(); }
+  if (a === 'stop') stopWalk(true);
+  if (a === 'close') { if (WK && !confirmClose()) return; const m = document.getElementById('walk'); m.classList.remove('open'); setTimeout(() => { m.hidden = true; }, 300); render(); }
+  if (a === 'ideas') { const m = document.getElementById('walk'); m.classList.remove('open'); setTimeout(() => { m.hidden = true; tipSheet('plimbare'); }, 250); }
+});
+function confirmClose() { toast('Plimbarea merge în continuare. Apasă din nou pe Plimbare ca s-o oprești.'); return true; }
+/* butonul Plimbare deschide cronometrul, nu lista */
+document.addEventListener('click', e => {
+  const t = e.target.closest && e.target.closest('.tips .tip'); if (!t) return;
+  if ([...t.parentNode.children].indexOf(t) === 2) { e.stopImmediatePropagation(); walkSheet(); }
+}, true);
 
 /* ---------- Demo pentru investitori: date de exemplu + prezentarea de la prima pornire ---------- */
 (function () {
