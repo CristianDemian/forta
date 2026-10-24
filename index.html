@@ -1908,6 +1908,9 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .fg-pace b { font: 800 18px var(--display); color: var(--ink); } .fg-pace small { font: 600 11.5px var(--sys); color: var(--muted); } .fg-pace em { font: 500 10.5px var(--sys); font-style: normal; color: var(--faint); }
 .fg-pace button.on { background: var(--ink); } .fg-pace button.on b, .fg-pace button.on small, .fg-pace button.on em { color: #fff; }
 .fg-tr { display: block; height: 8px; border-radius: 4px; background: rgba(34,197,94,.15); overflow: hidden; } .fg-tr i { display: block; height: 100%; }
+.yt-box { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #000; box-shadow: 0 20px 40px -20px rgba(0,0,0,.6); }
+.yt-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.tip-sheet .tip-i.yt { background: linear-gradient(120deg, #ff3b30, #d8101c); } .tip-sheet .tip-i.yt b, .tip-sheet .tip-i.yt small, .tip-sheet .tip-i.yt span { color: #fff; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -4552,6 +4555,9 @@ const TIPS = {
     ['Cină', 'Pește, vită slabă sau 250 g brânză de vaci cu fructe (≈ 30-40 g).']]],
   plimbare: ['Plimbare', '#22c55e', null],
   stretching: ['Stretching', '#0ea5e9', [
+    ['Video: stretching pentru tot corpul, 10 min', 'Îl urmărești direct în aplicație, pe YouTube.', 'yt:4260QBi-G8w'],
+    ['Video: încălzire sau revenire după sală', 'Mișcări ușoare pentru mușchii obosiți.', 'yt:BxOHAk3e3l4'],
+    ['Video: respirație și relaxare', 'Yoga With Adriene, ședință ghidată pentru stres și respirație.', 'yt:hJbRpHZr_d0'],
     ['Stretching ghidat 5 minute', 'Pornește ghidul cu voce, cu întinderile pentru zona lucrată ultima dată.', 'guide'],
     ['Rola de masaj', '1-2 minute pe coapse, fese și spate, dacă ai una acasă.'],
     ['Respirație', '5 minute de respirație lentă: 4 secunde inspiri, 6 secunde expiri. Scade tensiunea.']]]
@@ -4581,7 +4587,7 @@ async function nearbyParks() {
 function tipSheet(k) {
   const [title, col, items] = TIPS[k];
   let m = document.getElementById('plates'); if (!m) { m = document.createElement('div'); m.id = 'plates'; m.className = 'plates'; document.body.appendChild(m); }
-  const body = items ? items.map(([t, d, a]) => a === 'guide' ? `<button class="tip-i act" data-guide="stretch" data-day="${(nextPlan().p || DAYS[0]).id}"><b>${t}</b><small>${d}</small><span>▶</span></button>` : `<div class="tip-i"><b>${t}</b><small>${d}</small></div>`).join('')
+  const body = items ? items.map(([t, d, a]) => a && a.startsWith('yt:') ? `<button class="tip-i act yt" data-yt="${a.slice(3)}" data-yt-t="${esc(t.replace('Video: ', ''))}"><b>▶ ${t.replace('Video: ', '')}</b><small>${d}</small><span>▶</span></button>` : a === 'guide' ? `<button class="tip-i act" data-guide="stretch" data-day="${(nextPlan().p || DAYS[0]).id}"><b>${t}</b><small>${d}</small><span>▶</span></button>` : `<div class="tip-i"><b>${t}</b><small>${d}</small></div>`).join('')
     : `<p class="tip-lead">30 de minute în ritm lejer, cam 3.000-4.000 de pași. Ajută circulația și recuperarea fără să obosească mușchii.</p><div id="parks"><div class="tip-i"><b>Caut parcuri lângă tine...</b><small>Dacă telefonul întreabă, permite accesul la locație.</small></div></div>`;
   m.innerHTML = `<div class="pl-card tip-sheet" style="--c:${col}"><div class="pl-grab"></div><div class="pl-head"><div><small>Azi, pentru recuperare</small><h3>${title}</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>${body}</div>`;
   m.hidden = false; requestAnimationFrame(() => m.classList.add('open'));
@@ -4603,6 +4609,16 @@ document.addEventListener('click', e => {
   const k = ['somn', 'proteine', 'plimbare', 'stretching'][[...t.parentNode.children].indexOf(t)]; if (k) tipSheet(k);
 });
 document.addEventListener('click', e => { if (e.target.closest && e.target.closest('.tip-sheet [data-guide]')) { const m = document.getElementById('plates'); if (m) { m.classList.remove('open'); setTimeout(() => { m.hidden = true; }, 300); } } }, true);
+
+/* video YouTube deschis în aplicație */
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-yt]'); if (!b) return;
+  let m = document.getElementById('plates'); if (!m) { m = document.createElement('div'); m.id = 'plates'; m.className = 'plates'; document.body.appendChild(m); }
+  m.innerHTML = `<div class="pl-card yt-sheet"><div class="pl-grab"></div><div class="pl-head"><div><small>Video</small><h3>${b.dataset.ytT}</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>
+    <div class="yt-box"><iframe src="https://www.youtube-nocookie.com/embed/${b.dataset.yt}?playsinline=1&rel=0&modestbranding=1" title="${b.dataset.ytT}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+    <small class="tip-note">Pune telefonul pe orizontal pentru ecran complet.</small></div>`;
+  m.hidden = false; requestAnimationFrame(() => m.classList.add('open'));
+});
 
 /* ---------- Scorul de formă, vremea pentru drumul la sală, reamintiri de antrenament ---------- */
 
