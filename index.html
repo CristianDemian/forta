@@ -1852,6 +1852,15 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .dn-h { font: 500 11.5px var(--sys); color: rgba(255,255,255,.7); white-space: nowrap; }
 .dn-cup { font: 700 10px var(--sys); font-style: normal; margin-left: 6px; padding: 2px 6px; border-radius: 6px; background: #fff; color: var(--accent); vertical-align: 1px; }
 .dn-h::first-letter { text-transform: uppercase; }
+.tips .tip { cursor: pointer; transition: transform .3s cubic-bezier(.3, 1.6, .5, 1); position: relative; }
+.tips .tip::after { content: '›'; position: absolute; right: 8px; top: 6px; font: 700 16px var(--sys); color: var(--c); opacity: .7; }
+.tip-sheet .tip-i { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 12px 14px; border-radius: 16px; background: color-mix(in srgb, var(--c) 9%, var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 18%, transparent); text-align: left; color: var(--ink); text-decoration: none; }
+.tip-sheet .tip-i b { font: 700 14.5px var(--sys); } .tip-sheet .tip-i small { grid-column: 1; font: 500 13px/1.4 var(--sys); color: var(--muted); }
+.tip-sheet .tip-i span { grid-column: 2; grid-row: 1 / span 2; align-self: center; font: 700 16px var(--sys); color: var(--c); }
+.tip-sheet .tip-i.act { background: var(--c); } .tip-sheet .tip-i.act b, .tip-sheet .tip-i.act small, .tip-sheet .tip-i.act span { color: #fff; }
+.tip-sheet h3 { color: var(--c) !important; }
+.tip-lead { margin: 0; font: 500 14px/1.45 var(--sys); color: var(--muted); }
+#parks { display: grid; gap: 8px; } .tip-note { font: 500 12px var(--sys); color: var(--faint); }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -4347,7 +4356,7 @@ const sn = n => SHORT[n] || n.replace(/^(FC|FK|AFC|CS|ACS)\s+/i, '');
 function dinamoCard() {
   const today = dayKey();
   /* Cupa României (grupa D), din programul FRF; ora se anunță mai târziu */
-  const CUP = [{ date: '2026-10-28', time: '', opp: 'Chindia Târgoviște', home: true, round: 'Grupe, etapa 2', comp: 'CUPA ROMÂNIEI' }, { date: '2026-12-02', time: '', opp: 'Universitatea Craiova', home: false, round: 'Grupe, etapa 3', comp: 'CUPA ROMÂNIEI' }];
+  const CUP = [{ date: '2026-10-28', time: '19:00', opp: 'Chindia Târgoviște', home: true, round: 'Grupe, etapa 2', comp: 'CUPA ROMÂNIEI' }, { date: '2026-12-02', time: '', opp: 'Universitatea Craiova', home: false, round: 'Grupe, etapa 3', comp: 'CUPA ROMÂNIEI' }];
   const league = DM && DM.next ? DM.next : DINAMO.map(([date, time, opp, home]) => ({ date, time, opp, home: !!home }));
   const next = league.concat(CUP.filter(c => !league.some(l => l.date === c.date))).sort((a, b) => a.date.localeCompare(b.date));
   const m = next.find(x => x.date >= today);
@@ -4404,7 +4413,7 @@ function challengeRail() {
     const guides = dayId ? `<div class="gcards">${guideCard('warm', dayId)}${guideCard('stretch', dayId)}</div>` : '';
     if (guides) {
       const h2 = h.replace(/(<button class="btn btn-main" data-start="[^"]*">[^<]*<\/button>)/, `${guides}$1`);
-      h = h2 !== h ? h2 : h.replace('<div class="tips-h">', `<div class="gcards">${guideCard('stretch', dayId)}</div><div class="tips-h">`);
+      h = h2 !== h ? h2 : h;
     }
     const dn = dinamoCard(), ch = challengeRail();
     const i = h.indexOf('<section class="sec"><div class="sec-head"><h2>Suplimente azi');
@@ -4479,6 +4488,56 @@ MOVES['incline-treadmill-walk'][1] = 'Pe banda Technogym: apeși butonul verde d
     f.insertAdjacentHTML('beforebegin', `<div class="w-fin"><h3>La final</h3><div class="gcards">${guideCard('core', S.active.day)}${guideCard('stretch', S.active.day)}</div></div>`);
   };
 }
+
+/* ================= Recuperare: idei în spatele fiecărui buton ================= */
+const TIPS = {
+  somn: ['Somn', '#7c5cff', [
+    ['Ora de culcare fixă', 'Te culci și te trezești la aceeași oră, chiar și în weekend. Mușchii cresc mai ales în somnul adânc.'],
+    ['Fără ecran cu 30 de minute înainte', 'Lumina de la telefon întârzie somnul. Pune telefonul pe Modul Somn din Configurări.'],
+    ['Cameră răcoroasă și întunecată', 'Ideal 18-19°C, draperii trase. O baie caldă înainte ajută corpul să se relaxeze.'],
+    ['Cafeaua până la 14:00', 'Cofeina rămâne în corp 6-8 ore și strică somnul adânc, chiar dacă adormi.'],
+    ['Magneziu seara', 'Dacă îl ai pe listă, ia-l înainte de culcare. Ajută relaxarea musculară.']]],
+  proteine: ['Proteine', '#f59e0b', [
+    ['Ținta ta: ~1,8 g pe kg', 'Împarte-o în 4 mese de 30-40 g, nu toată deodată.'],
+    ['Mic dejun', '3 ouă + 100 g brânză de vaci (≈ 35 g) sau iaurt grecesc cu ovăz (≈ 25 g).'],
+    ['Prânz', '200 g piept de pui sau curcan cu orez sau cartofi (≈ 45 g).'],
+    ['Gustare', 'Un shake de proteine (≈ 25 g) sau o conservă de ton (≈ 25 g).'],
+    ['Cină', 'Pește, vită slabă sau 250 g brânză de vaci cu fructe (≈ 30-40 g).']]],
+  plimbare: ['Plimbare', '#22c55e', null],
+  stretching: ['Stretching', '#0ea5e9', [
+    ['Stretching ghidat 5 minute', 'Pornește ghidul cu voce, cu întinderile pentru zona lucrată ultima dată.', 'guide'],
+    ['Rola de masaj', '1-2 minute pe coapse, fese și spate, dacă ai una acasă.'],
+    ['Respirație', '5 minute de respirație lentă: 4 secunde inspiri, 6 secunde expiri. Scade tensiunea.']]]
+};
+function parkFallback() { return [['Parcul Herăstrău (Regele Mihai I)', 'Turul lacului are aproape 6 km.'], ['Parcul IOR', 'Lac și alei lungi, bun pentru 30-40 de minute.'], ['Parcul Tineretului', 'Alei largi, circuit de aproximativ 3 km.'], ['Grădina Cișmigiu', 'Turul complet durează cam 20 de minute, bun dacă ești prin centru.']]; }
+async function nearbyParks() {
+  const pos = await new Promise((ok, no) => { if (!navigator.geolocation) return no(); navigator.geolocation.getCurrentPosition(p => ok(p.coords), no, { timeout: 8000, maximumAge: 600000 }); });
+  const q = `[out:json][timeout:15];(way["leisure"="park"]["name"](around:3000,${pos.latitude},${pos.longitude});relation["leisure"="park"]["name"](around:3000,${pos.latitude},${pos.longitude}););out center 30;`;
+  const r = await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: 'data=' + encodeURIComponent(q) });
+  const j = await r.json(), R = 6371, rad = x => x * Math.PI / 180;
+  const d = (a, b) => { const dl = rad(b.lat - a.lat), dn = rad(b.lon - a.lon), h = Math.sin(dl / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dn / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
+  const me = { lat: pos.latitude, lon: pos.longitude }, seen = new Set();
+  return j.elements.map(e => ({ name: e.tags.name, lat: (e.center || e).lat, lon: (e.center || e).lon })).filter(p => p.lat && !seen.has(p.name) && seen.add(p.name))
+    .map(p => Object.assign(p, { km: d(me, p) })).sort((a, b) => a.km - b.km).slice(0, 4);
+}
+function tipSheet(k) {
+  const [title, col, items] = TIPS[k];
+  let m = document.getElementById('plates'); if (!m) { m = document.createElement('div'); m.id = 'plates'; m.className = 'plates'; document.body.appendChild(m); }
+  const body = items ? items.map(([t, d, a]) => a === 'guide' ? `<button class="tip-i act" data-guide="stretch" data-day="${(nextPlan().p || DAYS[0]).id}"><b>${t}</b><small>${d}</small><span>▶</span></button>` : `<div class="tip-i"><b>${t}</b><small>${d}</small></div>`).join('')
+    : `<p class="tip-lead">30 de minute în ritm lejer, cam 3.000-4.000 de pași. Ajută circulația și recuperarea fără să obosească mușchii.</p><div id="parks"><div class="tip-i"><b>Caut parcuri lângă tine...</b><small>Dacă telefonul întreabă, permite accesul la locație.</small></div></div>`;
+  m.innerHTML = `<div class="pl-card tip-sheet" style="--c:${col}"><div class="pl-grab"></div><div class="pl-head"><div><small>Azi, pentru recuperare</small><h3>${title}</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>${body}</div>`;
+  m.hidden = false; requestAnimationFrame(() => m.classList.add('open'));
+  if (!items) nearbyParks().then(ps => {
+    const el = document.getElementById('parks'); if (!el) return;
+    if (!ps.length) throw 0;
+    el.innerHTML = ps.map(p => `<a class="tip-i park" href="https://maps.apple.com/?daddr=${p.lat},${p.lon}&dirflg=w" target="_blank" rel="noopener"><b>${esc(p.name)}</b><small>${p.km < 1 ? Math.round(p.km * 1000) + ' m' : fmt(p.km, 1) + ' km'} de tine, cam ${Math.max(2, Math.round(p.km / 5 * 60))} min pe jos</small><span>↗</span></a>`).join('');
+  }).catch(() => { const el = document.getElementById('parks'); if (el) el.innerHTML = '<small class="tip-note">Nu am primit locația, așa că îți propun parcuri din București:</small>' + parkFallback().map(([n, d]) => `<a class="tip-i park" href="https://maps.apple.com/?q=${encodeURIComponent(n + ', București')}" target="_blank" rel="noopener"><b>${n}</b><small>${d}</small><span>↗</span></a>`).join(''); });
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest && e.target.closest('.tips .tip'); if (!t) return;
+  const k = ['somn', 'proteine', 'plimbare', 'stretching'][[...t.parentNode.children].indexOf(t)]; if (k) tipSheet(k);
+});
+document.addEventListener('click', e => { if (e.target.closest && e.target.closest('.tip-sheet [data-guide]')) { const m = document.getElementById('plates'); if (m) { m.classList.remove('open'); setTimeout(() => { m.hidden = true; }, 300); } } }, true);
 
 /* ---------- Scorul de formă, vremea pentru drumul la sală, reamintiri de antrenament ---------- */
 
