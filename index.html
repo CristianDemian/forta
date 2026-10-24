@@ -1861,6 +1861,13 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .tip-sheet h3 { color: var(--c) !important; }
 .tip-lead { margin: 0; font: 500 14px/1.45 var(--sys); color: var(--muted); }
 #parks { display: grid; gap: 8px; } .tip-note { font: 500 12px var(--sys); color: var(--faint); }
+/* rânduri de butoane pe un singur rând (iPhone 13 Pro Max, 428 px) */
+.bk .chips, .notice .chips, .pl-bars, .gd-btns + .chips { display: grid !important; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px !important; flex-wrap: nowrap !important; }
+.bk .chips .btn, .notice .chips .btn { min-height: 40px !important; padding: 0 6px !important; font-size: 13px !important; white-space: nowrap; border-radius: 12px !important; }
+.pl-bars .chip { padding: 0 4px !important; font-size: 12px !important; min-height: 34px; white-space: nowrap; justify-content: center; text-align: center; }
+.st-card .chips { flex-wrap: nowrap !important; } .st-card .chips .chip { flex: 1; min-width: 0; font-size: 12px; padding: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wex-actions { flex-wrap: nowrap !important; gap: 8px; white-space: nowrap; } .wex-actions .link { font-size: 13px; padding-inline: 0; }
+.wex-actions .set-ctl { display: flex; gap: 10px; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -3147,7 +3154,7 @@ function backupSec() {
       <div class="bk-top"><span class="bk-ic ${b.on && b.at ? 'ok' : ''}">${b.on && b.at ? ICON.check : '!'}</span><div><b>${b.on ? (b.at ? 'Datele tale sunt salvate' : 'Prima copie se face acum') : 'Copia automată e oprită'}</b>
         <small>${b.on ? (b.err ? esc(b.err) : b.at ? `Ultima copie ${ago}, criptată, în GitHub-ul tău. Se face singură după fiecare schimbare.` : 'Durează câteva secunde.') : 'Pornește notificările din Suplimente (cheia GitHub) și copia se face singură.'}</small></div></div>
       ${b.code ? `<div class="bk-code"><small>Codul tău de recuperare</small><b class="num">${esc(b.code)}</b><p>Păstrează-l în Notițe sau în Parole. Fără el, copia nu se poate deschide pe alt telefon.</p><button class="btn btn-ghost" data-bk-copy>Copiază codul</button></div>` : ''}
-      <div class="chips">${b.on ? '<button class="btn btn-ghost" data-bk-now>Salvează acum</button>' : ''}<button class="btn btn-ghost" data-restore-open>Restaurează</button><button class="btn btn-ghost" data-backup>Copiază ca text</button></div>
+      <div class="chips">${b.on ? '<button class="btn btn-ghost" data-bk-now>Salvează</button>' : ''}<button class="btn btn-ghost" data-restore-open>Restaurează</button><button class="btn btn-ghost" data-backup>Copiază text</button></div>
       <div id="restore" hidden><input class="field num" id="bk-code" placeholder="Codul de recuperare, ex. ABCD-EFGH-..." autocomplete="off" autocapitalize="characters"><button class="btn btn-main" data-bk-restore style="margin-top:8px">Restaurează din GitHub</button>
         <textarea class="field" id="restore-txt" placeholder="Sau lipește aici textul copiat anterior" style="margin-top:10px"></textarea><button class="btn btn-ghost" data-restore style="margin-top:8px">Restaurează din text</button></div></div>
   </section>`;
