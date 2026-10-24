@@ -5056,7 +5056,7 @@ function stepsStrip() {
   return `<div class="steps-strip"><button class="ss-main" data-steps><span class="ss-ic">👟</span><span class="ss-m"><span class="ss-t"><b class="num">${st.toLocaleString('ro-RO')}</b> pași azi${h ? `, ${fmt(h.km, 1)} km` : ''}</span><span class="ss-bar"><i style="width:${pc.toFixed(0)}%"></i></span><small>${h ? (h.t ? `Actualizat la ${esc(h.t)}` : 'Actualizat azi') + (b ? `, +${b} kcal la buget` : '') : 'Pașii vin din aplicația Sănătate, prin scurtătură'}</small></span></button></div>`;
 }
 if (typeof foodCard === 'function') { const _fc = foodCard; foodCard = function () { return _fc() + stepsStrip(); }; }
-document.addEventListener('click', e => { if (!e.target.closest) return; if (e.target.closest('[data-steps-sync]')) { if (!hWait) syncSteps(); return; } if (e.target.closest('[data-steps]')) { pullHealth(); walkSheet(); } });
+document.addEventListener('click', e => { if (!e.target.closest) return; if (e.target.closest('[data-steps-sync]')) { if (!hWait) syncSteps(); return; } if (e.target.closest('[data-steps]')) { pullHealth(); tipSheet('plimbare'); } });
 
 function walkSheet() {
   let m = document.getElementById('walk'); if (!m) { m = document.createElement('div'); m.id = 'walk'; m.className = 'guide walk'; document.body.appendChild(m); }
@@ -5127,7 +5127,7 @@ function confirmClose() { toast('Plimbarea merge în continuare. Apasă din nou 
 /* butonul Plimbare deschide cronometrul, nu lista */
 document.addEventListener('click', e => {
   const t = e.target.closest && e.target.closest('.tips .tip'); if (!t) return;
-  if ([...t.parentNode.children].indexOf(t) === 2) { e.stopImmediatePropagation(); walkSheet(); }
+  /* cronometrul de plimbare e oprit: pașii vin din Sănătate; butonul Plimbare deschide din nou ideile de trasee */
 }, true);
 
 /* ---------- Calorii arse la sală (estimare după MET, fără metabolismul de repaus, care e deja în baza zilei) ---------- */
