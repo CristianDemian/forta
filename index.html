@@ -1824,9 +1824,9 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 <script>
 /* ---------- Programul: 3 zile, câte două grupe ---------- */
 const DAYS = [
-  { id: 'A', wd: 1, label: 'Luni', short: 'Piept', name: 'Piept + Triceps', ex: ['incline', 'pecdeck', 'chestpress', 'rope', 'vbar'] },
-  { id: 'B', wd: 3, label: 'Miercuri', short: 'Spate', name: 'Spate + Biceps', ex: ['pulldown', 'closegrip', 'vpull', 'machrow', 'dbrow', 'cablerow', 'straightarm', 'zwide', 'znarrow', 'hammer'] },
-  { id: 'C', wd: 5, label: 'Vineri', short: 'Umeri', name: 'Umeri + Picioare', ex: ['squat', 'rdl', 'legpress', 'legcurl', 'dbpress', 'lateral', 'facepull'] }
+  { id: 'A', wd: 1, label: 'Luni', short: 'Piept', name: 'Piept + Triceps', ex: ['incline', 'pecdeck', 'chestpress', 'rope', 'vbar', 'abcrunch'] },
+  { id: 'B', wd: 3, label: 'Miercuri', short: 'Spate', name: 'Spate + Biceps', ex: ['pulldown', 'closegrip', 'vpull', 'machrow', 'dbrow', 'straightarm', 'lowback', 'zwide', 'znarrow', 'hammer'] },
+  { id: 'C', wd: 5, label: 'Vineri', short: 'Umeri', name: 'Umeri + Picioare', ex: ['legpress', 'legext', 'legcurl', 'rdl', 'shoulderm', 'lateral', 'revfly'] }
 ];
 
 const EX = {
@@ -1996,12 +1996,12 @@ const EX = {
       B: { hip: [94, 140], t: -58, ua: 40, fa: 80, th: 128, sh: 128 } }
   },
   legcurl: {
-    name: 'Flexii femurali la aparat', muscles: 'Femurali',
-    sets: 3, reps: [10, 12], rest: 75, step: 2.5,
-    cues: ['Șoldurile lipite de bancă pe toată execuția.',
-      'Adu călcâiele spre fese și ține o secundă sus.',
-      'Coboară lent, fără să lași greutatea să cadă.'],
-    mistake: 'Ridicarea șoldurilor de pe bancă ca să termini repetarea.',
+    name: 'Flexii femurali la aparat, din șezut', muscles: 'Femurali',
+    sets: 3, reps: [10, 12], rest: 75, step: 5,
+    cues: ['Genunchiul aliniat cu axul aparatului, perna de sus fixată bine pe coapse.',
+      'Perna de jos sub gambe, deasupra călcâielor. Trage călcâiele în jos și înapoi, sub scaun.',
+      'Ține o secundă jos, apoi revino lent, 2-3 secunde.'],
+    mistake: 'Spatele se desprinde de spătar ca să termini repetarea. Rămâi lipit, scade greutatea.',
     rig: { eq: [{ k: 'bench', a: [42, 136], b: [150, 136] }, { k: 'handle', at: 'foot' }],
       A: { hip: [112, 129], t: -90, ua: 22, fa: 40, th: 90, sh: 92, fd: 180 },
       B: { hip: [112, 129], t: -90, ua: 22, fa: 40, th: 90, sh: 196, fd: 270 } }
@@ -2044,7 +2044,7 @@ const EX = {
 
 Object.assign(EX, {
   chestpress: {
-    name: 'Împins înclinat la aparat cu discuri', muscles: 'Piept superior, umăr frontal, triceps',
+    name: 'Wide chest press la aparat (Technogym)', muscles: 'Piept superior, umăr frontal, triceps',
     sets: 3, reps: [8, 12], rest: 120, step: 5,
     cues: ['Reglează scaunul astfel încât mânerele să pornească de la nivelul pieptului de sus, puțin sub clavicule.',
       'Spatele și capul lipite de spătar, omoplații strânși, picioarele bine sprijinite pe podea.',
@@ -2119,7 +2119,7 @@ Object.assign(EX, {
       B: { hip: [92, 141], t: -18, ua: -18, fa: 150, th: 90, sh: 0 } }
   },
   machrow: {
-    name: 'Ramat la aparat cu sprijin pe piept', muscles: 'Mijlocul spatelui, dorsali, umăr posterior, biceps',
+    name: 'Low row la aparat (Technogym)', muscles: 'Mijlocul spatelui, dorsali, umăr posterior, biceps',
     sets: 3, reps: [8, 12], rest: 90, step: 5,
     cues: ['Reglează scaunul astfel încât mânerele să fie la nivelul pieptului de jos, cu pieptul lipit de pernă.',
       'Prinde mânerele verticale, cu palmele față în față, și pornește cu brațele întinse.',
@@ -2129,6 +2129,61 @@ Object.assign(EX, {
     rig: { eq: [{ k: 'pad', a: [80, 148], b: [118, 148] }, { k: 'pad', a: [120, 96], b: [124, 132] }, { k: 'handle', at: 'hand' }],
       A: { hip: [94, 143], t: 12, ua: 82, fa: 4, th: 90, sh: 0 },
       B: { hip: [94, 143], t: 12, ua: -40, fa: 100, th: 90, sh: 0 } }
+  },
+  shoulderm: {
+    name: 'Shoulder press la aparat (Technogym)', muscles: 'Umăr frontal și lateral, triceps',
+    sets: 3, reps: [8, 12], rest: 120, step: 5,
+    cues: ['Reglează scaunul astfel încât mânerele să pornească la nivelul umerilor, puțin sub bărbie.',
+      'Spatele lipit de spătar, abdomenul strâns, picioarele pe podea.',
+      'Împinge în sus până aproape de brațe întinse, fără să blochezi coatele, apoi coboară lent.'],
+    mistake: 'Scaunul prea sus, iar mânerele pornesc de deasupra capului. Pierzi jumătate din mișcare.',
+    rig: { eq: [{ k: 'pad', a: [86, 150], b: [86, 96] }, { k: 'pad', a: [80, 150], b: [118, 150] }, { k: 'db', at: 'hand' }],
+      A: { hip: [96, 143], t: 0, ua: 14, fa: 178, th: 90, sh: 0 },
+      B: { hip: [96, 143], t: 0, ua: 176, fa: 178, th: 90, sh: 0 } }
+  },
+  revfly: {
+    name: 'Fluturări inverse cu gantere pe bancă', muscles: 'Umăr posterior, spate superior',
+    sets: 3, reps: [12, 15], rest: 60, step: 1,
+    cues: ['Banca la 30-45°, te întinzi cu pieptul pe spătar, ganterele atârnă sub umeri.',
+      'Coatele ușor îndoite, ridici ganterele lateral până la nivelul umerilor.',
+      'Ține o secundă sus, strângând omoplații, apoi coboară lent.'],
+    mistake: 'Ganterele prea grele, care te fac să balansezi. Aici contează controlul, nu greutatea.',
+    rig: { eq: [{ k: 'pad', a: [86, 150], b: [86, 96] }, { k: 'pad', a: [80, 150], b: [118, 150] }, { k: 'db', at: 'hand' }],
+      A: { hip: [96, 143], t: 0, ua: 14, fa: 178, th: 90, sh: 0 },
+      B: { hip: [96, 143], t: 0, ua: 176, fa: 178, th: 90, sh: 0 } }
+  },
+  legext: {
+    name: 'Extensii pentru cvadricepși la aparat', muscles: 'Cvadricepși',
+    sets: 3, reps: [10, 12], rest: 75, step: 5,
+    cues: ['Genunchiul aliniat cu axul aparatului, perna de la glezne chiar deasupra încheieturii.',
+      'Întinde picioarele complet, strânge cvadricepșii o secundă sus.',
+      'Coboară lent, 2-3 secunde, fără să lași greutățile să se atingă.'],
+    mistake: 'Aruncarea greutății din elan. Mișcarea pornește lent și controlat.',
+    rig: { eq: [{ k: 'pad', a: [86, 150], b: [86, 96] }, { k: 'pad', a: [80, 150], b: [118, 150] }, { k: 'db', at: 'hand' }],
+      A: { hip: [96, 143], t: 0, ua: 14, fa: 178, th: 90, sh: 0 },
+      B: { hip: [96, 143], t: 0, ua: 176, fa: 178, th: 90, sh: 0 } }
+  },
+  lowback: {
+    name: 'Lombare la aparat (lower back)', muscles: 'Lombari, fesieri',
+    sets: 3, reps: [12, 15], rest: 60, step: 5,
+    cues: ['Rola de spate la nivelul omoplaților, picioarele bine fixate.',
+      'Împinge înapoi lent, din șolduri și spatele de jos, până la poziția dreaptă.',
+      'Revino controlat, fără să te arunci în față.'],
+    mistake: 'Greutate mare și mișcare bruscă. Lombarii se lucrează ușor și controlat.',
+    rig: { eq: [{ k: 'pad', a: [86, 150], b: [86, 96] }, { k: 'pad', a: [80, 150], b: [118, 150] }, { k: 'db', at: 'hand' }],
+      A: { hip: [96, 143], t: 0, ua: 14, fa: 178, th: 90, sh: 0 },
+      B: { hip: [96, 143], t: 0, ua: 176, fa: 178, th: 90, sh: 0 } }
+  },
+  abcrunch: {
+    name: 'Abdomene la aparat (crunch)', muscles: 'Abdomen',
+    sets: 3, reps: [12, 15], rest: 60, step: 5,
+    cues: ['Picioarele fixate, mânerele lângă piept sau umeri.',
+      'Rulează trunchiul în față și în jos, ca și cum ai apropia pieptul de bazin.',
+      'Expiră la contracție, ține o secundă, apoi revino lent.'],
+    mistake: 'Tragi din brațe. Brațele doar țin mânerele, abdomenul face mișcarea.',
+    rig: { eq: [{ k: 'pad', a: [86, 150], b: [86, 96] }, { k: 'pad', a: [80, 150], b: [118, 150] }, { k: 'db', at: 'hand' }],
+      A: { hip: [96, 143], t: 0, ua: 14, fa: 178, th: 90, sh: 0 },
+      B: { hip: [96, 143], t: 0, ua: 176, fa: 178, th: 90, sh: 0 } }
   },
   dbrow: {
     name: 'Ramat cu gantera cu o singură mână', muscles: 'Dorsali, spate mijlociu, biceps',
@@ -2181,7 +2236,7 @@ for (const id in EX) { EX[id].sets = 3; EX[id].reps = [10, 12]; }
    compuse partea de sus 2:00, compuse picioare 2:30, izolare 1:15 (picioare 1:30).
    Între aparate: pauza exercițiului următor + 30 s pentru mutare și reglaj. */
 const REST = { compUp: 120, compLow: 150, iso: 75, isoLow: 90 };
-const KIND = { incline: 'compUp', chestpress: 'compUp', pulldown: 'compUp', supine: 'compUp', closegrip: 'compUp', vpull: 'compUp', machrow: 'compUp', dbrow: 'compUp', cablerow: 'compUp', dbpress: 'compUp',
+const KIND = { incline: 'compUp', chestpress: 'compUp', pulldown: 'compUp', supine: 'compUp', closegrip: 'compUp', vpull: 'compUp', machrow: 'compUp', shoulderm: 'compUp', dbrow: 'compUp', cablerow: 'compUp', dbpress: 'compUp',
   squat: 'compLow', rdl: 'compLow', legpress: 'compLow', legcurl: 'isoLow' };
 const KIND_LABEL = { compUp: 'exercițiu compus', compLow: 'exercițiu compus pentru picioare', iso: 'exercițiu de izolare', isoLow: 'izolare pentru picioare' };
 for (const id in EX) { EX[id].kind = KIND[id] || 'iso'; EX[id].rest = REST[EX[id].kind]; EX[id].switchRest = EX[id].rest + 30; }
@@ -3412,7 +3467,7 @@ TABS.push({ id: 'profil', label: 'Profil', icon: LI.user });
 /* ---------- Grupe musculare ---------- */
 const MUSCLE = {
   incline: ['piept', 'umeri', 'triceps'], chestpress: ['piept', 'umeri', 'triceps'], pecdeck: ['piept'], rope: ['triceps'], vbar: ['triceps'],
-  pulldown: ['spate', 'biceps'], supine: ['spate', 'biceps'], closegrip: ['spate', 'biceps'], vpull: ['spate', 'biceps'], machrow: ['spate', 'umeri', 'biceps'], dbrow: ['spate', 'biceps'], cablerow: ['spate'], straightarm: ['spate'],
+  pulldown: ['spate', 'biceps'], supine: ['spate', 'biceps'], closegrip: ['spate', 'biceps'], vpull: ['spate', 'biceps'], machrow: ['spate', 'umeri', 'biceps'], shoulderm: ['umeri', 'triceps'], revfly: ['umeri', 'spate'], legext: ['cvadriceps'], lowback: ['spate', 'fesieri'], abcrunch: [], dbrow: ['spate', 'biceps'], cablerow: ['spate'], straightarm: ['spate'],
   zwide: ['biceps'], znarrow: ['biceps'], hammer: ['biceps', 'antebrat'], squat: ['cvadriceps', 'fesieri'], rdl: ['femurali', 'fesieri', 'spate'],
   legpress: ['cvadriceps', 'fesieri'], legcurl: ['femurali'], dbpress: ['umeri', 'triceps'], lateral: ['umeri'], facepull: ['umeri', 'spate'],
   bench: ['piept', 'triceps'], cross: ['piept'], dips: ['piept', 'triceps'], pushdown: ['triceps'], ohext: ['triceps'], row: ['spate', 'biceps'], curl: ['biceps']
@@ -4033,9 +4088,9 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-shar
 /* ================= Ilustrații animate de exerciții (RepDB, gratuit cu atribuire) ================= */
 const MEDIA = window.FORTA_MEDIA || {};
 const ILLU = { incline: 'incline-db-press', chestpress: 'chest-press-machine', pecdeck: 'pec-deck', rope: 'tricep-pushdown', vbar: 'v-bar-tricep-pushdown',
-  pulldown: 'lat-pulldown', supine: 'reverse-grip-lat-pulldown', closegrip: 'lat-pulldown', vpull: 'close-grip-lat-pulldown', machrow: 'chest-supported-machine-row', dbrow: 'single-arm-db-row', cablerow: 'seated-cable-row', straightarm: 'straight-arm-pulldown',
+  pulldown: 'lat-pulldown', supine: 'reverse-grip-lat-pulldown', closegrip: 'lat-pulldown', vpull: 'close-grip-lat-pulldown', machrow: 'chest-supported-machine-row', shoulderm: 'machine-shoulder-press', revfly: 'dumbbell-reverse-fly', legext: 'leg-extension', lowback: 'machine-back-extension', abcrunch: 'machine-seated-crunch', dbrow: 'single-arm-db-row', cablerow: 'seated-cable-row', straightarm: 'straight-arm-pulldown',
   zwide: 'ez-bar-curl', znarrow: 'close-grip-ez-bar-curl', hammer: 'hammer-curl', squat: 'squat', rdl: 'romanian-deadlift', legpress: 'leg-press',
-  legcurl: 'leg-curl', dbpress: 'seated-db-press', lateral: 'lateral-raise', facepull: 'face-pull' };
+  legcurl: 'seated-leg-curl', dbpress: 'seated-db-press', lateral: 'lateral-raise', facepull: 'face-pull' };
 {
   const _svg = Rig.svg;
   let k = 0;
@@ -4079,6 +4134,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.da
 
 /* ================= 3. Încălzire și stretching ghidate ================= */
 const MOVES = {
+  'air-bike': ['Air bike sau bandă', '3 minute ușor, ca să se încălzească tot corpul. Pe bandă: mers alert, ușor în pantă.'],
   'jumping-jacks': ['Sărituri cu brațele sus', 'Ritm vioi, aterizezi moale pe vârfuri.'],
   'cat-cow': ['Pisica și cămila', 'În patru labe, arcuiește și rotunjește spatele, lent, cu respirația.'],
   'band-pull-apart': ['Desfaceri cu banda', 'Brațele întinse în față, desfaci banda până la piept, omoplații strânși.'],
@@ -4100,7 +4156,7 @@ const MOVES = {
   'kneeling-hip-flexor-stretch': ['Întindere flexori șold', 'Un genunchi jos, împingi șoldul înainte, fesa strânsă.'],
   'standing-calf-stretch': ['Întindere gambe', 'Mâinile pe perete, piciorul din spate întins, călcâiul jos.']
 };
-const WARM = [['jumping-jacks', 40], ['cat-cow', 30], ['band-pull-apart', 30], ['inchworm', 40], ['leg-swing-front-to-back', 30], ['lateral-leg-swing', 30], ['bodyweight-reverse-lunge', 40], ['downward-dog-to-low-lunge', 40]];
+const WARM = [['air-bike', 180], ['jumping-jacks', 40], ['cat-cow', 30], ['band-pull-apart', 30], ['inchworm', 40], ['leg-swing-front-to-back', 30], ['lateral-leg-swing', 30], ['bodyweight-reverse-lunge', 40], ['downward-dog-to-low-lunge', 40]];
 const STRETCH = {
   A: [['doorway-chest-stretch', 45], ['cross-body-shoulder-stretch', 40], ['overhead-triceps-stretch', 40], ['cobra-stretch', 35], ['childs-pose', 45], ['cat-cow', 30]],
   B: [['dead-hang', 30], ['bench-lat-stretch', 45], ['childs-pose', 45], ['cross-body-shoulder-stretch', 40], ['cat-cow', 30], ['cobra-stretch', 30]],
