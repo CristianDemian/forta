@@ -137,7 +137,7 @@ h2 { margin: 0; font: 600 13px/1.2 var(--sys); letter-spacing: .02em; color: var
 .wd.plan em, .wd.done em { color: var(--red-hi); }
 
 /* ---------- Statistici ---------- */
-.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stats { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 8px; }
 .stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; display: grid; gap: 2px; min-width: 0; }
 .stat b { font: 700 22px/1.1 var(--sys); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .stat small { color: var(--muted); font-size: 12px; line-height: 1.3; }
@@ -3197,7 +3197,7 @@ function viewProgres() {
       const d = DAYS.find(x => x.id === s.day);
       const nsets = Object.values(s.ex).reduce((a, x) => a + x.length, 0);
       const dt = new Date(s.date);
-      return `<button class="hist-row" data-sess="${s.id}"><span class="badge hd"><b class="num">${dt.getDate()}</b><small>${dt.toLocaleDateString('ro-RO', { month: 'short' }).replace('.', '')}</small></span><span><strong>${esc(d.name)}</strong><small>${nsets} serii, ${fmt(volume(s) / 1000, 1)} t, ${Math.round((s.dur || 0) / 60000)} min</small><i class="hvol" style="--v:${Math.min(1, volume(s) / 14000).toFixed(2)}"></i></span>${ICON.chev}</button>`;
+      return `<button class="hist-row" data-sess="${s.id}"><span class="badge hd"><b class="num">${dt.getDate()}</b><small>${dt.toLocaleDateString('ro-RO', { month: 'short' }).replace('.', '')}</small></span><span><strong>${esc(d.name)}</strong><small>${nsets} serii, ${fmt(volume(s) / 1000, 1)} t, ${Math.round((s.dur || 0) / 60000)} min, ${typeof sessKcal === 'function' ? sessKcal(s) : 0} kcal</small><i class="hvol" style="--v:${Math.min(1, volume(s) / 14000).toFixed(2)}"></i></span>${ICON.chev}</button>`;
     }).join('')}</div>` : `<p class="empty">Antrenamentele terminate apar aici. Apasă pe unul ca să vezi fiecare exercițiu, greutățile și progresul.</p>`}
   </section>
 `;
@@ -3294,14 +3294,14 @@ function renderWorkout() {
   w.innerHTML = `<header class="w-head"><div class="w-head-in">
     <div class="w-title"><span>${day.label}</span> ${esc(day.name)}</div>
     <button class="btn btn-ghost w-finish" data-finish>Termină</button>
-    <div class="w-sub"><span id="elapsed" class="num">0:00</span> · <span id="done-count"></span></div>
+    <div class="w-sub"><span id="elapsed" class="num">0:00</span> · <span id="w-kcal" class="num">0 kcal</span> · <span id="done-count"></span></div>
     <div class="progressbar"><i id="pbar"></i></div></div></header>
   <div class="w-body">${(S.active.order || day.ex).filter(id => S.active.sets[id]).map(id => wexCard(id)).join('')}
     <div class="w-foot"><button class="btn btn-main" data-finish>Termină și salvează</button><button class="link muted" data-cancel>Anulează antrenamentul</button></div>
   </div>`;
   updateProgress();
   clearInterval(tickT);
-  tickT = setInterval(() => { const e = $('#elapsed'); if (e && S.active) e.textContent = fmtTime((Date.now() - S.active.start) / 1000); }, 1000);
+  tickT = setInterval(() => { const e = $('#elapsed'); if (e && S.active) { e.textContent = fmtTime((Date.now() - S.active.start) / 1000); const k = $('#w-kcal'); if (k && typeof sessKcal === 'function') k.textContent = sessKcal({ dur: Date.now() - S.active.start }) + ' kcal'; } }, 1000);
 }
 function wexCard(id) {
   const ex = EX[id], last = lastSets(id), sug = suggestion(id), sets = S.active.sets[id];
@@ -3337,7 +3337,7 @@ function finishWorkout() {
   }
   if (Object.keys(ex).length) {
     S.sessions.push({ id: 'w' + Date.now(), day: a.day, date: a.start, dur: Date.now() - a.start, ex });
-    toast(`Salvat. Ai ridicat ${fmt(volume({ ex }), 0)} kg azi.`);
+    toast(`Salvat. Ai ridicat ${fmt(volume({ ex }), 0)} kg și ai ars cam ${typeof sessKcal === 'function' ? sessKcal(S.sessions[S.sessions.length - 1]) : 0} kcal.`);
   } else toast('Nu ai bifat niciun set, așa că nu am salvat nimic.');
   S.active = null; save(); stopRest(); tab = 'azi'; render(); scrollTopApp();
   if (wakeLock) { wakeLock.release().catch(() => { }); wakeLock = null; }
@@ -3443,7 +3443,8 @@ function renderSheet() {
     <section class="stats">
       <div class="stat"><b class="num">${Math.round((s.dur || 0) / 60000)}</b><small>minute</small></div>
       <div class="stat"><b class="num">${nsets}</b><small>serii făcute</small></div>
-      <div class="stat"><b class="num">${fmt(volume(s) / 1000, 1)}t</b><small>volum total ridicat</small></div>
+      <div class="stat"><b class="num">${typeof sessKcal === 'function' ? sessKcal(s) : 0}</b><small>kcal arse</small></div>
+      <div class="stat"><b class="num">${fmt(volume(s) / 1000, 1)}t</b><small>volum ridicat</small></div>
     </section>
     ${order.map(id => {
       const ex = EX[id], sets = s.ex[id], hist = exHistory(id, s.date), prev = hist.length > 1 ? hist[hist.length - 2] : null, cur = hist[hist.length - 1];
@@ -4346,7 +4347,7 @@ function stepGuide() {
 function finishGuide() {
   const m = document.getElementById('guide'); clearInterval(G.t);
   const kind = G.kind, after = G.after; say(kind === 'warm' ? 'Gata. Ești încălzit, treci la treabă!' : kind === 'core' ? 'Gata. Abdomenul a ars, bravo Cristian!' : 'Gata. Bravo, Cristian!');
-  S.guides = S.guides || {}; S.guides[dayKey()] = Object.assign(S.guides[dayKey()] || {}, { [kind]: 1 }); save();
+  S.guides = S.guides || {}; S.guides[dayKey()] = Object.assign(S.guides[dayKey()] || {}, { [kind]: S.active ? 2 : 1 }); save();
   m.innerHTML = `<div class="gd-in gd-done">${Buddy.cele.replace('class="buddy ', 'class="buddy gd-av ')}<h2 class="gd-name">${kind === 'warm' ? 'Ești încălzit!' : kind === 'core' ? 'Abdomen bifat!' : 'Mușchii îți mulțumesc!'}</h2><p class="gd-cue">${kind === 'warm' ? 'Corpul e pregătit. Treci la primul exercițiu.' : kind === 'core' ? 'Abdomen lucrat și 10 minute de ardere. Acum un stretching scurt.' : 'Stretching terminat. Ziua de azi e completă.'}</p>${kind === 'warm' && after ? `<button class="btn btn-main" data-gd="start" data-day="${after}">Începe antrenamentul</button>` : kind === 'core' ? `<button class="btn btn-main" data-gd="next-stretch" data-day="${G.day || 'A'}">Stretching 5 minute</button><button class="btn btn-ghost gd-skip" data-gd="close">Închide</button>` : `<button class="btn btn-main" data-gd="close">${kind === 'warm' ? 'Gata' : 'Închide'}</button>`}</div>`;
   Buddy.start(); if (FX.celebrate) FX.celebrate(); G = null;
 }
@@ -4886,10 +4887,10 @@ if (!S.goal) {
 }
 if (!S.goal.v2) { S.goal.pace = 0.75; S.goal.v2 = 1; save(); }
 const curW = () => (S.body.length && S.body[S.body.length - 1].kg) || S.goal.start;
-/* întreținere ≈ 31 kcal/kg la 3 antrenamente pe săptămână; 1 kg de grăsime ≈ 7.700 kcal */
-const maintKcal = () => Math.round(curW() * 31 / 10) * 10;
+/* întreținere de bază ≈ 27 kcal/kg (viața de zi cu zi, fără sport); antrenamentele și pașii se adaugă separat, în ziua în care îi faci. 1 kg de grăsime ≈ 7.700 kcal */
+const maintKcal = () => Math.round(curW() * 27 / 10) * 10;
 const deficit = () => curW() <= S.goal.target ? 0 : Math.round(S.goal.pace * 7700 / 7 / 10) * 10;
-const kcalGoal = () => Math.max(1600, Math.round((maintKcal() - deficit()) / 10) * 10) + (typeof walkBurnToday === 'function' ? walkBurnToday() : 0);
+const kcalGoal = () => Math.max(1600, Math.round((maintKcal() - deficit()) / 10) * 10) + (typeof dayBurn === 'function' ? dayBurn() : 0);
 const protGoal = () => Math.round(S.goal.target * 2);
 function goalEta() { const left = curW() - S.goal.target; if (left <= 0) return null; const wk = left / S.goal.pace, d = new Date(Date.now() + wk * 7 * DAYMS); return { wk: Math.ceil(wk), d }; }
 function foodToday() { return S.food[dayKey()] || []; }
@@ -4899,7 +4900,7 @@ function foodCard() {
   return `<section class="food">
     <div class="fd-top">
       <div class="fd-ring ${over ? 'over' : ''}"><svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" class="fr-bg"/><circle cx="36" cy="36" r="30" class="fr-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - Math.min(1, k / kg))).toFixed(1)}"/></svg><span><b class="num">${Math.abs(left)}</b><small>${over ? 'peste' : 'rămase'}</small></span></div>
-      <div class="fd-t"><small>Calorii azi, pentru slăbit${typeof walkBurnToday === 'function' && walkBurnToday() ? `, +${walkBurnToday()} din mișcare` : ''}</small><b>${k} din ${kg} kcal</b>
+      <div class="fd-t"><small>Calorii azi, pentru slăbit${typeof dayBurn === 'function' && dayBurn() ? `, +${dayBurn()} din sport` : ''}</small><b>${k} din ${kg} kcal</b>
         <div class="fd-p"><i><em style="width:${Math.min(100, p / pg * 100).toFixed(0)}%"></em></i><span>Proteine <b class="num">${Math.round(p)}</b>/${pg} g, ca să slăbești fără să pierzi mușchi</span></div></div>
     </div>
     ${over ? `<div class="fd-warn">Ai trecut cu ${-left} kcal de limita de azi. Nu e grav o zi, compensează cu o plimbare de ${Math.round(-left / 5)} de minute.</div>` : ''}
@@ -4915,8 +4916,8 @@ function goalSheet() {
     <div class="fg-form"><label><small>Greutatea de azi</small><input class="field num" id="fg-now" inputmode="decimal" value="${fmt(curW())}"></label><label><small>Vreau să ajung la</small><input class="field num" id="fg-tgt" inputmode="decimal" value="${fmt(g.target)}"></label></div>
     <small class="tip-note">Ritmul de slăbit</small>
     <div class="fg-pace">${[[0.25, 'Lent', 'mai ușor de ținut'], [0.5, 'Normal', 'recomandat'], [0.75, 'Rapid', 'ales de tine']].map(([v, n, d]) => `<button class="${g.pace === v ? 'on' : ''}" data-fg-pace="${v}"><b>${n}</b><small>${fmt(v, 2)} kg/săpt.</small><em>${d}</em></button>`).join('')}</div>
-    <div class="fd-sum"><span>Întreținere ≈ <b class="num">${maintKcal()}</b></span><span>Ținta zilnică <b class="num">${kcalGoal()} kcal</b></span></div>
-    <p class="tip-lead">${eta ? `Ajungi la ${fmt(g.target)} kg în aproximativ ${eta.wk} săptămâni, pe la ${eta.d.toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' })}. ` : 'Ai atins ținta! '}Calculul pornește de la greutatea ta și 3 antrenamente pe săptămână. Cântărește-te o dată pe săptămână, dimineața, iar ținta zilnică se reface singură.</p>
+    <div class="fd-sum"><span>Bază ≈ <b class="num">${maintKcal()}</b></span><span>Ținta zilnică <b class="num">${kcalGoal()} kcal</b></span></div>
+    <p class="tip-lead">${eta ? `Ajungi la ${fmt(g.target)} kg în aproximativ ${eta.wk} săptămâni, pe la ${eta.d.toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' })}. ` : 'Ai atins ținta! '}Calculul pornește de la greutatea ta, fără sport. Caloriile arse la sală, la plimbare și din pașii de peste 5.000 se adaugă în ziua respectivă, așa că în zilele de antrenament ai voie să mănânci mai mult. Cântărește-te o dată pe săptămână, dimineața, iar ținta zilnică se reface singură.</p>
     <button class="btn btn-main" data-fg-save>Salvează</button>`);
 }
 function shrink(file, max = 768) {
@@ -5110,6 +5111,21 @@ document.addEventListener('click', e => {
   const t = e.target.closest && e.target.closest('.tips .tip'); if (!t) return;
   if ([...t.parentNode.children].indexOf(t) === 2) { e.stopImmediatePropagation(); walkSheet(); }
 }, true);
+
+/* ---------- Calorii arse la sală (estimare după MET, fără metabolismul de repaus, care e deja în baza zilei) ---------- */
+const bodyKg = () => (typeof curW === 'function' ? curW() : 90) || 90;
+/* forță cu pauze între serii ≈ 4,5 MET, adică 3,5 peste repaus; plafon 2 ore */
+function sessKcal(s) { const min = Math.min(120, (s.dur || 0) / 60000); return Math.round(3.5 * bodyKg() * min / 60); }
+/* încălzirea (5 min bandă în pantă + mobilitate) se face înainte de start; abdomenul cu 10 min bandă și stretchingul */
+const GUIDE_K = { warm: 0.55, core: 1.1, stretch: 0.12 };
+/* dacă abdomenul s-a făcut în timpul antrenamentului, minutele lui sunt deja în durată, așa că se adaugă doar diferența */
+const IN_SESS = { warm: 0.55, core: 0.17, stretch: 0.02 };
+function gymBurnToday() {
+  const k = dayKey(), ss = S.sessions.filter(s => dayKey(new Date(s.date)) === k).reduce((a, s) => a + sessKcal(s), 0);
+  const g = (S.guides && S.guides[k]) || {}, gs = Object.keys(GUIDE_K).reduce((a, x) => a + (g[x] ? (g[x] === 2 ? IN_SESS[x] : GUIDE_K[x]) * bodyKg() : 0), 0);
+  return Math.round(ss + gs);
+}
+const dayBurn = () => gymBurnToday() + (typeof walkBurnToday === 'function' ? walkBurnToday() : 0);
 
 /* ---------- Demo pentru investitori: date de exemplu + prezentarea de la prima pornire ---------- */
 (function () {
