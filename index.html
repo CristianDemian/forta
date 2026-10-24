@@ -5055,10 +5055,10 @@ pullHealth(); setInterval(pullHealth, 5 * 60000);
 document.addEventListener('visibilitychange', () => { if (document.hidden) return; if (hWait) burst(); else pullHealth(); });
 function stepsStrip() {
   const h = hToday(), st = h ? h.steps : 0, goal = 8000, pc = Math.min(100, st / goal * 100), b = healthBurn();
-  return `<div class="steps-strip"><div class="ss-main"><span class="ss-ic">👟</span><span class="ss-m"><span class="ss-t"><b class="num">${st.toLocaleString('ro-RO')}</b> pași azi${h ? `, ${fmt(h.km, 1)} km` : ''}</span><span class="ss-bar"><i style="width:${pc.toFixed(0)}%"></i></span><small>${h ? (h.t ? `Actualizat la ${esc(h.t)}` : 'Actualizat azi') + (b ? `, +${b} kcal la buget` : '') : 'Pașii vin din aplicația Sănătate, prin scurtătură'}</small></span></div></div>`;
+  return `<div class="steps-strip"><button class="ss-main" data-steps><span class="ss-ic">👟</span><span class="ss-m"><span class="ss-t"><b class="num">${st.toLocaleString('ro-RO')}</b> pași azi${h ? `, ${fmt(h.km, 1)} km` : ''}</span><span class="ss-bar"><i style="width:${pc.toFixed(0)}%"></i></span><small>${h ? (h.t ? `Actualizat la ${esc(h.t)}` : 'Actualizat azi') + (b ? `, +${b} kcal la buget` : '') : 'Pașii vin din aplicația Sănătate, prin scurtătură'}</small></span></button></div>`;
 }
 if (typeof foodCard === 'function') { const _fc = foodCard; foodCard = function () { return _fc() + stepsStrip(); }; }
-document.addEventListener('click', e => { if (!e.target.closest) return; if (e.target.closest('[data-steps-sync]')) { if (!hWait) syncSteps(); return; }  });
+document.addEventListener('click', e => { if (!e.target.closest) return; if (e.target.closest('[data-steps-sync]')) { if (!hWait) syncSteps(); return; } if (e.target.closest('[data-steps]') && !e.target.closest('.tip-sheet')) { pullHealth(); tipSheet('plimbare'); }  });
 
 function walkSheet() {
   let m = document.getElementById('walk'); if (!m) { m = document.createElement('div'); m.id = 'walk'; m.className = 'guide walk'; document.body.appendChild(m); }
