@@ -1850,6 +1850,8 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .dn-d b { font: 800 22px/1 var(--display); color: #fff; }
 .dn-o { font: 700 13.5px var(--sys); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dn-h { font: 500 11.5px var(--sys); color: rgba(255,255,255,.7); white-space: nowrap; }
+.dn-cup { font: 700 10px var(--sys); font-style: normal; margin-left: 6px; padding: 2px 6px; border-radius: 6px; background: #fff; color: var(--accent); vertical-align: 1px; }
+.dn-h::first-letter { text-transform: uppercase; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -4340,7 +4342,10 @@ async function loadMatches() {
 loadMatches(); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') loadMatches(); });
 function dinamoCard() {
   const today = dayKey();
-  const next = DM && DM.next ? DM.next : DINAMO.map(([date, time, opp, home]) => ({ date, time, opp, home: !!home }));
+  /* Cupa României (grupa D), din programul FRF; ora se anunță mai târziu */
+  const CUP = [{ date: '2026-10-28', time: '', opp: 'Chindia Târgoviște', home: true, round: 'Grupe, etapa 2', comp: 'CUPA ROMÂNIEI' }, { date: '2026-12-02', time: '', opp: 'Universitatea Craiova', home: false, round: 'Grupe, etapa 3', comp: 'CUPA ROMÂNIEI' }];
+  const league = DM && DM.next ? DM.next : DINAMO.map(([date, time, opp, home]) => ({ date, time, opp, home: !!home }));
+  const next = league.concat(CUP.filter(c => !league.some(l => l.date === c.date))).sort((a, b) => a.date.localeCompare(b.date));
   const m = next.find(x => x.date >= today);
   const last = DM && DM.last && DM.last[0], ago = last ? Math.round((Date.parse(today) - Date.parse(last.date)) / DAYMS) : 99;
   if (!m && !(last && ago <= 2)) return '';
@@ -4351,10 +4356,10 @@ function dinamoCard() {
   const days = dd(m.date), t = m.time;
   const when = days === 0 ? `Azi${t ? `, la ${t}` : ''}` : days === 1 ? `Mâine${t ? `, la ${t}` : ''}` : `${new Date(m.date + 'T12:00').toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' })}${t ? `, ${t}` : ', ora nu e stabilită'}`;
   return `<section class="dinamo ${days === 0 ? 'live' : ''}">${res}
-    <div class="dn-top"><small>${days === 0 ? 'Zi de meci' : 'Următorul meci'}${m.round ? `, ${esc(m.round.toLowerCase())}` : ''}</small><span class="dn-when">${days === 0 ? 'Azi' : days === 1 ? 'Mâine' : `în ${days} zile`}</span></div>
+    <div class="dn-top"><small>${days === 0 ? 'Zi de meci' : 'Următorul meci'}${/CUP/i.test(m.comp || '') ? ', Cupa României' : m.round ? `, ${esc(m.round.toLowerCase())}` : ''}</small><span class="dn-when">${days === 0 ? 'Azi' : days === 1 ? 'Mâine' : `în ${days} zile`}</span></div>
     <div class="dn-vs"><div class="dn-t ${m.home ? 'us' : ''}">${m.home ? 'Dinamo' : esc(m.opp)}</div><span class="dn-x">vs</span><div class="dn-t ${m.home ? '' : 'us'}">${m.home ? esc(m.opp) : 'Dinamo'}</div></div>
     <div class="dn-meta">${when}, ${m.home ? 'acasă' : 'în deplasare'}</div>
-    ${(() => { const more = next.filter(x => x.date > m.date).slice(0, 3); return more.length ? `<div class="dn-next"><small>Următoarele meciuri</small>${more.map(x => `<div class="dn-r"><span class="dn-d"><b class="num">${new Date(x.date + 'T12:00').getDate()}</b>${new Date(x.date + 'T12:00').toLocaleDateString('ro-RO', { month: 'short' }).replace('.', '')}</span><span class="dn-o">${x.home ? 'Dinamo - ' + esc(x.opp) : esc(x.opp) + ' - Dinamo'}</span><span class="dn-h">${x.home ? 'acasă' : 'deplasare'}${x.time ? ', ' + x.time : ''}</span></div>`).join('')}</div>` : ''; })()}
+    ${(() => { const more = next.filter(x => x.date > m.date).slice(0, 3); return more.length ? `<div class="dn-next"><small>Următoarele meciuri</small>${more.map(x => `<div class="dn-r"><span class="dn-d"><b class="num">${new Date(x.date + 'T12:00').getDate()}</b>${new Date(x.date + 'T12:00').toLocaleDateString('ro-RO', { month: 'short' }).replace('.', '')}</span><span class="dn-o">${x.home ? 'Dinamo - ' + esc(x.opp) : esc(x.opp) + ' - Dinamo'}${/CUP/i.test(x.comp || '') ? '<em class="dn-cup">Cupă</em>' : ''}</span><span class="dn-h">${new Date(x.date + 'T12:00').toLocaleDateString('ro-RO', { weekday: 'long' })}${x.time ? ', ' + x.time : ''}</span></div>`).join('')}</div>` : ''; })()}
   </section>`;
 }
 
@@ -4392,10 +4397,10 @@ function challengeRail() {
   viewAzi = function () {
     let h = _va();
     const tp = planFor(new Date()), dayId = (S.active && S.active.day) || (tp && tp.id) || (nextPlan().p || DAYS[0]).id;
-    const guides = dayId ? `<div class="gcards">${guideCard('warm', dayId)}${guideCard('core', dayId)}${guideCard('stretch', dayId)}</div>` : '';
+    const guides = dayId ? `<div class="gcards">${guideCard('warm', dayId)}${guideCard('stretch', dayId)}</div>` : '';
     if (guides) {
       const h2 = h.replace(/(<button class="btn btn-main" data-start="[^"]*">[^<]*<\/button>)/, `${guides}$1`);
-      h = h2 !== h ? h2 : h.replace('<div class="tips-h">', `<div class="gcards">${guideCard('core', dayId)}${guideCard('stretch', dayId)}</div><div class="tips-h">`);
+      h = h2 !== h ? h2 : h.replace('<div class="tips-h">', `<div class="gcards">${guideCard('stretch', dayId)}</div><div class="tips-h">`);
     }
     const dn = dinamoCard(), ch = challengeRail();
     const i = h.indexOf('<section class="sec"><div class="sec-head"><h2>Suplimente azi');
