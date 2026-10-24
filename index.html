@@ -1802,6 +1802,39 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .bk-code small { font: 600 12px var(--sys); color: var(--muted); }
 .bk-code b { font: 800 26px/1 var(--display); letter-spacing: .08em; color: var(--ink); user-select: all; -webkit-user-select: all; }
 .bk-code p { margin: 0; font: 500 12px/1.35 var(--sys); color: var(--muted); }
+.gd-head { grid-template-columns: 1fr auto auto !important; }
+.gd-skip-top { font: 600 13px var(--sys); color: rgba(255,255,255,.75); padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,.1); }
+.gd-skip { margin-top: 4px; background: rgba(255,255,255,.1) !important; color: #fff !important; border: 0 !important; }
+.gcards { grid-template-columns: 1fr 1fr !important; }
+.gcards .gcard.warm { grid-column: 1 / -1; background: linear-gradient(120deg, rgba(240,74,26,.14), rgba(240,74,26,.04)); box-shadow: inset 0 0 0 1.5px rgba(240,74,26,.3); }
+.gcards .gcard.warm b { font-size: 20px; }
+.gcard.core .gc-ic { background: linear-gradient(160deg, #ff4a55, #b30d17); box-shadow: 0 6px 12px -6px #b30d17; }
+.done-core { width: 100%; display: flex !important; align-items: center; justify-content: center; gap: 8px; }
+.done-core svg { width: 18px; height: 18px; }
+.gym { display: grid; grid-template-columns: 34px 1fr; gap: 10px; padding: 12px; border-radius: 14px; background: linear-gradient(120deg, rgba(250,204,21,.16), rgba(250,204,21,.04)); box-shadow: inset 0 0 0 1px rgba(234,179,8,.3); }
+.gym-ic { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: #facc15; color: #1a1416; } .gym-ic svg { width: 17px; height: 17px; }
+.gym b { font: 800 16px var(--display); color: var(--ink); } .gym p { margin: 3px 0 0; font: 500 13px/1.4 var(--sys); color: var(--ink); opacity: .85; }
+.gym.small { margin: 4px 0; } .gym.small p { font-size: 12.5px; }
+/* antrenament ca listă */
+.wex.acc { padding: 10px 12px !important; gap: 0 !important; transition: box-shadow .3s; }
+.wex.acc:not(.open) > :not(.wex-top) { display: none !important; }
+.wex.acc .wex-top { grid-template-columns: 56px 1fr 26px !important; cursor: pointer; scroll-margin-top: 110px; }
+.wex.acc .wex-top small:not(.acc-sum *) { display: none; }
+.wex.acc .wex-top h3 { font-size: 20px !important; }
+.wex.acc .wex-top .pill { margin-top: 4px !important; }
+.acc-sum { display: flex; align-items: center; gap: 8px; margin-top: 5px; font: 600 12px var(--sys); color: var(--muted); }
+.acc-dots { display: inline-flex; gap: 3px; } .acc-dots i { width: 16px; height: 5px; border-radius: 3px; background: var(--soft); box-shadow: inset 0 0 0 1px var(--line); }
+.acc-dots i.on { background: var(--accent); box-shadow: none; }
+.acc-chev { display: grid; place-items: center; color: var(--faint); transition: transform .3s; } .acc-chev svg { width: 18px; height: 18px; }
+.wex.acc.open .acc-chev { transform: rotate(180deg); color: var(--accent); }
+.wex.acc.complete:not(.open) { opacity: .6; } .wex.acc.complete .acc-chev { color: #16a34a; transform: none; }
+.wex.acc.open { box-shadow: inset 0 0 0 2px var(--accent), 0 18px 34px -18px rgba(216,16,28,.55) !important; }
+.wex.acc.open > :not(.wex-top) { animation: accin .35s cubic-bezier(.2, .9, .3, 1) both; }
+.wex.acc.open > .wex-top + * { margin-top: 10px; }
+.wex.acc.open > * + * { margin-top: 8px; }
+@keyframes accin { from { opacity: 0; transform: translateY(-6px); } }
+.w-body { gap: 8px !important; }
+.wex.acc { scroll-margin-top: calc(110px + env(safe-area-inset-top, 0px)); }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -1824,7 +1857,7 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 <script>
 /* ---------- Programul: 3 zile, câte două grupe ---------- */
 const DAYS = [
-  { id: 'A', wd: 1, label: 'Luni', short: 'Piept', name: 'Piept + Triceps', ex: ['incline', 'pecdeck', 'chestpress', 'rope', 'vbar', 'abcrunch'] },
+  { id: 'A', wd: 1, label: 'Luni', short: 'Piept', name: 'Piept + Triceps', ex: ['incline', 'pecdeck', 'chestpress', 'rope', 'vbar'] },
   { id: 'B', wd: 3, label: 'Miercuri', short: 'Spate', name: 'Spate + Biceps', ex: ['pulldown', 'closegrip', 'vpull', 'machrow', 'dbrow', 'straightarm', 'lowback', 'zwide', 'znarrow', 'hammer'] },
   { id: 'C', wd: 5, label: 'Vineri', short: 'Umeri', name: 'Umeri + Picioare', ex: ['legpress', 'legext', 'legcurl', 'rdl', 'shoulderm', 'lateral', 'revfly'] }
 ];
@@ -4134,6 +4167,15 @@ document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.da
 
 /* ================= 3. Încălzire și stretching ghidate ================= */
 const MOVES = {
+  'incline-treadmill-walk': ['Bandă, 5 minute', 'Mers alert, 5,5-6 km/h, înclinare 3-5%. Respiri pe nas, crești pulsul treptat.'],
+  'plank': ['Planșă', 'Pe antebrațe, corpul drept de la cap la călcâie, abdomenul și fesele strânse.'],
+  'crunches': ['Abdomene scurte', 'Pe spate, genunchii îndoiți. Ridici doar umerii, expiri sus.'],
+  'reverse-crunches': ['Abdomene inverse', 'Pe spate, aduci genunchii la piept și ridici ușor bazinul de pe podea.'],
+  'bicycle-crunch': ['Bicicleta', 'Cotul spre genunchiul opus, alternezi lent, fără să tragi de gât.'],
+  'mountain-climbers': ['Cățărătorul', 'Din planșă pe palme, aduci genunchii alternativ la piept, ritm vioi.'],
+  'side-plank': ['Planșă laterală', 'Pe un antebraț, corpul drept. Schimbi partea la jumătate.'],
+  'lying-leg-raise': ['Ridicări de picioare', 'Pe spate, picioarele întinse, le ridici la 90° și cobori lent, fără să atingi podeaua.'],
+  'dead-bug': ['Gândacul', 'Pe spate, brațe și genunchi sus. Întinzi brațul și piciorul opus, lent, spatele lipit de podea.'],
   'air-bike': ['Air bike sau bandă', '3 minute ușor, ca să se încălzească tot corpul. Pe bandă: mers alert, ușor în pantă.'],
   'jumping-jacks': ['Sărituri cu brațele sus', 'Ritm vioi, aterizezi moale pe vârfuri.'],
   'cat-cow': ['Pisica și cămila', 'În patru labe, arcuiește și rotunjește spatele, lent, cu respirația.'],
@@ -4156,7 +4198,11 @@ const MOVES = {
   'kneeling-hip-flexor-stretch': ['Întindere flexori șold', 'Un genunchi jos, împingi șoldul înainte, fesa strânsă.'],
   'standing-calf-stretch': ['Întindere gambe', 'Mâinile pe perete, piciorul din spate întins, călcâiul jos.']
 };
-const WARM = [['air-bike', 180], ['jumping-jacks', 40], ['cat-cow', 30], ['band-pull-apart', 30], ['inchworm', 40], ['leg-swing-front-to-back', 30], ['lateral-leg-swing', 30], ['bodyweight-reverse-lunge', 40], ['downward-dog-to-low-lunge', 40]];
+const WARM = [['incline-treadmill-walk', 300], ['jumping-jacks', 40], ['cat-cow', 30], ['band-pull-apart', 30], ['inchworm', 40], ['leg-swing-front-to-back', 30], ['lateral-leg-swing', 30], ['bodyweight-reverse-lunge', 40], ['downward-dog-to-low-lunge', 40]];
+/* abdomen și ardere: 7 mișcări de abdomen, apoi 10 minute de bandă în pantă, la final de antrenament */
+const CORE = [['plank', 45], ['crunches', 40], ['reverse-crunches', 40], ['bicycle-crunch', 40], ['mountain-climbers', 30], ['side-plank', 40], ['lying-leg-raise', 40], ['dead-bug', 40], ['incline-treadmill-walk', 600]];
+const listFor = (kind, day) => kind === 'warm' ? WARM : kind === 'core' ? CORE : (STRETCH[day] || STRETCH.A);
+const GNAME = { warm: 'Încălzire', core: 'Abdomen și ardere', stretch: 'Stretching' };
 const STRETCH = {
   A: [['doorway-chest-stretch', 45], ['cross-body-shoulder-stretch', 40], ['overhead-triceps-stretch', 40], ['cobra-stretch', 35], ['childs-pose', 45], ['cat-cow', 30]],
   B: [['dead-hang', 30], ['bench-lat-stretch', 45], ['childs-pose', 45], ['cross-body-shoulder-stretch', 40], ['cat-cow', 30], ['cobra-stretch', 30]],
@@ -4167,8 +4213,8 @@ let G = null;
 function say(t) { try { if (!('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'ro-RO'; u.rate = 1.02; speechSynthesis.speak(u); } catch (e) { } }
 function tick(f = 880, d = .07, v = .25) { try { const c = ctxAudio(), o = c.createOscillator(), g = c.createGain(); o.frequency.value = f; o.type = 'sine'; g.gain.setValueAtTime(v, c.currentTime); g.gain.exponentialRampToValueAtTime(.001, c.currentTime + d); o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + d + .02); } catch (e) { } }
 function openGuide(kind, day) {
-  const list = kind === 'warm' ? WARM : (STRETCH[day] || STRETCH.A);
-  G = { kind, list, i: 0, left: list[0][1], run: true, t: 0 };
+  const list = listFor(kind, day);
+  G = { kind, list, day, i: 0, left: list[0][1], run: true, t: 0 };
   let m = document.getElementById('guide'); if (!m) { m = document.createElement('div'); m.id = 'guide'; m.className = 'guide'; document.body.appendChild(m); }
   m.hidden = false; requestAnimationFrame(() => m.classList.add('open'));
   try { navigator.wakeLock && navigator.wakeLock.request('screen').then(l => G && (G.lock = l)).catch(() => { }); } catch (e) { }
@@ -4179,7 +4225,7 @@ function drawGuide(announce) {
   const [f, sec] = G.list[G.i], [name, cue] = MOVES[f], im = img2(f), next = G.list[G.i + 1];
   const C = 2 * Math.PI * 54, k = G.left / sec, tot = G.list.reduce((a, x) => a + x[1], 0), done = G.list.slice(0, G.i).reduce((a, x) => a + x[1], 0) + (sec - G.left);
   m.innerHTML = `<div class="gd-in">
-    <div class="gd-head"><div><small>${G.kind === 'warm' ? 'Încălzire' : 'Stretching'}, ${G.i + 1} din ${G.list.length}</small><div class="gd-prog"><i style="width:${(done / tot * 100).toFixed(1)}%"></i></div></div><button class="pl-x gd-x" data-gd="close" aria-label="Închide">×</button></div>
+    <div class="gd-head"><div><small>${GNAME[G.kind]}, ${G.i + 1} din ${G.list.length}</small><div class="gd-prog"><i style="width:${(done / tot * 100).toFixed(1)}%"></i></div></div>${G.kind === 'warm' && G.after ? '<button class="gd-skip-top" data-gd="skip-warm">Sari peste</button>' : ''}<button class="pl-x gd-x" data-gd="close" aria-label="Închide">×</button></div>
     <div class="gd-fig"><span class="rig exa big gd-anim"><img src="${im[0]}" alt="" onerror="this.src='${im[2]}'"><img class="ex-p" src="${im[1]}" alt="" onerror="this.remove()"></span></div>
     <h2 class="gd-name">${esc(name)}</h2><p class="gd-cue">${esc(cue)}</p>
     <div class="gd-timer"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" class="gt-bg"/><circle cx="60" cy="60" r="54" class="gt-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - k)).toFixed(1)}"/></svg><b class="num">${G.left}</b></div>
@@ -4200,9 +4246,9 @@ function stepGuide() {
 }
 function finishGuide() {
   const m = document.getElementById('guide'); clearInterval(G.t);
-  const kind = G.kind; say(kind === 'warm' ? 'Gata. Ești încălzit, treci la treabă!' : 'Gata. Bravo, Cristian!');
+  const kind = G.kind, after = G.after; say(kind === 'warm' ? 'Gata. Ești încălzit, treci la treabă!' : kind === 'core' ? 'Gata. Abdomenul a ars, bravo Cristian!' : 'Gata. Bravo, Cristian!');
   S.guides = S.guides || {}; S.guides[dayKey()] = Object.assign(S.guides[dayKey()] || {}, { [kind]: 1 }); save();
-  m.innerHTML = `<div class="gd-in gd-done">${Buddy.cele.replace('class="buddy ', 'class="buddy gd-av ')}<h2 class="gd-name">${kind === 'warm' ? 'Ești încălzit!' : 'Mușchii îți mulțumesc!'}</h2><p class="gd-cue">${kind === 'warm' ? 'Corpul e pregătit. Treci la primul exercițiu.' : 'Stretching terminat. Ziua de azi e completă.'}</p><button class="btn btn-main" data-gd="close">${kind === 'warm' ? 'Începe antrenamentul' : 'Închide'}</button></div>`;
+  m.innerHTML = `<div class="gd-in gd-done">${Buddy.cele.replace('class="buddy ', 'class="buddy gd-av ')}<h2 class="gd-name">${kind === 'warm' ? 'Ești încălzit!' : kind === 'core' ? 'Abdomen bifat!' : 'Mușchii îți mulțumesc!'}</h2><p class="gd-cue">${kind === 'warm' ? 'Corpul e pregătit. Treci la primul exercițiu.' : kind === 'core' ? 'Abdomen lucrat și 10 minute de ardere. Acum un stretching scurt.' : 'Stretching terminat. Ziua de azi e completă.'}</p>${kind === 'warm' && after ? `<button class="btn btn-main" data-gd="start" data-day="${after}">Începe antrenamentul</button>` : kind === 'core' ? `<button class="btn btn-main" data-gd="next-stretch" data-day="${G.day || 'A'}">Stretching 5 minute</button><button class="btn btn-ghost gd-skip" data-gd="close">Închide</button>` : `<button class="btn btn-main" data-gd="close">${kind === 'warm' ? 'Gata' : 'Închide'}</button>`}</div>`;
   Buddy.start(); if (FX.celebrate) FX.celebrate(); G = null;
 }
 function closeGuide() {
@@ -4214,6 +4260,9 @@ document.addEventListener('click', e => {
   const b = e.target.closest && e.target.closest('[data-gd]'); if (b) {
     const a = b.dataset.gd;
     if (a === 'close') return closeGuide();
+    if (a === 'start') { const d = b.dataset.day; closeGuide(); setTimeout(() => startWorkout(d), 320); return; }
+    if (a === 'next-stretch') { const d = b.dataset.day; closeGuide(); setTimeout(() => openGuide('stretch', d), 320); return; }
+    if (a === 'skip-warm') { const d = G && G.after; closeGuide(); if (d) setTimeout(() => startWorkout(d), 320); return; }
     if (!G) return;
     if (a === 'toggle') { G.run = !G.run; drawGuide(false); }
     if (a === 'next') { if (G.i >= G.list.length - 1) return finishGuide(); G.i++; G.left = G.list[G.i][1]; drawGuide(true); }
@@ -4224,9 +4273,9 @@ document.addEventListener('click', e => {
 });
 function guideCard(kind, day) {
   const did = S.guides && S.guides[dayKey()] && S.guides[dayKey()][kind];
-  const list = kind === 'warm' ? WARM : STRETCH[day] || STRETCH.A, min = Math.round(list.reduce((a, x) => a + x[1], 0) / 60);
+  const list = listFor(kind, day), min = Math.round(list.reduce((a, x) => a + x[1], 0) / 60);
   return `<button class="gcard ${kind} ${did ? 'did' : ''}" data-guide="${kind}" data-day="${day || ''}">
-    <span class="gc-ic">${kind === 'warm' ? LI.flame : LI.sparkles}</span><span><b>${kind === 'warm' ? 'Încălzire' : 'Stretching'}</b><small>${did ? 'Făcut azi' : `${list.length} mișcări, ${min} min, cu voce`}</small></span><span class="gc-go">${did ? ICON.check : '▶'}</span></button>`;
+    <span class="gc-ic">${kind === 'warm' ? LI.flame : kind === 'core' ? LI.target : LI.sparkles}</span><span><b>${kind === 'warm' ? 'Pasul 1: bandă și încălzire' : GNAME[kind]}</b><small>${did ? 'Făcut azi' : kind === 'warm' ? `5 min bandă + ${list.length - 1} mișcări, ${min} min` : kind === 'core' ? `${list.length - 1} mișcări + 10 min bandă, ${min} min` : `${list.length} mișcări, ${min} min, cu voce`}</small></span><span class="gc-go">${did ? ICON.check : '▶'}</span></button>`;
 }
 
 /* ================= 4. Tempo pentru repetări ================= */
@@ -4327,7 +4376,7 @@ function challengeRail() {
   viewAzi = function () {
     let h = _va();
     const tp = planFor(new Date()), dayId = (S.active && S.active.day) || (tp && tp.id);
-    const guides = dayId ? `<div class="gcards">${guideCard('warm', dayId)}${guideCard('stretch', dayId)}</div>` : '';
+    const guides = dayId ? `<div class="gcards">${guideCard('warm', dayId)}${guideCard('core', dayId)}${guideCard('stretch', dayId)}</div>` : '';
     if (guides) {
       const h2 = h.replace(/(<button class="btn btn-main" data-start="[^"]*">[^<]*<\/button>)/, `${guides}$1`);
       h = h2 !== h ? h2 : h.replace('<div class="tips-h">', `<div class="gcards">${guideCard('stretch', dayId)}</div><div class="tips-h">`);
@@ -4343,8 +4392,58 @@ function challengeRail() {
 /* stretching propus după antrenament, în cardul de final */
 new MutationObserver(() => {
   const d = document.querySelector('.done-card [data-pr-close]');
-  if (d && !document.querySelector('.done-card [data-guide]')) { const s = S.sessions[S.sessions.length - 1]; d.insertAdjacentHTML('beforebegin', `<button class="btn btn-ghost done-str" data-guide="stretch" data-day="${s ? s.day : 'A'}">${LI.sparkles}<span>Stretching 5 minute</span></button>`); }
+  if (d && !document.querySelector('.done-card [data-guide]')) { const s = S.sessions[S.sessions.length - 1]; d.insertAdjacentHTML('beforebegin', `<button class="btn btn-main done-core" data-guide="core" data-day="${s ? s.day : 'A'}">${LI.target}<span>Abdomen și ardere, 15 min</span></button><button class="btn btn-ghost done-str" data-guide="stretch" data-day="${s ? s.day : 'A'}">${LI.sparkles}<span>Stretching 5 minute</span></button>`); }
 }).observe(document.body, { childList: true, subtree: true });
+
+/* înainte de orice: când pornești antrenamentul fără încălzire, începe cu banda */
+window.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-start]'); if (!b || S.active) return;
+  if (S.guides && S.guides[dayKey()] && S.guides[dayKey()].warm) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  showOthers = false; try { ctxAudio(); } catch (er) { }
+  openGuide('warm', b.dataset.start); if (G) G.after = b.dataset.start; drawGuide(false);
+}, true);
+
+/* ================= Indicații pentru aparatele din sala ta ================= */
+const GYM = {
+  incline: ['Banca reglabilă', 'Scoate știftul de sub spătar și mută-l în crestătura marcată „15°”. Verifică să intre complet înainte să te așezi. Șezutul rămâne pe orizontal.'],
+  dbrow: ['Banca reglabilă', 'Pune spătarul pe 0° (plat). Genunchiul și palma de aceeași parte pe bancă, gantera în mâna cealaltă.'],
+  revfly: ['Banca reglabilă', 'Pune spătarul pe 30° sau 45° și întinde-te cu pieptul pe el, bărbia peste marginea de sus.'],
+  pecdeck: ['Technogym Pectoral Machine', 'Reglează înălțimea scaunului cu mânerul galben, astfel încât mânerele să fie la nivelul pieptului. Pârghia galbenă de sus fixează poziția de start a brațelor: alege-o ca să simți întinderea în piept, nu în umeri. Greutatea o alegi cu știftul galben în coloana de plăci.'],
+  chestpress: ['Technogym Wide Chest Press (cu discuri)', 'Reglează scaunul (săgețile ↑↓ de pe etichetă) ca mânerele să fie sub linia pieptului. Discurile le pui pe ambele brațe, la fel de multe, și împingi pe arcul aparatului, ușor în sus și spre interior.'],
+  shoulderm: ['Technogym Shoulder Press', 'Reglează scaunul cu mânerul galben: mânerele pornesc la nivelul umerilor. Spătarul se înclină (săgeata de pe etichetă), ține-l ușor înclinat, nu vertical. Prinde mânerele neutre (palmele față în față) dacă te deranjează umerii.'],
+  machrow: ['Technogym Low Row', 'Două reglaje: perna de piept (adâncimea, săgețile orizontale) și înălțimea scaunului. La start, brațele trebuie complet întinse cu pieptul lipit de pernă. Trage spre partea de jos a pieptului.'],
+  lowback: ['Technogym Lower Back', 'Reglează suportul de picioare (săgeata galbenă) ca rola să stea pe omoplați. Butonul rotativ fixează poziția de start: alege-o ușor aplecat în față, nu la maxim.'],
+  abcrunch: ['Technogym Abdominal Crunch', 'Scaunul se reglează ca mânerele să fie la nivelul umerilor. Prinde-le și rulează trunchiul în jos, picioarele sub role.'],
+  legext: ['Technogym Leg Extension', 'Trei reglaje: spătarul (ca genunchiul să fie în dreptul punctului galben de pe axul aparatului), perna de la glezne (chiar deasupra gleznei) și poziția de start (butonul cu săgeți). Pornește cu genunchii la 90°.'],
+  legcurl: ['Technogym Leg Curl (din șezut)', 'Spătarul se reglează ca genunchiul să fie în dreptul punctului galben al axului. Coboară perna de coapse cu pârghia până le fixează bine, iar perna de jos stă deasupra călcâielor.'],
+  legpress: ['Technogym Leg Press cu discuri', 'Ca pe eticheta aparatului: 1) pui discurile pe știfturile căruciorului, 2) reglezi spătarul după înălțimea ta, 3) te așezi și întinzi picioarele, 4) tragi pârghia A ca să deblochezi căruciorul, 5) la final întinzi picioarele și închizi din nou blocajul.'],
+  pulldown: ['Technogym, scripetele de sus', 'Reglează rolele de pe coapse cu știftul galben, ca să nu te ridici de pe scaun. Greutatea o alegi cu știftul galben (din 5 în 5 kg). Bara lungă curbată se agață în carabina de jos.'],
+  closegrip: ['Technogym, scripetele de sus', 'Aceeași bară lungă ca la priza largă, doar că mâinile stau la lățimea umerilor. Rolele de pe coapse fixate bine.'],
+  vpull: ['Technogym, scripetele de sus', 'Schimbă bara cu mânerul triunghiular dublu din suportul de lângă aparat (desfaci carabina). Rolele de pe coapse fixate.'],
+  straightarm: ['Technogym, scripetele de sus', 'Stai în picioare, cu fața la aparat, la un pas în spate. Folosește bara dreaptă sau frânghia, brațele aproape întinse.'],
+  rope: ['Technogym, scripetele de sus', 'Prinde frânghia în carabină. Stai în picioare, aproape de aparat, coatele lipite de corp.'],
+  vbar: ['Technogym, scripetele de sus', 'Prinde bara în V în carabină. Stai în picioare, aproape de aparat, coatele lipite de corp.'],
+  rdl: ['Suportul de bare Technogym', 'Ia bara dreaptă cu capete negre (bara pentru discuri) și pune clemele negre pe ambele părți după ce încarci discurile.'],
+  zwide: ['Suportul de bare Technogym', 'Ia bara EZ, cea ondulată. Prinde-o pe partea exterioară a curburilor.'],
+  znarrow: ['Suportul de bare Technogym', 'Bara EZ, prinsă pe curburile din interior.'],
+  hammer: ['Suportul de gantere', 'Gantere hexagonale de cauciuc. Ia-le din suport cu spatele drept, nu aplecat.'],
+  lateral: ['Suportul de gantere', 'Gantere ușoare, de obicei 6-10 kg. Mai bine prea ușor decât balans.']
+};
+const gymBox = id => GYM[id] ? `<div class="gym"><span class="gym-ic">${LI.wrench}</span><div><b>${esc(GYM[id][0])}</b><p>${esc(GYM[id][1])}</p></div></div>` : '';
+{
+  const _ed2 = exDetail;
+  exDetail = function (id) { return _ed2(id).replace('<ol class="cues">', gymBox(id) + '<ol class="cues">'); };
+  const _rw2 = renderWorkout;
+  renderWorkout = function () {
+    _rw2();
+    document.querySelectorAll('#workout .wex').forEach(w => {
+      const id = w.id.replace('wex-', ''); if (!GYM[id] || w.querySelector('.gym')) return;
+      const s = w.querySelector('.setup'); if (s) s.insertAdjacentHTML('beforebegin', gymBox(id).replace('class="gym"', 'class="gym small"'));
+    });
+  };
+}
+MOVES['incline-treadmill-walk'][1] = 'Pe banda Technogym: apeși butonul verde de pornire, apoi „+” la viteză până la 5,5-6 km/h și „+” la înclinare până la 3-5%. Mers alert, fără să te ții de mânere.';
 
 /* ---------- Scorul de formă, vremea pentru drumul la sală, reamintiri de antrenament ---------- */
 
@@ -4472,6 +4571,39 @@ window.workoutReminders = function () {
   Object.keys(S.skips || {}).forEach(k => recent.add(k));
   return { items, done: [...recent].sort().slice(-8) };
 };
+
+/* ================= Antrenament ca listă: se desfășoară doar exercițiul ales ================= */
+let WOPEN = null, WDONE = {};
+{
+  const _rw3 = renderWorkout;
+  renderWorkout = function () {
+    _rw3(); if (!S.active) { WOPEN = null; WDONE = {}; return; }
+    const ids = [...document.querySelectorAll('#workout .wex')].map(w => w.id.replace('wex-', ''));
+    /* când termini toate seriile exercițiului deschis, se strânge și se deschide următorul */
+    if (WOPEN && S.active.sets[WOPEN] && S.active.sets[WOPEN].every(s => s.done) && !WDONE[WOPEN]) {
+      const nx = ids.find(id => !S.active.sets[id].every(s => s.done)); WOPEN = nx || null;
+    }
+    ids.forEach(id => { WDONE[id] = S.active.sets[id].every(s => s.done); });
+    document.querySelectorAll('#workout .wex').forEach((w, k) => {
+      const id = w.id.replace('wex-', ''), sets = S.active.sets[id], d = sets.filter(s => s.done).length, open = id === WOPEN;
+      w.classList.add('acc'); w.classList.toggle('open', open);
+      const top = w.querySelector('.wex-top'); if (!top) return;
+      top.setAttribute('role', 'button'); top.setAttribute('aria-expanded', open); top.dataset.acc = id;
+      if (!top.querySelector('.acc-sum')) {
+        const txt = top.querySelector('div');
+        txt.insertAdjacentHTML('beforeend', `<div class="acc-sum"><span class="acc-dots">${sets.map(s => `<i class="${s.done ? 'on' : ''}"></i>`).join('')}</span><span>${d === sets.length ? 'Gata' : `${d}/${sets.length} serii`}</span></div>`);
+        top.insertAdjacentHTML('beforeend', `<span class="acc-chev" aria-hidden="true">${d === sets.length ? ICON.check : ICON.chev}</span>`);
+      }
+    });
+  };
+  document.addEventListener('click', e => {
+    const t = e.target.closest && e.target.closest('[data-acc]'); if (!t || e.target.closest('button, input')) return;
+    const id = t.dataset.acc, was = WOPEN === id; WOPEN = was ? null : id;
+    const w = document.getElementById('workout'), y = w ? w.scrollTop : 0;
+    renderWorkout(); if (w) w.scrollTop = y;
+    if (!was) setTimeout(() => { const el = document.getElementById('wex-' + id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+  });
+}
 
 /* ---------- Demo pentru investitori: date de exemplu + prezentarea de la prima pornire ---------- */
 (function () {
