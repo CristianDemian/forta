@@ -4804,11 +4804,12 @@ const fkey = () => { try { return localStorage.getItem(FKEY) || ''; } catch (e) 
 S.food = S.food || {};
 /* obiectivul tău: slăbit de la 90 la 82 kg, ritm 0,5 kg pe săptămână */
 if (!S.goal) {
-  S.goal = { target: 82, pace: 0.5, start: 90, since: dayKey() };
+  S.goal = { target: 82, pace: 0.75, start: 90, since: dayKey(), v2: 1 };
   const last = S.body.length ? S.body[S.body.length - 1] : null;
   if (!last || Math.abs(last.kg - 90) > 0.05) S.body.push({ t: Date.now(), kg: 90 });
   save();
 }
+if (!S.goal.v2) { S.goal.pace = 0.75; S.goal.v2 = 1; save(); }
 const curW = () => (S.body.length && S.body[S.body.length - 1].kg) || S.goal.start;
 /* întreținere ≈ 31 kcal/kg la 3 antrenamente pe săptămână; 1 kg de grăsime ≈ 7.700 kcal */
 const maintKcal = () => Math.round(curW() * 31 / 10) * 10;
@@ -4838,7 +4839,7 @@ function goalSheet() {
   sheet(`<div class="pl-head"><div><small>Obiectivul tău</small><h3>Slăbit</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>
     <div class="fg-form"><label><small>Greutatea de azi</small><input class="field num" id="fg-now" inputmode="decimal" value="${fmt(curW())}"></label><label><small>Vreau să ajung la</small><input class="field num" id="fg-tgt" inputmode="decimal" value="${fmt(g.target)}"></label></div>
     <small class="tip-note">Ritmul de slăbit</small>
-    <div class="fg-pace">${[[0.25, 'Lent', 'mai ușor de ținut'], [0.5, 'Normal', 'recomandat'], [0.75, 'Rapid', 'mai greu, riști mușchi']].map(([v, n, d]) => `<button class="${g.pace === v ? 'on' : ''}" data-fg-pace="${v}"><b>${n}</b><small>${fmt(v, 2)} kg/săpt.</small><em>${d}</em></button>`).join('')}</div>
+    <div class="fg-pace">${[[0.25, 'Lent', 'mai ușor de ținut'], [0.5, 'Normal', 'recomandat'], [0.75, 'Rapid', 'ales de tine']].map(([v, n, d]) => `<button class="${g.pace === v ? 'on' : ''}" data-fg-pace="${v}"><b>${n}</b><small>${fmt(v, 2)} kg/săpt.</small><em>${d}</em></button>`).join('')}</div>
     <div class="fd-sum"><span>Întreținere ≈ <b class="num">${maintKcal()}</b></span><span>Ținta zilnică <b class="num">${kcalGoal()} kcal</b></span></div>
     <p class="tip-lead">${eta ? `Ajungi la ${fmt(g.target)} kg în aproximativ ${eta.wk} săptămâni, pe la ${eta.d.toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' })}. ` : 'Ai atins ținta! '}Calculul pornește de la greutatea ta și 3 antrenamente pe săptămână. Cântărește-te o dată pe săptămână, dimineața, iar ținta zilnică se reface singură.</p>
     <button class="btn btn-main" data-fg-save>Salvează</button>`);
