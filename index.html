@@ -1868,6 +1868,31 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .st-card .chips { flex-wrap: nowrap !important; } .st-card .chips .chip { flex: 1; min-width: 0; font-size: 12px; padding: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .wex-actions { flex-wrap: nowrap !important; gap: 8px; white-space: nowrap; } .wex-actions .link { font-size: 13px; padding-inline: 0; }
 .wex-actions .set-ctl { display: flex; gap: 10px; }
+/* ================= mâncare din poză ================= */
+.food { display: grid; gap: 14px; padding: 16px; border-radius: var(--r-lg); background: linear-gradient(160deg, #fff, #fff7ef); box-shadow: inset 0 1px 0 var(--hl), 0 6px 12px -6px rgba(40,18,22,.10), 0 26px 40px -26px rgba(120,60,10,.35); }
+.fd-top { display: grid; grid-template-columns: 76px 1fr; gap: 14px; align-items: center; }
+.fd-ring { position: relative; width: 76px; height: 76px; } .fd-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.fr-bg { fill: none; stroke: #f3e7da; stroke-width: 8; } .fr-fg { fill: none; stroke: #f97316; stroke-width: 8; stroke-linecap: round; filter: drop-shadow(0 0 4px rgba(249,115,22,.6)); transition: stroke-dashoffset 1s; }
+.fd-ring span { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; } .fd-ring b { font: 800 22px/1 var(--display); color: var(--ink); } .fd-ring small { font: 600 10px var(--sys); color: var(--muted); }
+.fd-t small { font: 600 12.5px var(--sys); color: #c2410c; } .fd-t > b { display: block; font: 800 22px/1.05 var(--display); color: var(--ink); margin: 2px 0 8px; }
+.fd-p { display: grid; gap: 4px; } .fd-p i { height: 6px; border-radius: 3px; background: #f3e7da; overflow: hidden; } .fd-p em { display: block; height: 100%; background: linear-gradient(90deg, #fbbf24, #f97316); border-radius: 3px; }
+.fd-p span { font: 500 12px var(--sys); color: var(--muted); } .fd-p span b { font: 800 15px var(--display); color: var(--ink); }
+.fd-cam { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 54px; border-radius: 16px; color: #fff; font: 650 16px var(--sys); cursor: pointer;
+  background: linear-gradient(180deg, #fb923c, #f97316 55%, #ea580c); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), inset 0 -3px 0 rgba(120,40,0,.3), 0 3px 0 #c2410c, 0 14px 24px -12px rgba(249,115,22,.9); }
+.fd-cam svg { width: 22px; height: 22px; }
+.fd-list { display: grid; gap: 6px; } .fd-m { display: grid; grid-template-columns: 44px 1fr auto 26px; gap: 10px; align-items: center; }
+.fd-m img, .fd-ph { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; background: #f3e7da; }
+.fd-m b { display: block; font: 600 13.5px var(--sys); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .fd-m > span { min-width: 0; } .fd-m small { font: 500 11.5px var(--sys); color: var(--muted); }
+.fd-m em { font: 800 18px var(--display); font-style: normal; color: #ea580c; } .fd-del { width: 26px; height: 26px; border-radius: 50%; background: var(--soft); color: var(--muted); font-size: 16px; }
+.fd-photo { position: relative; border-radius: 20px; overflow: hidden; max-height: 260px; } .fd-photo img { width: 100%; height: 100%; max-height: 260px; object-fit: cover; display: block; }
+.fd-photo.scan i { position: absolute; left: 0; right: 0; height: 40%; background: linear-gradient(180deg, transparent, rgba(249,115,22,.45), transparent); animation: scan 1.4s ease-in-out infinite; }
+.fd-items { display: grid; gap: 6px; } .fd-it { display: grid; grid-template-columns: 1fr 86px 48px; gap: 8px; align-items: center; padding: 10px 12px; border-radius: 14px; background: var(--soft); }
+.fd-it b { display: block; font: 600 14px var(--sys); } .fd-it small { font: 500 11.5px var(--sys); color: var(--muted); }
+.fd-it label { display: flex; align-items: center; gap: 4px; font: 600 12px var(--sys); color: var(--muted); } .fd-it input { width: 58px; height: 36px; border: 0; border-radius: 10px; background: var(--surface); text-align: center; font: 800 18px var(--display); color: var(--ink); }
+.fd-it em { font: 800 18px var(--display); font-style: normal; text-align: right; color: #ea580c; }
+.fd-sum { display: flex; justify-content: space-between; font: 600 13px var(--sys); color: var(--muted); } .fd-sum b { font: 800 20px var(--display); color: var(--ink); }
+.fd-steps { margin: 0; padding-left: 20px; display: grid; gap: 6px; font: 500 13.5px/1.4 var(--sys); color: var(--ink); } .fd-steps a { color: var(--accent); font-weight: 700; }
+@media (prefers-color-scheme: dark) { .food { background: linear-gradient(160deg, #1f1714, #241a14); } .fr-bg, .fd-p i { stroke: #3a2a20; background: #3a2a20; } }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -4756,6 +4781,108 @@ function swapVariant(from, to) {
     swapVariant(from, to); WOPEN = to; WDONE[to] = WDONE[from];
     const w = document.getElementById('workout'), y = w ? w.scrollTop : 0; renderWorkout(); if (w) w.scrollTop = y;
   });
+}
+
+/* ---------- Fotografiază masa: recunoaștere cu Google Gemini (cheia ta, gratuită) ---------- */
+const FKEY = 'forta-gemini';
+const fkey = () => { try { return localStorage.getItem(FKEY) || ''; } catch (e) { return ''; } };
+S.food = S.food || {};
+const kcalGoal = () => { const w = (S.body.length && S.body[S.body.length - 1].kg) || 80; return Math.round(w * 33 / 50) * 50; };
+const protGoal = () => Math.round(((S.body.length && S.body[S.body.length - 1].kg) || 80) * 1.8);
+function foodToday() { return S.food[dayKey()] || []; }
+function foodCard() {
+  const meals = foodToday(), k = meals.reduce((a, m) => a + m.kcal, 0), p = meals.reduce((a, m) => a + m.p, 0), kg = kcalGoal(), pg = protGoal();
+  const C = 2 * Math.PI * 30;
+  return `<section class="food">
+    <div class="fd-top">
+      <div class="fd-ring"><svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" class="fr-bg"/><circle cx="36" cy="36" r="30" class="fr-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - Math.min(1, k / kg))).toFixed(1)}"/></svg><span><b class="num">${k}</b><small>kcal</small></span></div>
+      <div class="fd-t"><small>Ce mănânci azi</small><b>${k ? `${k} din ${kg} kcal` : 'Fotografiază prima masă'}</b>
+        <div class="fd-p"><i><em style="width:${Math.min(100, p / pg * 100).toFixed(0)}%"></em></i><span>Proteine <b class="num">${Math.round(p)}</b>/${pg} g</span></div></div>
+    </div>
+    <label class="fd-cam" for="food-cam">${LI.camera}<span>Fotografiază ce mănânci</span></label>
+    <input type="file" id="food-cam" accept="image/*" capture="environment" hidden>
+    ${meals.length ? `<div class="fd-list">${meals.map((m, i) => `<div class="fd-m">${m.img ? `<img src="${m.img}" alt="">` : '<span class="fd-ph"></span>'}<span><b>${esc(m.name)}</b><small>${m.time} · ${m.g} g · P ${Math.round(m.p)} g</small></span><em class="num">${m.kcal}</em><button class="fd-del" data-food-del="${i}" aria-label="Șterge">×</button></div>`).join('')}</div>` : ''}
+  </section>`;
+}
+function shrink(file, max = 768) {
+  return new Promise((ok, no) => { const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => {
+    const k = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = im.width * k; c.height = im.height * k;
+    c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); ok(c.toDataURL('image/jpeg', .82)); }; im.onerror = no; im.src = r.result; }; r.onerror = no; r.readAsDataURL(file); });
+}
+let GMODEL = null;
+async function pickModel(key) {
+  if (GMODEL) return GMODEL;
+  try { GMODEL = localStorage.getItem(FKEY + '-model'); } catch (e) { }
+  if (GMODEL) return GMODEL;
+  const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200&key=' + encodeURIComponent(key));
+  if (!r.ok) throw new Error(r.status === 400 || r.status === 403 ? 'Cheia Gemini nu e validă.' : 'Nu pot ajunge la Gemini (' + r.status + ').');
+  const ms = ((await r.json()).models || []).filter(m => (m.supportedGenerationMethods || []).includes('generateContent') && /flash/.test(m.name) && !/lite|image|tts|live|audio|thinking|exp|preview/.test(m.name));
+  ms.sort((a, b) => b.name.localeCompare(a.name, 'en', { numeric: true }));
+  GMODEL = (ms[0] || { name: 'models/gemini-2.5-flash' }).name; try { localStorage.setItem(FKEY + '-model', GMODEL); } catch (e) { }
+  return GMODEL;
+}
+async function analyze(dataUrl) {
+  const key = fkey(), model = await pickModel(key);
+  const prompt = 'Ești nutriționist. Identifică alimentele din fotografie și estimează cantitatea în grame după mărimea porției (farfurie standard ~26 cm). Răspunde DOAR cu JSON: {"items":[{"name":"nume scurt în română","grams":număr,"kcal":număr,"protein":număr,"carbs":număr,"fat":număr}],"note":"o propoziție scurtă în română despre masă, din perspectiva creșterii masei musculare"}. Dacă nu e mâncare, întoarce items gol.';
+  const body = { contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: 'image/jpeg', data: dataUrl.split(',')[1] } }] }], generationConfig: { responseMimeType: 'application/json', temperature: .2 } };
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/${model}:generateContent?key=${encodeURIComponent(key)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (r.status === 429) throw new Error('Ai atins limita gratuită pe azi la Gemini. Încearcă mai târziu.');
+  if (r.status === 404) { GMODEL = null; try { localStorage.removeItem(FKEY + '-model'); } catch (e) { } throw new Error('Modelul s-a schimbat. Mai încearcă o dată.'); }
+  if (!r.ok) throw new Error('Gemini a răspuns cu eroarea ' + r.status + '.');
+  const j = await r.json(), txt = ((j.candidates || [])[0] || {}).content?.parts?.map(p => p.text || '').join('') || '{}';
+  const out = JSON.parse(txt.replace(/^```json|```$/g, '').trim());
+  return { items: (out.items || []).map(x => ({ name: String(x.name || 'Aliment'), g: Math.round(+x.grams || 0), kcal: Math.round(+x.kcal || 0), p: +x.protein || 0, c: +x.carbs || 0, f: +x.fat || 0 })), note: out.note || '' };
+}
+let FD = null;
+function sheet(html) {
+  let m = document.getElementById('plates'); if (!m) { m = document.createElement('div'); m.id = 'plates'; m.className = 'plates'; document.body.appendChild(m); }
+  m.innerHTML = `<div class="pl-card fd-sheet"><div class="pl-grab"></div>${html}</div>`; m.hidden = false; requestAnimationFrame(() => m.classList.add('open'));
+}
+function keySheet() {
+  sheet(`<div class="pl-head"><div><small>O singură dată</small><h3>Pornește recunoașterea</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>
+    <p class="tip-lead">Pozele sunt analizate de Google Gemini, cu o cheie gratuită pe care o faci tu. Cheia rămâne doar pe telefonul tău.</p>
+    <ol class="fd-steps"><li>Deschide <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> și intră cu contul Google.</li><li>Apasă <b>Create API key</b>, apoi copiază cheia (începe cu AIza).</li><li>Lipește-o aici și apasă Salvează.</li></ol>
+    <input class="field" id="fd-key" placeholder="AIza..." autocomplete="off" autocapitalize="off" spellcheck="false">
+    <button class="btn btn-main" data-fd-key>Salvează cheia</button>`);
+}
+function resultSheet() {
+  const { img, items, note, busy, err } = FD, tot = items.reduce((a, x) => a + x.kcal, 0), pr = items.reduce((a, x) => a + x.p, 0);
+  sheet(`<div class="pl-head"><div><small>${busy ? 'Analizez poza...' : err ? 'Nu a mers' : 'Am găsit'}</small><h3>${busy ? 'O secundă' : err ? 'Încearcă din nou' : `${tot} kcal`}</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>
+    <div class="fd-photo ${busy ? 'scan' : ''}"><img src="${img}" alt="Poza mesei"><i></i></div>
+    ${err ? `<p class="tip-lead">${esc(err)}</p>` : busy ? '' : items.length ? `<div class="fd-items">${items.map((x, i) => `<div class="fd-it"><span><b>${esc(x.name)}</b><small>P ${Math.round(x.p)} g · C ${Math.round(x.c)} g · G ${Math.round(x.f)} g</small></span><label><input class="num" inputmode="numeric" value="${x.g}" data-fd-g="${i}"> g</label><em class="num">${x.kcal}</em></div>`).join('')}</div>
+      <div class="fd-sum"><span>Proteine <b class="num">${Math.round(pr)} g</b></span><span>Total <b class="num">${tot} kcal</b></span></div>${note ? `<p class="tip-lead">${esc(note)}</p>` : ''}<small class="tip-note">Valorile sunt estimate după poză. Corectează gramele dacă știi cât ai pus în farfurie.</small>
+      <button class="btn btn-main" data-fd-save>Adaugă la ziua de azi</button>` : '<p class="tip-lead">Nu am recunoscut mâncare în poză.</p>'}`);
+}
+document.addEventListener('change', async e => {
+  if (e.target.id !== 'food-cam' || !e.target.files[0]) return;
+  const f = e.target.files[0]; e.target.value = '';
+  if (!fkey()) { keySheet(); return; }
+  try { FD = { img: await shrink(f), items: [], busy: true }; resultSheet(); const r = await analyze(FD.img); FD = Object.assign(FD, r, { busy: false, base: r.items.map(x => ({ ...x })) }); }
+  catch (er) { FD = Object.assign(FD || { img: '' }, { busy: false, err: er.message || 'Analiza nu a reușit.' }); }
+  resultSheet();
+});
+document.addEventListener('input', e => {
+  const i = e.target.dataset && e.target.dataset.fdG; if (i == null || !FD) return;
+  const b = FD.base[i], g = Math.max(0, parseInt(e.target.value) || 0), k = b.g ? g / b.g : 0;
+  FD.items[i] = { ...b, g, kcal: Math.round(b.kcal * k), p: b.p * k, c: b.c * k, f: b.f * k };
+  const row = e.target.closest('.fd-it'); row.querySelector('em').textContent = FD.items[i].kcal;
+  const s = document.querySelector('.fd-sum'); if (s) s.innerHTML = `<span>Proteine <b class="num">${Math.round(FD.items.reduce((a, x) => a + x.p, 0))} g</b></span><span>Total <b class="num">${FD.items.reduce((a, x) => a + x.kcal, 0)} kcal</b></span>`;
+});
+document.addEventListener('click', async e => {
+  const t = e.target;
+  if (t.closest('[data-fd-key]')) { const v = ($('#fd-key').value || '').trim(); if (!/^AIza/.test(v)) { toast('Cheia începe cu AIza. Copiaz-o din nou.'); return; } try { localStorage.setItem(FKEY, v); localStorage.removeItem(FKEY + '-model'); } catch (er) { } GMODEL = null; closePlates(); toast('Gata. Acum fotografiază masa.'); setTimeout(() => { const c = $('#food-cam'); if (c) c.click(); }, 400); }
+  if (t.closest('[data-fd-save]') && FD) {
+    const n = new Date(), list = S.food[dayKey()] = S.food[dayKey()] || [];
+    const thumb = await shrink(await (await fetch(FD.img)).blob(), 120);
+    list.push({ time: `${pad(n.getHours())}:${pad(n.getMinutes())}`, name: FD.items.map(x => x.name).join(', '), g: FD.items.reduce((a, x) => a + x.g, 0), kcal: FD.items.reduce((a, x) => a + x.kcal, 0), p: FD.items.reduce((a, x) => a + x.p, 0), img: thumb });
+    for (const k of Object.keys(S.food)) if (k < dayKey(new Date(Date.now() - 30 * DAYMS))) delete S.food[k];
+    save(); closePlates(); FD = null; render(); toast('Masa a fost adăugată.');
+  }
+  const d = t.closest('[data-food-del]'); if (d) { foodToday().splice(+d.dataset.foodDel, 1); save(); render(); }
+});
+{
+  const _va = viewAzi;
+  viewAzi = function () { const h = _va(), i = ['<section class="wx', '<section class="score', '<section class="rings'].map(x => h.indexOf(x)).filter(x => x >= 0).sort((a, b) => a - b)[0] ?? -1; return i < 0 ? foodCard() + h : h.slice(0, i) + foodCard() + h.slice(i); };
 }
 
 /* ---------- Demo pentru investitori: date de exemplu + prezentarea de la prima pornire ---------- */
