@@ -4612,6 +4612,8 @@ function loopsHtml(me) {
 }
 function parkFallback() { return [['Parcul Herăstrău (Regele Mihai I)', 'Turul lacului are aproape 6 km.'], ['Parcul IOR', 'Lac și alei lungi, bun pentru 30-40 de minute.'], ['Parcul Tineretului', 'Alei largi, circuit de aproximativ 3 km.'], ['Grădina Cișmigiu', 'Turul complet durează cam 20 de minute, bun dacă ești prin centru.']]; }
 let LOCERR = '';
+const parkCache = () => { try { return localStorage.getItem('forta-parks') || ''; } catch (e) { return ''; } };
+const parkSave = h => { try { localStorage.setItem('forta-parks', h); } catch (e) { } };
 const withTimeout = (pr, ms) => Promise.race([pr, new Promise((_, no) => setTimeout(() => no(new Error('timeout')), ms))]);
 async function nearbyParks() {
   LOCERR = '';
@@ -4636,17 +4638,17 @@ function tipSheet(k) {
   const [title, col, items] = TIPS[k];
   let m = document.getElementById('plates'); if (!m) { m = document.createElement('div'); m.id = 'plates'; m.className = 'plates'; document.body.appendChild(m); }
   const body = items ? items.map(([t, d, a]) => a && a.startsWith('yt:') ? `<button class="tip-i act yt" data-yt="${a.slice(3)}" data-yt-t="${esc(t.replace('Video: ', ''))}"><b>▶ ${t.replace('Video: ', '')}</b><small>${d}</small><span>▶</span></button>` : a === 'guide' ? `<button class="tip-i act" data-guide="stretch" data-day="${(nextPlan().p || DAYS[0]).id}"><b>${t}</b><small>${d}</small><span>▶</span></button>` : `<div class="tip-i"><b>${t}</b><small>${d}</small></div>`).join('')
-    : `<p class="tip-lead">30 de minute în ritm lejer, cam 3.000-4.000 de pași. Ajută circulația și recuperarea fără să obosească mușchii.</p>${typeof stepsStrip === 'function' ? stepsStrip() : ''}<div id="parks" hidden><small class="tip-note">Parcuri lângă tine</small><div class="tip-i"><b>Caut parcuri și trasee lângă tine...</b><small>Dacă telefonul întreabă, permite accesul la locație.</small></div></div>`;
+    : `<p class="tip-lead">30 de minute în ritm lejer, cam 3.000-4.000 de pași. Ajută circulația și recuperarea fără să obosească mușchii.</p>${typeof stepsStrip === 'function' ? stepsStrip() : ''}<div id="parks">${parkCache() || `<small class="tip-note">Parcuri lângă tine</small><div class="tip-i"><b>Caut parcuri și trasee lângă tine...</b><small>Dacă telefonul întreabă, permite accesul la locație.</small></div>${cityWalksHtml()}`}</div>`;
   m.innerHTML = `<div class="pl-card tip-sheet" style="--c:${col}"><div class="pl-grab"></div><div class="pl-head"><div><small>Azi, pentru recuperare</small><h3>${title}</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>${body}</div>`;
   m.hidden = false; requestAnimationFrame(() => m.classList.add('open'));
-  if (false) {
+  if (!items) {
     const el0 = document.getElementById('parks');
-    const fallback = msg => { const el = document.getElementById('parks'); if (!el) return; el.innerHTML = `<small class="tip-note">${msg}</small>` + parkFallback().map(([n, d]) => `<a class="tip-i park" href="https://maps.apple.com/?q=${encodeURIComponent(n + ', București')}" target="_blank" rel="noopener"><b>${n}</b><small>${d}</small><span>↗</span></a>`).join('') + cityWalksHtml(); };
+    const fallback = msg => { const el = document.getElementById('parks'); if (!el || parkCache()) return; el.innerHTML = `<small class="tip-note">${msg}</small>` + parkFallback().map(([n, d]) => `<a class="tip-i park" href="https://maps.apple.com/?q=${encodeURIComponent(n + ', București')}" target="_blank" rel="noopener"><b>${n}</b><small>${d}</small><span>↗</span></a>`).join('') + cityWalksHtml(); };
     nearbyParks().then(({ me, parks }) => {
       const el = document.getElementById('parks'); if (!el) return;
       const near = `<a class="tip-i park" href="https://maps.apple.com/?q=park&sll=${me.lat},${me.lon}&z=14" target="_blank" rel="noopener"><b>Vezi toate parcurile din jur pe hartă</b><small>Se deschide în Hărți, în jurul tău</small><span>↗</span></a>`;
       if (!parks.length) { el.innerHTML = loopsHtml(me) + `<small class="tip-note">Parcuri</small>` + near + cityWalksHtml(); return; }
-      el.innerHTML = parks.map(p => `<a class="tip-i park" href="https://maps.apple.com/?daddr=${p.lat},${p.lon}&dirflg=w" target="_blank" rel="noopener"><b>${esc(p.name)}</b><small>${p.km < 1 ? Math.round(p.km * 1000) + ' m' : fmt(p.km, 1) + ' km'} de tine, cam ${Math.max(2, Math.round(p.km / 5 * 60))} min pe jos</small><span>↗</span></a>`).join('') + near + loopsHtml(me) + cityWalksHtml();
+      el.innerHTML = `<small class="tip-note">Parcuri lângă tine</small>` + parks.map(p => `<a class="tip-i park" href="https://maps.apple.com/?daddr=${p.lat},${p.lon}&dirflg=w" target="_blank" rel="noopener"><b>${esc(p.name)}</b><small>${p.km < 1 ? Math.round(p.km * 1000) + ' m' : fmt(p.km, 1) + ' km'} de tine, cam ${Math.max(2, Math.round(p.km / 5 * 60))} min pe jos</small><span>↗</span></a>`).join('') + near + loopsHtml(me) + cityWalksHtml(); parkSave(el.innerHTML);
     }).catch(() => fallback(LOCERR === 'denied'
       ? 'Telefonul nu dă voie aplicației să vadă locația. Pornește-o din Configurări → Confidențialitate → Servicii de localizare → Site-uri Safari → „În timpul utilizării”. Până atunci, parcuri din București:'
       : 'Nu am primit locația la timp. Verifică dacă Serviciile de localizare sunt pornite. Până atunci, parcuri din București:'));
