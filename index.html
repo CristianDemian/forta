@@ -1927,6 +1927,13 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .wk-hist b { font: 800 17px var(--display); } .wk-hist em { font: 800 16px var(--display); font-style: normal; color: #4ade80; }
 .wk-ideas { color: #86efac !important; justify-self: center; }
 .wk-btns .btn { font: 700 17px var(--sys) !important; }
+.steps-strip { display: grid; grid-template-columns: 40px 1fr auto; gap: 10px; align-items: center; width: 100%; margin: 0 0 16px; padding: 12px 14px; border: 0; border-radius: 20px; text-align: left; color: inherit; background: linear-gradient(135deg, rgba(34,197,94,.14), rgba(34,197,94,.04)); box-shadow: inset 0 0 0 1px rgba(34,197,94,.25); font: inherit; }
+.ss-ic { font-size: 26px; display: grid; place-items: center; } .ss-m { display: grid; gap: 5px; min-width: 0; }
+.ss-t { font: 600 14px var(--sys); } .ss-t b { font: 800 22px/1 var(--display); color: #16a34a; }
+.ss-bar { height: 7px; border-radius: 9px; background: rgba(0,0,0,.08); overflow: hidden; } .ss-bar i { display: block; height: 100%; border-radius: 9px; background: linear-gradient(90deg, #4ade80, #16a34a); box-shadow: 0 0 10px #22c55e; }
+.ss-m small { font: 500 11.5px var(--sys); opacity: .65; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ss-g { font: 800 15px var(--display); opacity: .5; }
+@media (prefers-color-scheme: dark) { .ss-bar { background: rgba(255,255,255,.1); } .ss-t b { color: #4ade80; } }
+:root[data-theme="dark"] .ss-bar { background: rgba(255,255,255,.1); } :root[data-theme="dark"] .ss-t b { color: #4ade80; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -4892,7 +4899,7 @@ function foodCard() {
   return `<section class="food">
     <div class="fd-top">
       <div class="fd-ring ${over ? 'over' : ''}"><svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" class="fr-bg"/><circle cx="36" cy="36" r="30" class="fr-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - Math.min(1, k / kg))).toFixed(1)}"/></svg><span><b class="num">${Math.abs(left)}</b><small>${over ? 'peste' : 'rămase'}</small></span></div>
-      <div class="fd-t"><small>Calorii azi, pentru slăbit${typeof walkBurnToday === 'function' && walkBurnToday() ? `, +${walkBurnToday()} din plimbare` : ''}</small><b>${k} din ${kg} kcal</b>
+      <div class="fd-t"><small>Calorii azi, pentru slăbit${typeof walkBurnToday === 'function' && walkBurnToday() ? `, +${walkBurnToday()} din mișcare` : ''}</small><b>${k} din ${kg} kcal</b>
         <div class="fd-p"><i><em style="width:${Math.min(100, p / pg * 100).toFixed(0)}%"></em></i><span>Proteine <b class="num">${Math.round(p)}</b>/${pg} g, ca să slăbești fără să pierzi mușchi</span></div></div>
     </div>
     ${over ? `<div class="fd-warn">Ai trecut cu ${-left} kcal de limita de azi. Nu e grav o zi, compensează cu o plimbare de ${Math.round(-left / 5)} de minute.</div>` : ''}
@@ -5008,7 +5015,29 @@ let WK = null;
 const walkKcal = km => Math.round(km * ((S.body.length && S.body[S.body.length - 1].kg) || 90) * 0.5);
 function hav(a, b) { const R = 6371000, r = x => x * Math.PI / 180, dl = r(b.lat - a.lat), dn = r(b.lon - a.lon), h = Math.sin(dl / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dn / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
 const walksToday = () => S.walks[dayKey()] || [];
-const walkBurnToday = () => walksToday().reduce((a, w) => a + w.kcal, 0);
+const walkOnlyBurn = () => walksToday().reduce((a, w) => a + w.kcal, 0);
+/* pașii din aplicația Sănătate, trimiși de scurtătura din Scurtături prin GitHub */
+S.health = S.health || {};
+const hToday = () => S.health[dayKey()];
+/* întreținerea (31 kcal/kg) acoperă deja mișcarea obișnuită, așa că se adaugă doar ce trece de 5.000 de pași */
+function healthBurn() { const h = hToday(); if (!h || !h.steps) return 0; return walkKcal(h.km * Math.max(0, h.steps - 5000) / h.steps); }
+const walkBurnToday = () => Math.max(walkOnlyBurn(), healthBurn());
+async function pullHealth() {
+  try {
+    const r = await fetch('https://raw.githubusercontent.com/CristianDemian/forta/date/steps.json?t=' + Math.floor(Date.now() / 60000), { cache: 'no-store' }); if (!r.ok) return;
+    const j = await r.json(), before = JSON.stringify(hToday() || {});
+    for (const [k, v] of Object.entries(j)) S.health[k] = { steps: Math.round(+v.steps || 0), km: Math.round((+v.km || 0) * 100) / 100, t: v.t || '' };
+    for (const k of Object.keys(S.health)) if (k < dayKey(new Date(Date.now() - 60 * DAYMS))) delete S.health[k];
+    save(); if (JSON.stringify(hToday() || {}) !== before && typeof render === 'function') render();
+  } catch (e) { }
+}
+pullHealth(); setInterval(pullHealth, 5 * 60000); document.addEventListener('visibilitychange', () => { if (!document.hidden) pullHealth(); });
+function stepsStrip() {
+  const h = hToday(), st = h ? h.steps : 0, goal = 8000, pc = Math.min(100, st / goal * 100), b = healthBurn();
+  return `<button class="steps-strip" data-steps><span class="ss-ic">👟</span><span class="ss-m"><span class="ss-t"><b class="num">${st.toLocaleString('ro-RO')}</b> pași azi${h ? `, ${fmt(h.km, 1)} km` : ''}</span><span class="ss-bar"><i style="width:${pc.toFixed(0)}%"></i></span><small>${h ? (b ? `+${b} kcal la buget` : 'Peste 5.000 de pași se adaugă calorii la buget') + (h.t ? `, actualizat la ${esc(h.t)}` : '') : 'Pașii vin din aplicația Sănătate, prin scurtătură'}</small></span><span class="ss-g">${goal / 1000}k</span></button>`;
+}
+if (typeof foodCard === 'function') { const _fc = foodCard; foodCard = function () { return _fc() + stepsStrip(); }; }
+document.addEventListener('click', e => { if (e.target.closest && e.target.closest('[data-steps]')) { pullHealth(); walkSheet(); } });
 
 function walkSheet() {
   let m = document.getElementById('walk'); if (!m) { m = document.createElement('div'); m.id = 'walk'; m.className = 'guide walk'; document.body.appendChild(m); }
@@ -5018,7 +5047,7 @@ function drawWalk() {
   const m = document.getElementById('walk'); if (!m) return;
   const run = WK && WK.run, w = WK || { ms: 0, m: 0, steps: 0 }, el = w.ms + (run ? Date.now() - w.t0 : 0), km = w.m / 1000;
   const steps = Math.max(w.steps, w.motion ? 0 : Math.round(w.m / 0.75)), pace = km > 0.05 ? el / 60000 / km : 0, goal = 6000, C = 2 * Math.PI * 92;
-  const today = walksToday();
+  const today = walksToday(), hh = hToday();
   m.innerHTML = `<div class="gd-in wk-in">
     <div class="gd-head"><div><small>Plimbare</small></div><span></span><button class="pl-x gd-x" data-wk="close" aria-label="Închide">×</button></div>
     <div class="wk-ring ${run ? 'run' : ''}"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="92" class="wr-bg"/><circle cx="100" cy="100" r="92" class="wr-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - Math.min(1, steps / goal))).toFixed(1)}"/></svg>
@@ -5027,6 +5056,7 @@ function drawWalk() {
     ${w.gpsErr ? `<p class="gd-cue">${esc(w.gpsErr)}</p>` : run ? '<p class="gd-cue">Ține aplicația deschisă cu telefonul în buzunar. Ecranul rămâne aprins, dar se întunecă singur.</p>' : '<p class="gd-cue">Ținta pentru recuperare: 30 de minute, cam 3.500-4.000 de pași.</p>'}
     <div class="gd-btns wk-btns">${!WK ? '<button class="btn btn-main wk-go" data-wk="start">▶ Start</button>' : run ? '<button class="btn btn-ghost" data-wk="pause">Pauză</button><button class="btn btn-main" data-wk="stop">Gata, salvează</button>' : '<button class="btn btn-main" data-wk="resume">Continuă</button><button class="btn btn-ghost" data-wk="stop">Gata, salvează</button>'}</div>
     ${today.length && !WK ? `<div class="wk-hist"><small>Azi</small>${today.map(x => `<div><span>${x.time}</span><b class="num">${fmt(x.km, 2)} km</b><span>${x.steps.toLocaleString('ro-RO')} pași</span><em class="num">${x.kcal} kcal</em></div>`).join('')}</div>` : ''}
+    ${!WK && hh ? `<div class="wk-hist"><small>Toată ziua, din Sănătate</small><div><span>${esc(hh.t || '')}</span><b class="num">${fmt(hh.km, 2)} km</b><span>${hh.steps.toLocaleString('ro-RO')} pași</span><em class="num">${healthBurn()} kcal</em></div></div>` : ''}
     ${!WK ? '<button class="link wk-ideas" data-wk="ideas">Idei de trasee și parcuri</button>' : ''}
   </div>`;
 }
