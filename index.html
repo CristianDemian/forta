@@ -1835,6 +1835,11 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 @keyframes accin { from { opacity: 0; transform: translateY(-6px); } }
 .w-body { gap: 8px !important; }
 .wex.acc { scroll-margin-top: calc(110px + env(safe-area-inset-top, 0px)); }
+.grip { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.grip > span { font: 600 12.5px var(--sys); color: var(--muted); margin-right: 2px; }
+.grip button { padding: 8px 14px; border-radius: 999px; background: var(--soft); color: var(--ink); font: 650 13.5px var(--sys); transition: background .2s, color .2s, transform .3s cubic-bezier(.3, 1.6, .5, 1); }
+.grip button.on { background: var(--accent); color: #fff; box-shadow: 0 6px 14px -6px rgba(216,16,28,.8); transform: scale(1.04); }
+.grip small { flex-basis: 100%; font: 500 11.5px var(--sys); color: var(--faint); }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -3197,7 +3202,7 @@ function renderWorkout() {
     <button class="btn btn-ghost w-finish" data-finish>Termină</button>
     <div class="w-sub"><span id="elapsed" class="num">0:00</span> · <span id="done-count"></span></div>
     <div class="progressbar"><i id="pbar"></i></div></div></header>
-  <div class="w-body">${day.ex.map(id => wexCard(id)).join('')}
+  <div class="w-body">${(S.active.order || day.ex).filter(id => S.active.sets[id]).map(id => wexCard(id)).join('')}
     <div class="w-foot"><button class="btn btn-main" data-finish>Termină și salvează</button><button class="link muted" data-cancel>Anulează antrenamentul</button></div>
   </div>`;
   updateProgress();
@@ -3314,7 +3319,7 @@ function closeGo() {
 }
 document.addEventListener('pointerdown', e => { if (e.target.closest('#go')) closeGo(); });
 function nextUndone(dayId, fromId) {
-  const ex = byId(dayId).ex, i = ex.indexOf(fromId);
+  const ex = (S.active && S.active.order) || byId(dayId).ex, i = ex.indexOf(fromId);
   for (let k = 1; k <= ex.length; k++) { const id = ex[(i + k) % ex.length]; if (S.active.sets[id].some(s => !s.done)) return id; }
   return null;
 }
@@ -4602,6 +4607,58 @@ let WOPEN = null, WDONE = {};
     const w = document.getElementById('workout'), y = w ? w.scrollTop : 0;
     renderWorkout(); if (w) w.scrollTop = y;
     if (!was) setTimeout(() => { const el = document.getElementById('wex-' + id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+  });
+}
+
+/* ================= Variante de priză la același aparat ================= */
+EX.shoulderm_n = Object.assign({}, EX.shoulderm, { name: 'Shoulder press la aparat, priză neutră', muscles: 'Umăr frontal, triceps',
+  cues: ['Prinde mânerele negre, înclinate, cu palmele față în față.', 'Coatele rămân puțin în fața corpului, nu în lateral, ceea ce e mai blând cu umerii.', 'Împinge până aproape de brațe întinse, apoi coboară lent până la nivelul bărbiei.'],
+  mistake: 'Coatele care fug în lateral. Cu priza neutră, rămân în fața corpului.' });
+EX.shoulderm.name = 'Shoulder press la aparat, priză largă';
+EX.shoulderm.cues = ['Prinde mânerele albe, orizontale, cu palmele în față, mai larg decât umerii.', 'Spatele lipit de spătar, coatele în lateral, ușor în fața corpului.', 'Împinge până aproape de brațe întinse, fără să blochezi coatele, apoi coboară lent.'];
+EX.machrow_n = Object.assign({}, EX.machrow, { name: 'Low row la aparat, priză neutră', muscles: 'Dorsali, mijlocul spatelui, biceps',
+  cues: ['Prinde mânerele verticale, cu palmele față în față.', 'Pieptul lipit de pernă, trage coatele înapoi pe lângă corp, spre șolduri.', 'Strânge omoplații o secundă, apoi revino lent până la brațe întinse.'],
+  mistake: 'Umerii care urcă spre urechi. Trage din spate, cu umerii jos.' });
+EX.machrow.name = 'Low row la aparat, priză largă';
+EX.machrow.cues = ['Prinde mânerele orizontale, cu palmele în jos, mai larg decât umerii.', 'Pieptul lipit de pernă, trage cu coatele în lateral, la nivelul pieptului de jos.', 'Strânge omoplații o secundă, apoi revino lent. Lucrează mai mult spatele de sus și umerii posteriori.'];
+MUSCLE.shoulderm_n = MUSCLE.shoulderm; MUSCLE.machrow_n = MUSCLE.machrow;
+if (window.ILLU) { }
+try { ILLU.shoulderm_n = ILLU.shoulderm; ILLU.machrow_n = ILLU.machrow; } catch (e) { }
+try { GYM.shoulderm_n = GYM.shoulderm; GYM.machrow_n = GYM.machrow; } catch (e) { }
+EX.shoulderm_n.kind = EX.shoulderm.kind; EX.machrow_n.kind = EX.machrow.kind;
+const VAR = { shoulderm: 'shoulderm_n', shoulderm_n: 'shoulderm', machrow: 'machrow_n', machrow_n: 'machrow' };
+const lastDone = id => { const s = sessionsSorted().filter(x => x.ex[id]); return s.length ? s[s.length - 1].date : 0; };
+function swapVariant(from, to) {
+  const a = S.active; if (!a || !a.sets[from]) return;
+  a.order = (a.order || byId(a.day).ex.slice()).map(x => x === from ? to : x);
+  a.sets[to] = a.sets[from]; delete a.sets[from]; save();
+}
+{
+  const _sw = startWorkout;
+  startWorkout = function (dayId) {
+    const fresh = !S.active || S.active.day !== dayId;
+    _sw(dayId);
+    if (!fresh || !S.active || S.active.order) return;
+    /* alternează automat: alege varianta pe care n-ai făcut-o data trecută */
+    S.active.order = byId(dayId).ex.slice();
+    for (const id of byId(dayId).ex) if (VAR[id]) { const alt = VAR[id]; if (lastDone(id) > lastDone(alt)) swapVariant(id, alt); }
+    render();
+  };
+  const _rw4 = renderWorkout;
+  renderWorkout = function () {
+    _rw4(); if (!S.active) return;
+    document.querySelectorAll('#workout .wex.open').forEach(w => {
+      const id = w.id.replace('wex-', ''), alt = VAR[id]; if (!alt || w.querySelector('.grip')) return;
+      const wide = !/_n$/.test(id), base = wide ? id : alt, nn = wide ? alt : id;
+      const html = `<div class="grip"><span>Priză</span><button class="${wide ? 'on' : ''}" data-grip="${base}" data-from="${id}">Largă</button><button class="${wide ? '' : 'on'}" data-grip="${nn}" data-from="${id}">Neutră</button><small>Data trecută: ${lastDone(base) >= lastDone(nn) && lastDone(base) ? 'largă' : lastDone(nn) ? 'neutră' : 'prima dată'}</small></div>`;
+      const top = w.querySelector('.wex-top'); top.insertAdjacentHTML('afterend', html);
+    });
+  };
+  document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('[data-grip]'); if (!b) return;
+    const to = b.dataset.grip, from = b.dataset.from; if (to === from) return;
+    swapVariant(from, to); WOPEN = to; WDONE[to] = WDONE[from];
+    const w = document.getElementById('workout'), y = w ? w.scrollTop : 0; renderWorkout(); if (w) w.scrollTop = y;
   });
 }
 
