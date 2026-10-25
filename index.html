@@ -1940,6 +1940,7 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .ss-sync.spin::after { content: ''; width: 22px; height: 22px; border-radius: 50%; border: 3px solid rgba(34,197,94,.3); border-top-color: #16a34a; animation: ssspin .8s linear infinite; }
 @keyframes ssspin { to { transform: rotate(360deg); } }
 .steps-strip { grid-template-columns: 1fr; } .ss-main { padding-right: 14px; }
+.fd-chkey { display: block; margin: 4px auto 0; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -4934,6 +4935,7 @@ function shrink(file, max = 768) {
     c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); ok(c.toDataURL('image/jpeg', .82)); }; im.onerror = no; im.src = r.result; }; r.onerror = no; r.readAsDataURL(file); });
 }
 let GMODEL = null;
+const FPROMPT = 'Ești nutriționist. Identifică alimentele din fotografie și estimează cantitatea în grame după mărimea porției (farfurie standard ~26 cm). Răspunde DOAR cu JSON: {"items":[{"name":"nume scurt în română","grams":număr,"kcal":număr,"protein":număr,"carbs":număr,"fat":număr}],"note":"o propoziție scurtă în română despre masă, pentru cineva care vrea să slăbească păstrând mușchii"}. Dacă nu e mâncare, întoarce items gol.';
 /* toate modelele Flash disponibile pentru cheie, în ordinea preferată; dacă unul e la limită, trecem la următorul */
 async function modelList(key) {
   try { const c = JSON.parse(localStorage.getItem(FKEY + '-models') || 'null'); if (c && c.t > Date.now() - 86400000 && c.l.length) return c.l; } catch (e) { }
@@ -4946,11 +4948,35 @@ async function modelList(key) {
   try { localStorage.setItem(FKEY + '-models', JSON.stringify({ t: Date.now(), l })); } catch (e) { }
   return l;
 }
+/* Claude (Anthropic): cheie sk-ant-..., cu plată, cost foarte mic pe poză */
+async function analyzeClaude(key, dataUrl, prompt) {
+  let r = null;
+  for (const model of ['claude-haiku-5-5', 'claude-sonnet-5-5']) {
+    r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model, max_tokens: 1024, messages: [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: dataUrl.split(',')[1] } }, { type: 'text', text: prompt }] }] }) });
+    if (r.ok) break;
+    if (r.status === 404 || r.status === 429 || r.status >= 500) { await new Promise(ok => setTimeout(ok, 1000)); continue; }
+    break;
+  }
+  if (!r.ok) {
+    let m = ''; try { m = ((await r.json()).error || {}).message || ''; } catch (e) { }
+    if (r.status === 401) throw new Error('Cheia Claude nu e validă. Copiaz-o din nou din console.anthropic.com.');
+    if (r.status === 400 && /credit/i.test(m)) throw new Error('Contul Claude nu are credit. Adaugă credit în console.anthropic.com → Billing.');
+    throw new Error('Claude a răspuns cu eroarea ' + r.status + '.');
+  }
+  const j = await r.json(), txt = (j.content || []).map(c => c.text || '').join('');
+  return JSON.parse(txt.slice(txt.indexOf('{'), txt.lastIndexOf('}') + 1));
+}
 async function analyze(dataUrl) {
-  const key = fkey(), list = await modelList(key);
+  const key = fkey();
+  if (/^sk-ant-/.test(key)) {
+    const out = await analyzeClaude(key, dataUrl, FPROMPT);
+    return { items: (out.items || []).map(x => ({ name: String(x.name || 'Aliment'), g: Math.round(+x.grams || 0), kcal: Math.round(+x.kcal || 0), p: +x.protein || 0, c: +x.carbs || 0, f: +x.fat || 0 })), note: out.note || '' };
+  }
+  const list = await modelList(key);
   let last = ''; try { last = localStorage.getItem(FKEY + '-model') || ''; } catch (e) { }
   const order = last && list.includes(last) ? [last, ...list.filter(x => x !== last)] : list;
-  const prompt = 'Ești nutriționist. Identifică alimentele din fotografie și estimează cantitatea în grame după mărimea porției (farfurie standard ~26 cm). Răspunde DOAR cu JSON: {"items":[{"name":"nume scurt în română","grams":număr,"kcal":număr,"protein":număr,"carbs":număr,"fat":număr}],"note":"o propoziție scurtă în română despre masă, pentru cineva care vrea să slăbească păstrând mușchii"}. Dacă nu e mâncare, întoarce items gol.';
+  const prompt = FPROMPT;
   const body = JSON.stringify({ contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: 'image/jpeg', data: dataUrl.split(',')[1] } }] }], generationConfig: { responseMimeType: 'application/json', temperature: .2 } });
   let r = null, lim = 0;
   /* 503/500 = Google e aglomerat: așteptăm puțin și trecem la alt model; două ture prin listă */
@@ -4983,14 +5009,15 @@ function keySheet() {
   sheet(`<div class="pl-head"><div><small>O singură dată</small><h3>Pornește recunoașterea</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>
     <p class="tip-lead">Pozele sunt analizate de Google Gemini, cu o cheie gratuită pe care o faci tu. Cheia rămâne doar pe telefonul tău.</p>
     <ol class="fd-steps"><li>Deschide <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> și intră cu contul Google.</li><li>Apasă <b>Create API key</b>, apoi copiază cheia (începe cu AQ. sau AIza).</li><li>Lipește-o aici și apasă Salvează.</li></ol>
-    <input class="field" id="fd-key" placeholder="AQ... sau AIza..." autocomplete="off" autocapitalize="off" spellcheck="false">
+    <small class="tip-note">Sau cu Claude, mai stabil, cu plată foarte mică pe poză: în <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a> adaugi credit la Billing, apoi Create Key (începe cu sk-ant-).</small>
+    <input class="field" id="fd-key" placeholder="Cheie Gemini sau Claude" autocomplete="off" autocapitalize="off" spellcheck="false">
     <button class="btn btn-main" data-fd-key>Salvează cheia</button>`);
 }
 function resultSheet() {
   const { img, items, note, busy, err } = FD, tot = items.reduce((a, x) => a + x.kcal, 0), pr = items.reduce((a, x) => a + x.p, 0);
   sheet(`<div class="pl-head"><div><small>${busy ? 'Analizez poza...' : err ? 'Nu a mers' : 'Am găsit'}</small><h3>${busy ? 'O secundă' : err ? 'Încearcă din nou' : `${tot} kcal`}</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>
     <div class="fd-photo ${busy ? 'scan' : ''}"><img src="${img}" alt="Poza mesei"><i></i></div>
-    ${err ? `<p class="tip-lead">${esc(err)}</p>` : busy ? '' : items.length ? `<div class="fd-items">${items.map((x, i) => `<div class="fd-it"><span><b>${esc(x.name)}</b><small>P ${Math.round(x.p)} g · C ${Math.round(x.c)} g · G ${Math.round(x.f)} g</small></span><label><input class="num" inputmode="numeric" value="${x.g}" data-fd-g="${i}"> g</label><em class="num">${x.kcal}</em></div>`).join('')}</div>
+    ${err ? `<p class="tip-lead">${esc(err)}</p><button class="link fd-chkey" data-fd-chkey>Schimbă cheia (Gemini sau Claude)</button>` : busy ? '' : items.length ? `<div class="fd-items">${items.map((x, i) => `<div class="fd-it"><span><b>${esc(x.name)}</b><small>P ${Math.round(x.p)} g · C ${Math.round(x.c)} g · G ${Math.round(x.f)} g</small></span><label><input class="num" inputmode="numeric" value="${x.g}" data-fd-g="${i}"> g</label><em class="num">${x.kcal}</em></div>`).join('')}</div>
       <div class="fd-sum"><span>Proteine <b class="num">${Math.round(pr)} g</b></span><span>Total <b class="num">${tot} kcal</b></span></div>${note ? `<p class="tip-lead">${esc(note)}</p>` : ''}<small class="tip-note">Valorile sunt estimate după poză. Corectează gramele dacă știi cât ai pus în farfurie.</small>
       <button class="btn btn-main" data-fd-save>Adaugă la ziua de azi</button>` : '<p class="tip-lead">Nu am recunoscut mâncare în poză.</p>'}`);
 }
@@ -5011,7 +5038,8 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('click', async e => {
   const t = e.target;
-  if (t.closest('[data-fd-key]')) { const v = ($('#fd-key').value || '').trim(); if (!/^(AIza|AQ\.)/.test(v)) { toast('Cheia începe cu AQ. sau AIza. Copiaz-o din nou.'); return; } try { localStorage.setItem(FKEY, v); localStorage.removeItem(FKEY + '-model'); localStorage.removeItem(FKEY + '-models'); } catch (er) { } GMODEL = null; closePlates(); toast('Gata. Acum fotografiază masa.'); setTimeout(() => { const c = $('#food-cam'); if (c) c.click(); }, 400); }
+  if (t.closest('[data-fd-chkey]')) { keySheet(); return; }
+  if (t.closest('[data-fd-key]')) { const v = ($('#fd-key').value || '').trim(); if (!/^(AIza|AQ\.|sk-ant-)/.test(v)) { toast('Cheia începe cu AQ., AIza (Gemini) sau sk-ant- (Claude). Copiaz-o din nou.'); return; } try { localStorage.setItem(FKEY, v); localStorage.removeItem(FKEY + '-model'); localStorage.removeItem(FKEY + '-models'); } catch (er) { } GMODEL = null; closePlates(); toast('Gata. Acum fotografiază masa.'); setTimeout(() => { const c = $('#food-cam'); if (c) c.click(); }, 400); }
   if (t.closest('[data-fd-save]') && FD) {
     const n = new Date(), list = S.food[dayKey()] = S.food[dayKey()] || [];
     const thumb = await shrink(await (await fetch(FD.img)).blob(), 120);
