@@ -5007,17 +5007,17 @@ function sheet(html) {
 }
 function keySheet() {
   sheet(`<div class="pl-head"><div><small>O singură dată</small><h3>Pornește recunoașterea</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>
-    <p class="tip-lead">Pozele sunt analizate de Google Gemini, cu o cheie gratuită pe care o faci tu. Cheia rămâne doar pe telefonul tău.</p>
-    <ol class="fd-steps"><li>Deschide <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> și intră cu contul Google.</li><li>Apasă <b>Create API key</b>, apoi copiază cheia (începe cu AQ. sau AIza).</li><li>Lipește-o aici și apasă Salvează.</li></ol>
-    <small class="tip-note">Sau cu Claude, mai stabil, cu plată foarte mică pe poză: în <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a> adaugi credit la Billing, apoi Create Key (începe cu sk-ant-).</small>
-    <input class="field" id="fd-key" placeholder="Cheie Gemini sau Claude" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <p class="tip-lead">Pozele sunt analizate de Claude, cu o cheie pe care o faci tu. Cheia rămâne doar pe telefonul tău.</p>
+    <ol class="fd-steps"><li>Deschide <a href="https://console.anthropic.com/settings/billing" target="_blank" rel="noopener">console.anthropic.com</a>, intră în cont și adaugă credit la <b>Billing</b> (5 $ ajung pentru sute de poze).</li><li>La <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener"><b>API Keys</b></a> apasă <b>Create Key</b> și copiaz-o (începe cu sk-ant-).</li><li>Lipește-o aici și apasă Salvează.</li></ol>
+    <small class="tip-note">Merge și o cheie gratuită Google Gemini (începe cu AQ. sau AIza), de pe aistudio.google.com/apikey, dar e mai des aglomerată.</small>
+    <input class="field" id="fd-key" placeholder="sk-ant-..." autocomplete="off" autocapitalize="off" spellcheck="false">
     <button class="btn btn-main" data-fd-key>Salvează cheia</button>`);
 }
 function resultSheet() {
   const { img, items, note, busy, err } = FD, tot = items.reduce((a, x) => a + x.kcal, 0), pr = items.reduce((a, x) => a + x.p, 0);
   sheet(`<div class="pl-head"><div><small>${busy ? 'Analizez poza...' : err ? 'Nu a mers' : 'Am găsit'}</small><h3>${busy ? 'O secundă' : err ? 'Încearcă din nou' : `${tot} kcal`}</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>
     <div class="fd-photo ${busy ? 'scan' : ''}"><img src="${img}" alt="Poza mesei"><i></i></div>
-    ${err ? `<p class="tip-lead">${esc(err)}</p><button class="link fd-chkey" data-fd-chkey>Schimbă cheia (Gemini sau Claude)</button>` : busy ? '' : items.length ? `<div class="fd-items">${items.map((x, i) => `<div class="fd-it"><span><b>${esc(x.name)}</b><small>P ${Math.round(x.p)} g · C ${Math.round(x.c)} g · G ${Math.round(x.f)} g</small></span><label><input class="num" inputmode="numeric" value="${x.g}" data-fd-g="${i}"> g</label><em class="num">${x.kcal}</em></div>`).join('')}</div>
+    ${err ? `<p class="tip-lead">${esc(err)}</p><button class="link fd-chkey" data-fd-chkey>Schimbă cheia</button>` : busy ? '' : items.length ? `<div class="fd-items">${items.map((x, i) => `<div class="fd-it"><span><b>${esc(x.name)}</b><small>P ${Math.round(x.p)} g · C ${Math.round(x.c)} g · G ${Math.round(x.f)} g</small></span><label><input class="num" inputmode="numeric" value="${x.g}" data-fd-g="${i}"> g</label><em class="num">${x.kcal}</em></div>`).join('')}</div>
       <div class="fd-sum"><span>Proteine <b class="num">${Math.round(pr)} g</b></span><span>Total <b class="num">${tot} kcal</b></span></div>${note ? `<p class="tip-lead">${esc(note)}</p>` : ''}<small class="tip-note">Valorile sunt estimate după poză. Corectează gramele dacă știi cât ai pus în farfurie.</small>
       <button class="btn btn-main" data-fd-save>Adaugă la ziua de azi</button>` : '<p class="tip-lead">Nu am recunoscut mâncare în poză.</p>'}`);
 }
