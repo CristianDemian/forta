@@ -4927,7 +4927,7 @@ function goalSheet() {
     <div class="fg-pace">${[[0.25, 'Lent', 'mai ușor de ținut'], [0.5, 'Normal', 'recomandat'], [0.75, 'Rapid', 'ales de tine']].map(([v, n, d]) => `<button class="${g.pace === v ? 'on' : ''}" data-fg-pace="${v}"><b>${n}</b><small>${fmt(v, 2)} kg/săpt.</small><em>${d}</em></button>`).join('')}</div>
     <div class="fd-sum"><span>Bază ≈ <b class="num">${maintKcal()}</b></span><span>Ținta zilnică <b class="num">${kcalGoal()} kcal</b></span></div>
     <p class="tip-lead">${eta ? `Ajungi la ${fmt(g.target)} kg în aproximativ ${eta.wk} săptămâni, pe la ${eta.d.toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' })}. ` : 'Ai atins ținta! '}Calculul pornește de la greutatea ta, fără sport. Caloriile arse la sală, la plimbare și din pașii de peste 5.000 se adaugă în ziua respectivă, așa că în zilele de antrenament ai voie să mănânci mai mult. Cântărește-te o dată pe săptămână, dimineața, iar ținta zilnică se reface singură.</p>
-    <button class="btn btn-main" data-fg-save>Salvează</button>`);
+    <button class="btn btn-main" data-fg-save>Salvează</button><button class="link fd-chkey" data-fd-chkey>Cheia pentru poze: ${/^sk-ant-/.test(fkey()) ? 'Claude' : fkey() ? 'Gemini' : 'nesetată'}, schimbă</button>`);
 }
 function shrink(file, max = 768) {
   return new Promise((ok, no) => { const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => {
