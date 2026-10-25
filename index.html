@@ -4938,7 +4938,7 @@ async function pickModel(key) {
   if (GMODEL) return GMODEL;
   try { GMODEL = localStorage.getItem(FKEY + '-model'); } catch (e) { }
   if (GMODEL) return GMODEL;
-  const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200&key=' + encodeURIComponent(key));
+  const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200', { headers: { 'x-goog-api-key': key } });
   if (!r.ok) throw new Error(r.status === 400 || r.status === 403 ? 'Cheia Gemini nu e validă.' : 'Nu pot ajunge la Gemini (' + r.status + ').');
   const ms = ((await r.json()).models || []).filter(m => (m.supportedGenerationMethods || []).includes('generateContent') && /flash/.test(m.name) && !/lite|image|tts|live|audio|thinking|exp|preview/.test(m.name));
   ms.sort((a, b) => b.name.localeCompare(a.name, 'en', { numeric: true }));
@@ -4949,7 +4949,7 @@ async function analyze(dataUrl) {
   const key = fkey(), model = await pickModel(key);
   const prompt = 'Ești nutriționist. Identifică alimentele din fotografie și estimează cantitatea în grame după mărimea porției (farfurie standard ~26 cm). Răspunde DOAR cu JSON: {"items":[{"name":"nume scurt în română","grams":număr,"kcal":număr,"protein":număr,"carbs":număr,"fat":număr}],"note":"o propoziție scurtă în română despre masă, din perspectiva creșterii masei musculare"}. Dacă nu e mâncare, întoarce items gol.';
   const body = { contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: 'image/jpeg', data: dataUrl.split(',')[1] } }] }], generationConfig: { responseMimeType: 'application/json', temperature: .2 } };
-  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/${model}:generateContent?key=${encodeURIComponent(key)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/${model}:generateContent`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body: JSON.stringify(body) });
   if (r.status === 429) throw new Error('Ai atins limita gratuită pe azi la Gemini. Încearcă mai târziu.');
   if (r.status === 404) { GMODEL = null; try { localStorage.removeItem(FKEY + '-model'); } catch (e) { } throw new Error('Modelul s-a schimbat. Mai încearcă o dată.'); }
   if (!r.ok) throw new Error('Gemini a răspuns cu eroarea ' + r.status + '.');
@@ -4965,8 +4965,8 @@ function sheet(html) {
 function keySheet() {
   sheet(`<div class="pl-head"><div><small>O singură dată</small><h3>Pornește recunoașterea</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>
     <p class="tip-lead">Pozele sunt analizate de Google Gemini, cu o cheie gratuită pe care o faci tu. Cheia rămâne doar pe telefonul tău.</p>
-    <ol class="fd-steps"><li>Deschide <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> și intră cu contul Google.</li><li>Apasă <b>Create API key</b>, apoi copiază cheia (începe cu AIza).</li><li>Lipește-o aici și apasă Salvează.</li></ol>
-    <input class="field" id="fd-key" placeholder="AIza..." autocomplete="off" autocapitalize="off" spellcheck="false">
+    <ol class="fd-steps"><li>Deschide <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> și intră cu contul Google.</li><li>Apasă <b>Create API key</b>, apoi copiază cheia (începe cu AQ. sau AIza).</li><li>Lipește-o aici și apasă Salvează.</li></ol>
+    <input class="field" id="fd-key" placeholder="AQ... sau AIza..." autocomplete="off" autocapitalize="off" spellcheck="false">
     <button class="btn btn-main" data-fd-key>Salvează cheia</button>`);
 }
 function resultSheet() {
@@ -4994,7 +4994,7 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('click', async e => {
   const t = e.target;
-  if (t.closest('[data-fd-key]')) { const v = ($('#fd-key').value || '').trim(); if (!/^AIza/.test(v)) { toast('Cheia începe cu AIza. Copiaz-o din nou.'); return; } try { localStorage.setItem(FKEY, v); localStorage.removeItem(FKEY + '-model'); } catch (er) { } GMODEL = null; closePlates(); toast('Gata. Acum fotografiază masa.'); setTimeout(() => { const c = $('#food-cam'); if (c) c.click(); }, 400); }
+  if (t.closest('[data-fd-key]')) { const v = ($('#fd-key').value || '').trim(); if (!/^(AIza|AQ\.)/.test(v)) { toast('Cheia începe cu AQ. sau AIza. Copiaz-o din nou.'); return; } try { localStorage.setItem(FKEY, v); localStorage.removeItem(FKEY + '-model'); } catch (er) { } GMODEL = null; closePlates(); toast('Gata. Acum fotografiază masa.'); setTimeout(() => { const c = $('#food-cam'); if (c) c.click(); }, 400); }
   if (t.closest('[data-fd-save]') && FD) {
     const n = new Date(), list = S.food[dayKey()] = S.food[dayKey()] || [];
     const thumb = await shrink(await (await fetch(FD.img)).blob(), 120);
