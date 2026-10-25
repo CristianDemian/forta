@@ -4934,25 +4934,37 @@ function shrink(file, max = 768) {
     c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); ok(c.toDataURL('image/jpeg', .82)); }; im.onerror = no; im.src = r.result; }; r.onerror = no; r.readAsDataURL(file); });
 }
 let GMODEL = null;
-async function pickModel(key) {
-  if (GMODEL) return GMODEL;
-  try { GMODEL = localStorage.getItem(FKEY + '-model'); } catch (e) { }
-  if (GMODEL) return GMODEL;
+/* toate modelele Flash disponibile pentru cheie, în ordinea preferată; dacă unul e la limită, trecem la următorul */
+async function modelList(key) {
+  try { const c = JSON.parse(localStorage.getItem(FKEY + '-models') || 'null'); if (c && c.t > Date.now() - 86400000 && c.l.length) return c.l; } catch (e) { }
   const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200', { headers: { 'x-goog-api-key': key } });
-  if (!r.ok) throw new Error(r.status === 400 || r.status === 403 ? 'Cheia Gemini nu e validă.' : 'Nu pot ajunge la Gemini (' + r.status + ').');
-  const ms = ((await r.json()).models || []).filter(m => (m.supportedGenerationMethods || []).includes('generateContent') && /flash/.test(m.name) && !/lite|image|tts|live|audio|thinking|exp|preview/.test(m.name));
-  ms.sort((a, b) => b.name.localeCompare(a.name, 'en', { numeric: true }));
-  GMODEL = (ms[0] || { name: 'models/gemini-2.5-flash' }).name; try { localStorage.setItem(FKEY + '-model', GMODEL); } catch (e) { }
-  return GMODEL;
+  if (!r.ok) throw new Error(r.status === 400 || r.status === 401 || r.status === 403 ? 'Cheia Gemini nu e validă. Fă una nouă și lipește-o din nou.' : 'Nu pot ajunge la Gemini (' + r.status + ').');
+  const all = ((await r.json()).models || []).filter(m => (m.supportedGenerationMethods || []).includes('generateContent') && /flash/.test(m.name) && !/image|tts|live|audio|thinking|exp/.test(m.name)).map(m => m.name);
+  const rank = n => (/preview/.test(n) ? 2 : 0) + (/lite/.test(n) ? 1 : 0);
+  all.sort((a, b) => rank(a) - rank(b) || b.localeCompare(a, 'en', { numeric: true }));
+  const l = all.length ? all : ['models/gemini-2.5-flash', 'models/gemini-2.5-flash-lite'];
+  try { localStorage.setItem(FKEY + '-models', JSON.stringify({ t: Date.now(), l })); } catch (e) { }
+  return l;
 }
 async function analyze(dataUrl) {
-  const key = fkey(), model = await pickModel(key);
-  const prompt = 'Ești nutriționist. Identifică alimentele din fotografie și estimează cantitatea în grame după mărimea porției (farfurie standard ~26 cm). Răspunde DOAR cu JSON: {"items":[{"name":"nume scurt în română","grams":număr,"kcal":număr,"protein":număr,"carbs":număr,"fat":număr}],"note":"o propoziție scurtă în română despre masă, din perspectiva creșterii masei musculare"}. Dacă nu e mâncare, întoarce items gol.';
-  const body = { contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: 'image/jpeg', data: dataUrl.split(',')[1] } }] }], generationConfig: { responseMimeType: 'application/json', temperature: .2 } };
-  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/${model}:generateContent`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body: JSON.stringify(body) });
-  if (r.status === 429) throw new Error('Ai atins limita gratuită pe azi la Gemini. Încearcă mai târziu.');
-  if (r.status === 404) { GMODEL = null; try { localStorage.removeItem(FKEY + '-model'); } catch (e) { } throw new Error('Modelul s-a schimbat. Mai încearcă o dată.'); }
-  if (!r.ok) throw new Error('Gemini a răspuns cu eroarea ' + r.status + '.');
+  const key = fkey(), list = await modelList(key);
+  let last = ''; try { last = localStorage.getItem(FKEY + '-model') || ''; } catch (e) { }
+  const order = last && list.includes(last) ? [last, ...list.filter(x => x !== last)] : list;
+  const prompt = 'Ești nutriționist. Identifică alimentele din fotografie și estimează cantitatea în grame după mărimea porției (farfurie standard ~26 cm). Răspunde DOAR cu JSON: {"items":[{"name":"nume scurt în română","grams":număr,"kcal":număr,"protein":număr,"carbs":număr,"fat":număr}],"note":"o propoziție scurtă în română despre masă, pentru cineva care vrea să slăbească păstrând mușchii"}. Dacă nu e mâncare, întoarce items gol.';
+  const body = JSON.stringify({ contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: 'image/jpeg', data: dataUrl.split(',')[1] } }] }], generationConfig: { responseMimeType: 'application/json', temperature: .2 } });
+  let r = null, lim = 0;
+  for (const model of order.slice(0, 6)) {
+    r = await fetch(`https://generativelanguage.googleapis.com/v1beta/${model}:generateContent`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body });
+    if (r.ok) { try { localStorage.setItem(FKEY + '-model', model); } catch (e) { } break; }
+    if (r.status === 429) { lim++; continue; }
+    if (r.status === 404 || r.status === 400 && lim) continue;
+    if (r.status === 401 || r.status === 403) throw new Error('Google nu acceptă cheia (' + r.status + '). Fă o cheie nouă în aistudio.google.com/apikey și lipește-o din nou.');
+    break;
+  }
+  if (!r.ok) {
+    if (r.status === 429) { let m = ''; try { m = ((await r.json()).error || {}).message || ''; } catch (e) { } throw new Error(/limit: 0|quota.*0\b/i.test(m) ? 'Cheia ta nu are încă acces gratuit la Gemini. În aistudio.google.com verifică dacă proiectul cheii e pe planul gratuit (Free tier).' : 'Ai atins limita gratuită la Gemini pentru moment. Mai încearcă peste un minut.'); }
+    throw new Error('Gemini a răspuns cu eroarea ' + r.status + '.');
+  }
   const j = await r.json(), txt = ((j.candidates || [])[0] || {}).content?.parts?.map(p => p.text || '').join('') || '{}';
   const out = JSON.parse(txt.replace(/^```json|```$/g, '').trim());
   return { items: (out.items || []).map(x => ({ name: String(x.name || 'Aliment'), g: Math.round(+x.grams || 0), kcal: Math.round(+x.kcal || 0), p: +x.protein || 0, c: +x.carbs || 0, f: +x.fat || 0 })), note: out.note || '' };
@@ -4994,7 +5006,7 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('click', async e => {
   const t = e.target;
-  if (t.closest('[data-fd-key]')) { const v = ($('#fd-key').value || '').trim(); if (!/^(AIza|AQ\.)/.test(v)) { toast('Cheia începe cu AQ. sau AIza. Copiaz-o din nou.'); return; } try { localStorage.setItem(FKEY, v); localStorage.removeItem(FKEY + '-model'); } catch (er) { } GMODEL = null; closePlates(); toast('Gata. Acum fotografiază masa.'); setTimeout(() => { const c = $('#food-cam'); if (c) c.click(); }, 400); }
+  if (t.closest('[data-fd-key]')) { const v = ($('#fd-key').value || '').trim(); if (!/^(AIza|AQ\.)/.test(v)) { toast('Cheia începe cu AQ. sau AIza. Copiaz-o din nou.'); return; } try { localStorage.setItem(FKEY, v); localStorage.removeItem(FKEY + '-model'); localStorage.removeItem(FKEY + '-models'); } catch (er) { } GMODEL = null; closePlates(); toast('Gata. Acum fotografiază masa.'); setTimeout(() => { const c = $('#food-cam'); if (c) c.click(); }, 400); }
   if (t.closest('[data-fd-save]') && FD) {
     const n = new Date(), list = S.food[dayKey()] = S.food[dayKey()] || [];
     const thumb = await shrink(await (await fetch(FD.img)).blob(), 120);
