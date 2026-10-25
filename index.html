@@ -1941,6 +1941,9 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 @keyframes ssspin { to { transform: rotate(360deg); } }
 .steps-strip { grid-template-columns: 1fr; } .ss-main { padding-right: 14px; }
 .fd-chkey { display: block; margin: 4px auto 0; }
+.fd-fix { display: grid; gap: 6px; margin-top: 10px; }
+.fd-fix-r { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.fd-fix-r .field { min-width: 0; margin: 0; } .fd-fix-r .btn { min-height: 48px; padding: 0 18px; white-space: nowrap; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
@@ -4967,16 +4970,17 @@ async function analyzeClaude(key, dataUrl, prompt) {
   const j = await r.json(), txt = (j.content || []).map(c => c.text || '').join('');
   return JSON.parse(txt.slice(txt.indexOf('{'), txt.lastIndexOf('}') + 1));
 }
-async function analyze(dataUrl) {
+async function analyze(dataUrl, hint) {
+  const P = FPROMPT + (hint ? ` IMPORTANT, corectura utilizatorului (are prioritate față de ce vezi în poză, inclusiv la ce aliment este și la grame): "${hint}".` : '');
   const key = fkey();
   if (/^sk-ant-/.test(key)) {
-    const out = await analyzeClaude(key, dataUrl, FPROMPT);
+    const out = await analyzeClaude(key, dataUrl, P);
     return { items: (out.items || []).map(x => ({ name: String(x.name || 'Aliment'), g: Math.round(+x.grams || 0), kcal: Math.round(+x.kcal || 0), p: +x.protein || 0, c: +x.carbs || 0, f: +x.fat || 0 })), note: out.note || '' };
   }
   const list = await modelList(key);
   let last = ''; try { last = localStorage.getItem(FKEY + '-model') || ''; } catch (e) { }
   const order = last && list.includes(last) ? [last, ...list.filter(x => x !== last)] : list;
-  const prompt = FPROMPT;
+  const prompt = P;
   const body = JSON.stringify({ contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: 'image/jpeg', data: dataUrl.split(',')[1] } }] }], generationConfig: { responseMimeType: 'application/json', temperature: .2 } });
   let r = null, lim = 0;
   /* 503/500 = Google e aglomerat: așteptăm puțin și trecem la alt model; două ture prin listă */
@@ -5019,7 +5023,7 @@ function resultSheet() {
     <div class="fd-photo ${busy ? 'scan' : ''}"><img src="${img}" alt="Poza mesei"><i></i></div>
     ${err ? `<p class="tip-lead">${esc(err)}</p><button class="link fd-chkey" data-fd-chkey>Schimbă cheia</button>` : busy ? '' : items.length ? `<div class="fd-items">${items.map((x, i) => `<div class="fd-it"><span><b>${esc(x.name)}</b><small>P ${Math.round(x.p)} g · C ${Math.round(x.c)} g · G ${Math.round(x.f)} g</small></span><label><input class="num" inputmode="numeric" value="${x.g}" data-fd-g="${i}"> g</label><em class="num">${x.kcal}</em></div>`).join('')}</div>
       <div class="fd-sum"><span>Proteine <b class="num">${Math.round(pr)} g</b></span><span>Total <b class="num">${tot} kcal</b></span></div>${note ? `<p class="tip-lead">${esc(note)}</p>` : ''}<small class="tip-note">Valorile sunt estimate după poză. Corectează gramele dacă știi cât ai pus în farfurie.</small>
-      <button class="btn btn-main" data-fd-save>Adaugă la ziua de azi</button>` : '<p class="tip-lead">Nu am recunoscut mâncare în poză.</p>'}`);
+      <button class="btn btn-main" data-fd-save>Adaugă la ziua de azi</button>` : '<p class="tip-lead">Nu am recunoscut mâncare în poză.</p>'}${busy ? '' : `<div class="fd-fix"><small class="tip-note">${err ? 'Scrie ce ai mâncat și încerc din nou' : 'Nu e corect? Scrie ce e de fapt'}</small><div class="fd-fix-r"><input class="field" id="fd-hint" placeholder="ex.: piept de pui 200 g și orez 150 g" value="${esc(FD.hint || '')}" autocomplete="off"><button class="btn btn-ghost" data-fd-redo>Refă</button></div></div>`}`);
 }
 document.addEventListener('change', async e => {
   if (e.target.id !== 'food-cam' || !e.target.files[0]) return;
@@ -5039,6 +5043,13 @@ document.addEventListener('input', e => {
 document.addEventListener('click', async e => {
   const t = e.target;
   if (t.closest('[data-fd-chkey]')) { keySheet(); return; }
+  if (t.closest('[data-fd-redo]') && FD) {
+    const h = ($('#fd-hint').value || '').trim(); if (!h) { toast('Scrie întâi ce ai mâncat.'); return; }
+    FD = Object.assign(FD, { hint: h, busy: true, err: '', items: [] }); resultSheet();
+    try { const r = await analyze(FD.img, h); FD = Object.assign(FD, r, { busy: false, base: r.items.map(x => ({ ...x })) }); }
+    catch (er) { FD = Object.assign(FD, { busy: false, err: er.message || 'Analiza nu a reușit.' }); }
+    resultSheet(); return;
+  }
   if (t.closest('[data-fd-key]')) { const v = ($('#fd-key').value || '').trim(); if (!/^(AIza|AQ\.|sk-ant-)/.test(v)) { toast('Cheia începe cu AQ., AIza (Gemini) sau sk-ant- (Claude). Copiaz-o din nou.'); return; } try { localStorage.setItem(FKEY, v); localStorage.removeItem(FKEY + '-model'); localStorage.removeItem(FKEY + '-models'); } catch (er) { } GMODEL = null; closePlates(); toast('Gata. Acum fotografiază masa.'); setTimeout(() => { const c = $('#food-cam'); if (c) c.click(); }, 400); }
   if (t.closest('[data-fd-save]') && FD) {
     const n = new Date(), list = S.food[dayKey()] = S.food[dayKey()] || [];
