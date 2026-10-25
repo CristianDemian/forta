@@ -4953,16 +4953,21 @@ async function analyze(dataUrl) {
   const prompt = 'Ești nutriționist. Identifică alimentele din fotografie și estimează cantitatea în grame după mărimea porției (farfurie standard ~26 cm). Răspunde DOAR cu JSON: {"items":[{"name":"nume scurt în română","grams":număr,"kcal":număr,"protein":număr,"carbs":număr,"fat":număr}],"note":"o propoziție scurtă în română despre masă, pentru cineva care vrea să slăbească păstrând mușchii"}. Dacă nu e mâncare, întoarce items gol.';
   const body = JSON.stringify({ contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: 'image/jpeg', data: dataUrl.split(',')[1] } }] }], generationConfig: { responseMimeType: 'application/json', temperature: .2 } });
   let r = null, lim = 0;
-  for (const model of order.slice(0, 6)) {
+  /* 503/500 = Google e aglomerat: așteptăm puțin și trecem la alt model; două ture prin listă */
+  const tries = order.slice(0, 6).concat(order.slice(0, 3));
+  for (let i = 0; i < tries.length; i++) {
+    const model = tries[i];
     r = await fetch(`https://generativelanguage.googleapis.com/v1beta/${model}:generateContent`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body });
     if (r.ok) { try { localStorage.setItem(FKEY + '-model', model); } catch (e) { } break; }
     if (r.status === 429) { lim++; continue; }
+    if (r.status >= 500) { await new Promise(ok => setTimeout(ok, 1500)); continue; }
     if (r.status === 404 || r.status === 400 && lim) continue;
     if (r.status === 401 || r.status === 403) throw new Error('Google nu acceptă cheia (' + r.status + '). Fă o cheie nouă în aistudio.google.com/apikey și lipește-o din nou.');
     break;
   }
   if (!r.ok) {
     if (r.status === 429) { let m = ''; try { m = ((await r.json()).error || {}).message || ''; } catch (e) { } throw new Error(/limit: 0|quota.*0\b/i.test(m) ? 'Cheia ta nu are încă acces gratuit la Gemini. În aistudio.google.com verifică dacă proiectul cheii e pe planul gratuit (Free tier).' : 'Ai atins limita gratuită la Gemini pentru moment. Mai încearcă peste un minut.'); }
+    if (r.status >= 500) throw new Error('Serverele Gemini sunt aglomerate acum. Mai încearcă peste câteva minute.');
     throw new Error('Gemini a răspuns cu eroarea ' + r.status + '.');
   }
   const j = await r.json(), txt = ((j.candidates || [])[0] || {}).content?.parts?.map(p => p.text || '').join('') || '{}';
