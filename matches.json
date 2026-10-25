@@ -1,14 +1,6 @@
 {
- "updated": "2026-10-22T15:43:05.830Z",
+ "updated": "2026-10-25T21:11:19.245Z",
  "next": [
-  {
-   "date": "2026-10-25",
-   "time": "19:00",
-   "opp": "CFR 1907 Cluj",
-   "home": false,
-   "round": "Etapa 13",
-   "comp": "SUPERLIGA"
-  },
   {
    "date": "2026-11-01",
    "time": "20:30",
@@ -148,6 +140,16 @@
  ],
  "last": [
   {
+   "date": "2026-10-25",
+   "time": "19:00",
+   "opp": "CFR 1907 Cluj",
+   "home": false,
+   "round": "Etapa 13",
+   "comp": "SUPERLIGA",
+   "us": 2,
+   "them": 2
+  },
+  {
    "date": "2026-10-16",
    "time": "21:00",
    "opp": "FC Botoșani",
@@ -236,16 +238,6 @@
    "comp": "SUPERLIGA",
    "us": 4,
    "them": 0
-  },
-  {
-   "date": "2026-07-31",
-   "time": "21:30",
-   "opp": "Oțelul Galați",
-   "home": false,
-   "round": "Etapa 3",
-   "comp": "SUPERLIGA",
-   "us": 1,
-   "them": 1
   }
  ]
 }
