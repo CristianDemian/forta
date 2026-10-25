@@ -5007,10 +5007,9 @@ function sheet(html) {
 }
 function keySheet() {
   sheet(`<div class="pl-head"><div><small>O singură dată</small><h3>Pornește recunoașterea</h3></div><button class="pl-x" data-pl-close aria-label="Închide">×</button></div>
-    <p class="tip-lead">Pozele sunt analizate de Claude, cu o cheie pe care o faci tu. Cheia rămâne doar pe telefonul tău.</p>
-    <ol class="fd-steps"><li>Deschide <a href="https://console.anthropic.com/settings/billing" target="_blank" rel="noopener">console.anthropic.com</a>, intră în cont și adaugă credit la <b>Billing</b> (5 $ ajung pentru sute de poze).</li><li>La <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener"><b>API Keys</b></a> apasă <b>Create Key</b> și copiaz-o (începe cu sk-ant-).</li><li>Lipește-o aici și apasă Salvează.</li></ol>
-    <small class="tip-note">Merge și o cheie gratuită Google Gemini (începe cu AQ. sau AIza), de pe aistudio.google.com/apikey, dar e mai des aglomerată.</small>
-    <input class="field" id="fd-key" placeholder="sk-ant-..." autocomplete="off" autocapitalize="off" spellcheck="false">
+    <p class="tip-lead">Pozele sunt analizate de Google Gemini, cu o cheie gratuită pe care o faci tu. Cheia rămâne doar pe telefonul tău.</p>
+    <ol class="fd-steps"><li>Deschide <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> și intră cu contul Google.</li><li>Apasă <b>Create API key</b>, apoi copiază cheia (începe cu AQ. sau AIza).</li><li>Lipește-o aici și apasă Salvează.</li></ol>
+    <input class="field" id="fd-key" placeholder="AQ... sau AIza..." autocomplete="off" autocapitalize="off" spellcheck="false">
     <button class="btn btn-main" data-fd-key>Salvează cheia</button>`);
 }
 function resultSheet() {
