@@ -1,5 +1,5 @@
 <!doctype html><html lang="ro"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Forța">
 <meta name="theme-color" content="#120a0c"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="forta-cd-180.png">
@@ -1944,6 +1944,14 @@ span.rig.exa.big { width: 100%; aspect-ratio: 1; height: auto; border-radius: 20
 .fd-fix { display: grid; gap: 6px; margin-top: 10px; }
 .fd-fix-r { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
 .fd-fix-r .field { min-width: 0; margin: 0; } .fd-fix-r .btn { min-height: 48px; padding: 0 18px; white-space: nowrap; }
+/* foile de jos: fără zoom la tastare (iOS mărește sub 16px), fără scroll lateral */
+input.field, textarea.field, .fd-it input, select.field { font-size: 16px !important; }
+.plates { overflow: hidden; overscroll-behavior: contain; }
+.pl-card { box-sizing: border-box; max-width: min(560px, 100vw); max-height: 92dvh; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.pl-card > * { min-width: 0; max-width: 100%; }
+.fd-photo img { max-width: 100%; }
+.fd-it { grid-template-columns: minmax(0, 1fr) auto 48px; } .fd-it > span { min-width: 0; }
+.fd-photo img { width: 100%; max-height: 30dvh; object-fit: cover; }
 </style>
 <div class="splash" id="splash" aria-hidden="true">
   <div class="sp-rays"></div>
