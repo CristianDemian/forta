@@ -1,14 +1,6 @@
 {
- "updated": "2026-10-30T10:26:21.147Z",
+ "updated": "2026-11-01T22:57:04.111Z",
  "next": [
-  {
-   "date": "2026-11-01",
-   "time": "20:30",
-   "opp": "UTA Arad",
-   "home": true,
-   "round": "Etapa 14",
-   "comp": "SUPERLIGA"
-  },
   {
    "date": "2026-11-06",
    "time": "20:30",
@@ -140,6 +132,16 @@
  ],
  "last": [
   {
+   "date": "2026-11-01",
+   "time": "20:30",
+   "opp": "UTA Arad",
+   "home": true,
+   "round": "Etapa 14",
+   "comp": "SUPERLIGA",
+   "us": 2,
+   "them": 0
+  },
+  {
    "date": "2026-10-25",
    "time": "19:00",
    "opp": "CFR 1907 Cluj",
@@ -227,16 +229,6 @@
    "round": "Etapa 5",
    "comp": "SUPERLIGA",
    "us": 1,
-   "them": 0
-  },
-  {
-   "date": "2026-08-08",
-   "time": "21:30",
-   "opp": "FC Voluntari",
-   "home": true,
-   "round": "Etapa 4",
-   "comp": "SUPERLIGA",
-   "us": 4,
    "them": 0
   }
  ]
