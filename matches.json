@@ -1,14 +1,6 @@
 {
- "updated": "2026-11-01T22:57:04.111Z",
+ "updated": "2026-11-06T23:42:04.168Z",
  "next": [
-  {
-   "date": "2026-11-06",
-   "time": "20:30",
-   "opp": "FC Argeș",
-   "home": false,
-   "round": "Etapa 15",
-   "comp": "SUPERLIGA"
-  },
   {
    "date": "2026-11-21",
    "time": "20:30",
@@ -132,6 +124,16 @@
  ],
  "last": [
   {
+   "date": "2026-11-06",
+   "time": "20:30",
+   "opp": "FC Argeș",
+   "home": false,
+   "round": "Etapa 15",
+   "comp": "SUPERLIGA",
+   "us": 1,
+   "them": 2
+  },
+  {
    "date": "2026-11-01",
    "time": "20:30",
    "opp": "UTA Arad",
@@ -220,16 +222,6 @@
    "comp": "SUPERLIGA",
    "us": 2,
    "them": 1
-  },
-  {
-   "date": "2026-08-15",
-   "time": "21:30",
-   "opp": "Rapid București",
-   "home": false,
-   "round": "Etapa 5",
-   "comp": "SUPERLIGA",
-   "us": 1,
-   "them": 0
   }
  ]
 }
