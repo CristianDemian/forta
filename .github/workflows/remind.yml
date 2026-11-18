@@ -45,6 +45,7 @@ jobs:
           git config user.name "forta-bot"
           git config user.email "forta-bot@users.noreply.github.com"
           end=$((SECONDS + 20640))
+          REPO=${{ github.repository }} GH_TOKEN=${{ github.token }} node ../scripts/timer.mjs . 20600 &
           lastm=-99999
           while [ $SECONDS -lt $end ]; do
             git pull -q --rebase origin date || git rebase --abort || true

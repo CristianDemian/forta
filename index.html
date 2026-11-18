@@ -3,7 +3,36 @@
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Forța">
 <meta name="theme-color" content="#120a0c"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="forta-cd-180.png">
-<style>:root{padding-top:0;padding-bottom:0}.top{top:0!important;padding-top:calc(14px + env(safe-area-inset-top,0px))!important}[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+<style>:root{padding-top:0;padding-bottom:0}.top{top:0!important;padding-top:calc(14px + env(safe-area-inset-top,0px))!important}[hidden]{display:none!important}body{margin:0}img{max-width:100%}
+/* cronometrul de pauză pe tot ecranul */
+.rest.full { inset: 0; bottom: 0; padding: env(safe-area-inset-top, 0px) 16px env(safe-area-inset-bottom, 0px); z-index: 60; pointer-events: auto; display: grid; place-items: center;
+  background: radial-gradient(120% 80% at 50% 30%, rgba(120,16,24,.55), rgba(10,6,7,.96) 70%); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+.rest-in { position: relative; }
+.rest.full .rest-in { grid-template-columns: 1fr; grid-template-areas: "r" "b"; justify-items: center; gap: 34px; background: none; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; max-width: 460px; width: 100%; padding: 0; }
+.rest.full .ring { grid-area: r; width: min(80vw, 330px); height: auto; aspect-ratio: 1; filter: drop-shadow(0 0 18px rgba(230,57,70,.55)); }
+.rest.full .ring circle { stroke-width: 3.2; }
+.rest.full .rest-txt { grid-area: r; align-self: center; text-align: center; max-width: 62vw; }
+.rest.full .rest-t { font: 800 clamp(84px, 27vw, 128px)/1 var(--display); color: #fff; letter-spacing: 0; }
+.rest.full .rest-txt small { white-space: normal; font: 600 15px/1.3 var(--sys); color: rgba(255,255,255,.72); margin-top: 8px; }
+.rest.full .rest-btns { grid-area: b; gap: 12px; width: 100%; justify-content: center; }
+.rest.full .rest-btns button { flex: 1; max-width: 120px; height: 62px; border-radius: 18px; font: 800 20px var(--sys); color: #fff; background: rgba(255,255,255,.12); }
+.rest.full .rest-btns [data-rest="x"] { background: linear-gradient(180deg, #ef4444, #b91c1c); box-shadow: 0 3px 0 #7f1d1d; }
+.rest-min { display: none; }
+.rest.full .rest-min { display: grid; place-items: center; position: fixed; top: calc(14px + env(safe-area-inset-top, 0px)); right: 16px; width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,.12); color: #fff; font: 700 22px var(--sys); }
+.rest:not(.full) .rest-in { grid-template-columns: 50px 1fr auto auto; }
+.rest:not(.full) .rest-min { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,.08); color: #fff; order: 9; }
+/* buton mare pentru sărit încălzirea */
+.gd-skipwarm { width: 100%; min-height: 54px; border-radius: 16px; font: 700 17px var(--sys) !important; color: #fff !important; background: rgba(255,255,255,.12) !important; border: 1px solid rgba(255,255,255,.22) !important; box-shadow: none !important; }
+
+.rest.full .rest-in { background: transparent !important; border: 0 !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; animation: restpop .45s cubic-bezier(.2,1.3,.4,1) 1; }
+.rest.full .ring circle { stroke-width: 2.6 !important; }
+.rest.full .ring .bgc { stroke: rgba(255,255,255,.12) !important; }
+.rest.full .rest-t { font: 800 clamp(96px, 30vw, 140px)/1 var(--display) !important; color: #fff !important; }
+@keyframes restpop { from { transform: scale(.85); opacity: 0; } }
+/* cronometrul din încălzire / abdomen, mai mare */
+.gd-timer { width: min(56vw, 220px) !important; height: auto !important; aspect-ratio: 1; }
+.gd-timer b { font-size: clamp(64px, 19vw, 92px) !important; }
+</style>
 <title>Forța la Sală</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3397,7 +3426,9 @@ function stopRest() { clearInterval(restT); rest = null; const el = $('#rest'); 
 function buildRest() {
   const el = $('#rest'), C = 2 * Math.PI * 25;
   el.classList.remove('ended'); el.hidden = false;
-  el.innerHTML = `<div class="rest-in" role="timer" aria-live="off">
+  let mini = false; try { mini = localStorage.getItem('forta-restmini') === '1'; } catch (e) { }
+  el.classList.toggle('full', !mini);
+  el.innerHTML = `<div class="rest-in" role="timer" aria-live="off"><button class="rest-min" data-rest="min" aria-label="${mini ? 'Mărește' : 'Micșorează'}">${mini ? '⤢' : '⌄'}</button>
     <svg class="ring" viewBox="0 0 58 58"><circle class="bgc" cx="29" cy="29" r="25"/><circle class="fgc" id="rest-ring" cx="29" cy="29" r="25" stroke-dasharray="${C}" stroke-dashoffset="0"/></svg>
     <div class="rest-txt"><div class="rest-t num" id="rest-t"></div><small id="rest-l"></small></div>
     <div class="rest-btns"><button data-rest="-15">−15</button><button data-rest="15">+15</button><button data-rest="x">Sari</button></div></div>`;
@@ -3540,7 +3571,7 @@ document.addEventListener('click', e => {
   if (ds.howto) { const k = 'w' + ds.howto; openEx.has(k) ? openEx.delete(k) : openEx.add(k); const y = $('#workout').scrollTop; renderWorkout(); $('#workout').scrollTop = y; return; }
   if ('finish' in ds) { armButton(t, 'Apasă din nou', finishWorkout); return; }
   if ('cancel' in ds) { armButton(t, 'Apasă din nou ca să anulezi, fără salvare', () => { S.active = null; save(); stopRest(); render(); }); return; }
-  if (ds.rest) { if (!rest) return; if (ds.rest === 'x') stopRest(); else { rest.end += (+ds.rest) * 1000; rest.total = Math.max(rest.total, (rest.end - Date.now()) / 1000); drawRest(); } return; }
+  if (ds.rest) { if (!rest) return; if (ds.rest === 'min') { const el = $('#rest'), m = el.classList.contains('full'); try { localStorage.setItem('forta-restmini', m ? '1' : '0'); } catch (e) { } buildRest(); drawRest(); return; } if (ds.rest === 'x') stopRest(); else { rest.end += (+ds.rest) * 1000; rest.total = Math.max(rest.total, (rest.end - Date.now()) / 1000); drawRest(); } return; }
   if ('backup' in ds) {
     const txt = JSON.stringify({ ...S, active: null });
     navigator.clipboard.writeText(txt).then(() => toast('Datele au fost copiate. Lipește-le într-o notiță.')).catch(() => { $('#restore').hidden = false; const ta = $('#restore-txt'); ta.value = txt; ta.select(); toast('Textul e selectat. Copiază-l manual.'); });
@@ -4332,7 +4363,7 @@ function say(t) { try { if (!('speechSynthesis' in window)) return; speechSynthe
 function tick(f = 880, d = .07, v = .25) { try { const c = ctxAudio(), o = c.createOscillator(), g = c.createGain(); o.frequency.value = f; o.type = 'sine'; g.gain.setValueAtTime(v, c.currentTime); g.gain.exponentialRampToValueAtTime(.001, c.currentTime + d); o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + d + .02); } catch (e) { } }
 function openGuide(kind, day) {
   const list = listFor(kind, day);
-  G = { kind, list, day, i: 0, left: list[0][1], run: true, t: 0 };
+  G = { kind, list, day, i: 0, left: list[0][1], run: true, t: 0, last: Date.now() };
   let m = document.getElementById('guide'); if (!m) { m = document.createElement('div'); m.id = 'guide'; m.className = 'guide'; document.body.appendChild(m); }
   m.hidden = false; requestAnimationFrame(() => m.classList.add('open'));
   try { navigator.wakeLock && navigator.wakeLock.request('screen').then(l => G && (G.lock = l)).catch(() => { }); } catch (e) { }
@@ -4343,23 +4374,29 @@ function drawGuide(announce) {
   const [f, sec] = G.list[G.i], [name, cue] = MOVES[f], im = img2(f), next = G.list[G.i + 1];
   const C = 2 * Math.PI * 54, k = G.left / sec, tot = G.list.reduce((a, x) => a + x[1], 0), done = G.list.slice(0, G.i).reduce((a, x) => a + x[1], 0) + (sec - G.left);
   m.innerHTML = `<div class="gd-in">
-    <div class="gd-head"><div><small>${GNAME[G.kind]}, ${G.i + 1} din ${G.list.length}</small><div class="gd-prog"><i style="width:${(done / tot * 100).toFixed(1)}%"></i></div></div>${G.kind === 'warm' && G.after ? '<button class="gd-skip-top" data-gd="skip-warm">Sari peste</button>' : ''}<button class="pl-x gd-x" data-gd="close" aria-label="Închide">×</button></div>
+    <div class="gd-head"><div><small>${GNAME[G.kind]}, ${G.i + 1} din ${G.list.length}</small><div class="gd-prog"><i style="width:${(done / tot * 100).toFixed(1)}%"></i></div></div><button class="pl-x gd-x" data-gd="close" aria-label="Închide">×</button></div>
     <div class="gd-fig"><span class="rig exa big gd-anim"><img src="${im[0]}" alt="" onerror="this.src='${im[2]}'"><img class="ex-p" src="${im[1]}" alt="" onerror="this.remove()"></span></div>
     <h2 class="gd-name">${esc(name)}</h2><p class="gd-cue">${esc(cue)}</p>
-    <div class="gd-timer"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" class="gt-bg"/><circle cx="60" cy="60" r="54" class="gt-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - k)).toFixed(1)}"/></svg><b class="num">${G.left}</b></div>
+    <div class="gd-timer"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" class="gt-bg"/><circle cx="60" cy="60" r="54" class="gt-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - k)).toFixed(1)}"/></svg><b class="num">${G.left >= 60 ? fmtTime(G.left) : G.left}</b></div>
     <div class="gd-next">${next ? `Urmează: <b>${esc(MOVES[next[0]][0])}</b>` : 'Ultimul exercițiu'}</div>
+    ${G.kind === 'warm' ? `<button class="btn gd-skipwarm" data-gd="${G.after ? 'skip-warm' : 'close'}">Sari peste încălzire ›</button>` : ''}
     <div class="gd-btns"><button class="btn btn-ghost" data-gd="prev" aria-label="Înapoi">‹</button><button class="btn btn-main" data-gd="toggle">${G.run ? 'Pauză' : 'Continuă'}</button><button class="btn btn-ghost" data-gd="next" aria-label="Sari">›</button></div>
   </div>`;
   if (announce) say(`${name}. ${sec} de secunde.`);
 }
 function stepGuide() {
   if (!G || !G.run) return;
+  let dt = Math.floor((Date.now() - G.last) / 1000); if (dt < 1) return; G.last += dt * 1000;
+  if (dt > 1) {
+    while (dt > 0) { if (G.left > dt) { G.left -= dt; dt = 0; } else { dt -= G.left; if (G.i >= G.list.length - 1) return finishGuide(); G.i++; G.left = G.list[G.i][1]; } }
+    drawGuide(false); return;
+  }
   G.left--;
   if (G.left <= 3 && G.left > 0) tick(660);
   if (G.left <= 0) { tick(990, .2, .35); if (G.i >= G.list.length - 1) return finishGuide(); G.i++; G.left = G.list[G.i][1]; drawGuide(true); return; }
   const m = document.getElementById('guide'); if (!m) return;
   const [, sec] = G.list[G.i], C = 2 * Math.PI * 54, fg = m.querySelector('.gt-fg'), b = m.querySelector('.gd-timer b');
-  if (fg) fg.setAttribute('stroke-dashoffset', (C * (1 - G.left / sec)).toFixed(1)); if (b) b.textContent = G.left;
+  if (fg) fg.setAttribute('stroke-dashoffset', (C * (1 - G.left / sec)).toFixed(1)); if (b) b.textContent = G.left >= 60 ? fmtTime(G.left) : G.left;
   const tot = G.list.reduce((a, x) => a + x[1], 0), done = G.list.slice(0, G.i).reduce((a, x) => a + x[1], 0) + (sec - G.left), pi = m.querySelector('.gd-prog i'); if (pi) pi.style.width = (done / tot * 100).toFixed(1) + '%';
 }
 function finishGuide() {
@@ -4382,9 +4419,9 @@ document.addEventListener('click', e => {
     if (a === 'next-stretch') { const d = b.dataset.day; closeGuide(); setTimeout(() => openGuide('stretch', d), 320); return; }
     if (a === 'skip-warm') { const d = G && G.after; closeGuide(); if (d) setTimeout(() => startWorkout(d), 320); return; }
     if (!G) return;
-    if (a === 'toggle') { G.run = !G.run; drawGuide(false); }
-    if (a === 'next') { if (G.i >= G.list.length - 1) return finishGuide(); G.i++; G.left = G.list[G.i][1]; drawGuide(true); }
-    if (a === 'prev') { G.i = Math.max(0, G.i - 1); G.left = G.list[G.i][1]; drawGuide(true); }
+    if (a === 'toggle') { G.run = !G.run; G.last = Date.now(); drawGuide(false); }
+    if (a === 'next') { if (G.i >= G.list.length - 1) return finishGuide(); G.i++; G.left = G.list[G.i][1]; G.last = Date.now(); drawGuide(true); }
+    if (a === 'prev') { G.i = Math.max(0, G.i - 1); G.left = G.list[G.i][1]; G.last = Date.now(); drawGuide(true); }
     return;
   }
   const s = e.target.closest && e.target.closest('[data-guide]'); if (s) { try { ctxAudio(); } catch (er) { } openGuide(s.dataset.guide, s.dataset.day); }
@@ -5325,5 +5362,28 @@ render();
   setTimeout(hide, still ? 700 : 2600);
   sp.addEventListener('pointerdown', hide);
 })();
+
+/* ---------- Cronometru în fundal: când blochezi telefonul sau ieși din aplicație, GitHub trimite notificarea cu sunet la final ---------- */
+let TSHA = null, TSET = false;
+const TURL = 'https://api.github.com/repos/CristianDemian/forta/contents/timer.json';
+async function tGet() { const tk = ghTok(); if (!tk) return; try { const r = await fetch(TURL + '?ref=date&t=' + Date.now(), { headers: { Authorization: 'Bearer ' + tk }, cache: 'no-store' }); if (r.ok) TSHA = (await r.json()).sha; else if (r.status === 404) TSHA = ''; } catch (e) { } }
+async function tPut(obj, again) {
+  const tk = ghTok(); if (!tk) return; if (TSHA === null) await tGet();
+  const body = { message: 'Cronometru', branch: 'date', content: btoa(unescape(encodeURIComponent(JSON.stringify(obj)))) }; if (TSHA) body.sha = TSHA;
+  try {
+    const r = await fetch(TURL, { method: 'PUT', keepalive: true, headers: { Authorization: 'Bearer ' + tk, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    if (r.ok) TSHA = (await r.json()).content.sha; else if ((r.status === 409 || r.status === 422) && !again) { TSHA = null; await tPut(obj, true); }
+  } catch (e) { }
+}
+function timerNow() {
+  if (rest && !rest.ended && rest.end > Date.now() + 3000) return { end: rest.end, title: '⏱ Pauza s-a terminat', body: rest.next ? `Treci la ${EX[rest.next].name}` : `Următoarea serie: ${rest.label}` };
+  if (typeof G !== 'undefined' && G && G.run && G.left > 3) { const nx = G.list[G.i + 1]; return { end: Date.now() + G.left * 1000, title: `⏱ ${MOVES[G.list[G.i][0]][0]}: gata`, body: nx ? `Urmează ${MOVES[nx[0]][0]}` : 'Ultimul exercițiu s-a terminat' }; }
+  return null;
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { const t = timerNow(); if (t) { TSET = true; tPut(Object.assign(t, { id: String(t.end) })); } }
+  else if (TSET) { TSET = false; tPut({ end: 0, id: 'x' + Date.now() }); }
+});
+if (ghTok()) setTimeout(tGet, 4000);
 </script>
 </body></html>
