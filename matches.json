@@ -1,14 +1,6 @@
 {
- "updated": "2026-11-16T10:41:16.350Z",
+ "updated": "2026-11-21T22:56:19.363Z",
  "next": [
-  {
-   "date": "2026-11-21",
-   "time": "20:30",
-   "opp": "Petrolul Ploiești",
-   "home": true,
-   "round": "Etapa 16",
-   "comp": "SUPERLIGA"
-  },
   {
    "date": "2026-11-30",
    "time": "20:00",
@@ -124,6 +116,16 @@
  ],
  "last": [
   {
+   "date": "2026-11-21",
+   "time": "20:30",
+   "opp": "Petrolul Ploiești",
+   "home": true,
+   "round": "Etapa 16",
+   "comp": "SUPERLIGA",
+   "us": 0,
+   "them": 1
+  },
+  {
    "date": "2026-11-06",
    "time": "20:30",
    "opp": "FC Argeș",
@@ -211,16 +213,6 @@
    "round": "Etapa 7",
    "comp": "SUPERLIGA",
    "us": 1,
-   "them": 1
-  },
-  {
-   "date": "2026-08-22",
-   "time": "21:30",
-   "opp": "Universitatea Cluj",
-   "home": true,
-   "round": "Etapa 6",
-   "comp": "SUPERLIGA",
-   "us": 2,
    "them": 1
   }
  ]
